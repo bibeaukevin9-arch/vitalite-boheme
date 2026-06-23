@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vitalité Bohème — Massothérapie à Waterville, Estrie</title>
+  <meta name="description" content="Massothérapie certifiée à Waterville, Estrie. Vitalité Bohème, membre RMPQ, offre relaxation suédoise, massage thérapeutique, Lomi Lomi et cours de couple. Réservez dès maintenant." />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Vitalité Bohème — Massothérapie à Waterville, Estrie" />
+  <meta property="og:description" content="Massothérapie certifiée par Vitalité Bohème, membre RMPQ. Relaxation suédoise, thérapeutique, Lomi Lomi, cours de couple. Reçus d'assurance. À Waterville, Estrie." />
+  <meta property="og:image" content="images/hero-bg.jpg" />
+  <meta property="og:locale" content="fr_CA" />
+
+  <link rel="icon" href="images/logo-original.jpg" type="image/jpeg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --noir: #1c1208;
+      --noir-doux: #261a0e;
+      --or: #cfa96a;
+      --or-clair: #e8c98a;
+      --beige: #f5ede0;
+      --beige-doux: #ede0cc;
+      --brun: #8a6a50;
+      --brun-fonce: #4a3220;
+      --blanc: #fdfaf6;
+      --texte: #3a2e28;
+      --gris: #7a6a58;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { overflow-x: clip; scroll-behavior: smooth; }
+    body { font-family: 'Georgia', serif; background: var(--blanc); color: var(--texte); max-width: 100vw; }
+    body.modal-ouvert { overflow: hidden; }
+    h1, h2, h3, blockquote { font-family: 'Cormorant Garamond', Georgia, serif; }
+    h2 { font-size: 38px; color: var(--brun-fonce); margin-bottom: 16px; }
+
+    /* ── CONTENEUR MAX-WIDTH UNIFORME ── */
+    .section-inner { max-width: 1120px; margin: 0 auto; width: 100%; }
+
+    /* ── LANGUE ── */
+    [data-en] { display: none; }
+    body.en [data-fr] { display: none; }
+    body.en [data-en] { display: block; }
+    body.en span[data-en] { display: inline; }
+    body.en span[data-fr] { display: none; }
+
+    /* ── BOUTON LANGUE ── */
+    .lang-btn {
+      background: none; border: none; cursor: pointer;
+      display: flex; align-items: center; gap: 0;
+      padding: 2px 0; margin-top: 4px;
+    }
+    .lang-btn .lbl { padding: 0 5px; font-size: 10px; letter-spacing: 1.5px; font-family: Georgia, serif; color: rgba(201,169,110,0.55); transition: color 0.2s; }
+    .lang-btn .lbl.actif { color: var(--or); font-weight: bold; }
+    .lang-btn .sep { color: rgba(201,169,110,0.3); font-size: 9px; }
+    .lang-btn:hover .lbl { color: rgba(201,169,110,0.85); }
+
+    /* ── CTA FLOTTANT ── */
+    .cta-flottant {
+      position: fixed; bottom: 28px; right: 28px; z-index: 990;
+      background: var(--or); color: var(--noir);
+      padding: 14px 24px; border-radius: 30px;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 15px; font-weight: 700; letter-spacing: 0.5px;
+      text-decoration: none; box-shadow: 0 6px 28px rgba(201,169,110,0.55);
+      transition: all 0.3s; display: flex; align-items: center; gap: 8px;
+      opacity: 0; transform: translateY(16px); pointer-events: none;
+    }
+    .cta-flottant.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .cta-flottant:hover { background: var(--or-clair); transform: translateY(-3px); box-shadow: 0 10px 36px rgba(201,169,110,0.65); }
+    .cta-pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--noir); animation: pulse-dot 1.8s infinite; }
+    @keyframes pulse-dot { 0%,100%{transform:scale(1);opacity:1;} 50%{transform:scale(1.6);opacity:0.5;} }
+
+    /* ── CURSEUR OR ── */
+    .curseur-or {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: rgba(201,169,110,0.7);
+      position: fixed; pointer-events: none; z-index: 9999;
+      transition: transform 0.15s ease; transform: translate(-50%,-50%);
+    }
+    .curseur-or-anneau {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1.5px solid rgba(201,169,110,0.35);
+      position: fixed; pointer-events: none; z-index: 9998;
+      transition: transform 0.35s ease; transform: translate(-50%,-50%);
+    }
+    @media (hover:none) { .curseur-or,.curseur-or-anneau { display:none; } }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; width: 100%;
+      background: linear-gradient(to bottom, rgba(18,10,4,0.98) 0%, rgba(26,16,8,0.95) 100%);
+      backdrop-filter: blur(14px); z-index: 999;
+      padding: 5px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid rgba(201,169,110,0.25);
+      box-shadow: 0 2px 24px rgba(0,0,0,0.5);
+    }
+    .logo-wrap { display: flex; align-items: center; gap: 10px; }
+    .logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+    .logo img { height: 34px; width: 34px; border-radius: 50%; object-fit: cover;
+      border: 1.5px solid rgba(201,169,110,0.45);
+      box-shadow: 0 0 0 3px rgba(201,169,110,0.1); }
+    .logo-texte { display: flex; flex-direction: column; line-height: 1.2; }
+    .logo-nom { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 13px; font-weight: 600; color: #e8d5b0; letter-spacing: 0.5px; }
+    .logo-sous { font-family: Georgia, serif; font-size: 9px; color: rgba(201,169,110,0.65); letter-spacing: 2px; text-transform: uppercase; }
+    nav ul { list-style: none; display: flex; gap: 20px; align-items: center; }
+    nav ul a { text-decoration: none; color: #f0e2c8; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; transition: color 0.3s; position: relative; padding-bottom: 2px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 600; }
+    nav ul a::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 1px; background: var(--or); transition: width 0.3s; }
+    nav ul a:hover { color: var(--or); }
+    nav ul a:hover::after { width: 100%; }
+    .badge-rmpq {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(201,169,110,0.12); border: 1px solid rgba(201,169,110,0.4);
+      border-radius: 20px; padding: 6px 14px; text-decoration: none; transition: background 0.2s;
+    }
+    .badge-rmpq:hover { background: rgba(201,169,110,0.22); }
+    .badge-rmpq span { font-size: 11px; color: var(--or); letter-spacing: 1px; text-transform: uppercase; font-family: Georgia, serif; }
+
+    /* ── HAMBURGER ── */
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 6px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--or); border-radius: 2px; transition: all 0.3s; }
+    .hamburger.ouvert span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+    .hamburger.ouvert span:nth-child(2) { opacity: 0; }
+    .hamburger.ouvert span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+    /* ── ANIMATIONS SCROLL ── */
+
+
+    /* ── DIVIDERS ── */
+    .divider-or { width: 50px; height: 2px; background: var(--or); margin: 0 auto 36px; }
+    .divider-or.left { margin: 0 0 32px; }
+    .section-tag { display: inline-block; color: var(--or); font-size: 11px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 12px; }
+
+
+    /* ── BOUTONS ── */
+    .btn {
+      display: inline-block; background: var(--or); color: var(--noir);
+      padding: 14px 38px; border-radius: 30px; text-decoration: none;
+      font-size: 16px; letter-spacing: 1px; transition: all 0.3s; margin: 6px;
+      font-weight: bold; font-family: 'Cormorant Garamond', Georgia, serif;
+      box-shadow: 0 4px 18px rgba(201,169,110,0.50);
+    }
+    .btn:hover { background: var(--or-clair); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(201,169,110,0.4); }
+    .btn-outline { background: transparent; border: 2px solid var(--or); color: var(--or); }
+    .btn-outline:hover { background: var(--or); color: var(--noir); }
+    .hero-fiche-badge {
+      display: inline-block; margin: 0 auto 12px;
+      background: rgba(201,169,110,0.22); color: #f5dfa0;
+      border: 1.5px solid rgba(201,169,110,0.70);
+      padding: 8px 22px; border-radius: 20px;
+      font-family: Georgia, serif; font-size: 13px; letter-spacing: 1px;
+      text-decoration: none; backdrop-filter: blur(4px);
+      transition: all 0.25s;
+    }
+    .hero-fiche-badge:hover { background: rgba(201,169,110,0.28); border-color: var(--or); }
+    .btn-ghost { display: inline-block; background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.75); color: #ffffff; text-decoration: none; padding: 13px 28px; border-radius: 30px; font-size: 15px; letter-spacing: 1px; transition: all 0.3s; margin: 6px; font-weight: 600; font-family: 'Cormorant Garamond', Georgia, serif; cursor: pointer; text-shadow: 0 1px 6px rgba(0,0,0,0.6); }
+    .btn-ghost:hover { background: rgba(255,255,255,0.28); border-color: #fff; color: #fff; }
+    .hero-btns { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px; margin-top: 8px; }
+
+    /* ════════════════════════════════
+       HERO — style entête questionnaire
+    ════════════════════════════════ */
+    .hero {
+      min-height: 85vh; display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 100px 40px 60px;
+      position: relative; overflow: hidden;
+      background: url('images/hero-bg.jpg') center center / cover no-repeat;
+    }
+    /* Overlay — lisibilité texte */
+    .hero::before {
+      content: ''; position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(180deg,
+        rgba(10,6,2,0.52) 0%,
+        rgba(15,8,2,0.32) 45%,
+        rgba(10,6,2,0.48) 100%);
+    }
+    /* Lustre — reflet de lumière sur le marbre */
+    .hero::after {
+      content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      background:
+        radial-gradient(ellipse 55% 35% at 50% 0%, rgba(255,225,140,0.13) 0%, transparent 65%),
+        radial-gradient(ellipse 30% 20% at 78% 28%, rgba(255,240,170,0.08) 0%, transparent 55%);
+    }
+    #hero-marble-canvas { display: none; }
+    .hero-content { position: relative; z-index: 3; }
+    .hero-badges { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px; padding-top: 16px; }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(201,169,110,0.30); border: 1.5px solid rgba(201,169,110,0.85); color: #fff;
+      padding: 7px 24px; border-radius: 20px; font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+    }
+    .hero-badge-rmpq {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(201,169,110,0.25); border: 1.5px solid rgba(201,169,110,0.75);
+      border-radius: 20px; padding: 6px 18px; text-decoration: none;
+      color: #fff; font-size: 10px; letter-spacing: 2.5px;
+      text-transform: uppercase; font-family: Georgia, serif; transition: all 0.2s;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+    }
+    .hero-badge-rmpq:hover { background: rgba(201,169,110,0.50); color: #fff; }
+    .hero h1 { font-size: 28px; color: #ffffff; line-height: 1.15; margin-bottom: 10px; text-shadow: 0 2px 24px rgba(0,0,0,0.95), 0 1px 6px rgba(0,0,0,1); }
+    .hero h1 em { color: var(--or); font-style: italic; }
+    .hero p { font-size: 14px; color: #f0e8d8; max-width: 480px; margin: 0 auto 16px; line-height: 1.6; text-shadow: 0 1px 10px rgba(0,0,0,0.95); }
+    /* Halo de fondu autour du cercle — se dissout dans le marbre */
+    /* Photo héro — cercle simple */
+    .hero-photo-simple {
+      width: 190px; height: 190px; border-radius: 50%;
+      overflow: hidden; margin: 0 auto 20px;
+      border: 2px solid rgba(201,169,110,0.55);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.45), 0 0 0 8px rgba(201,169,110,0.10);
+    }
+    .hero-photo-simple img {
+      width: 100%; height: 100%; object-fit: cover;
+      object-position: center 72%;
+    }
+    .hero-photo img { width: 100%; height: 100%; object-fit: cover; object-position: center 72%; }
+
+    /* ════════════════════════════════
+       HISTOIRE
+    ════════════════════════════════ */
+    .histoire {
+      background: url('images/fiche-bg.jpg') center center / cover no-repeat;
+      padding: clamp(60px,8vw,100px) clamp(20px,5vw,60px);
+      position: relative;
+    }
+    .histoire::before {
+      content: ''; position: absolute; inset: 0;
+      background: rgba(253, 248, 242, 0.86);
+      z-index: 0;
+    }
+    .histoire > * { position: relative; z-index: 1; }
+    .histoire-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(32px,5vw,70px); align-items: center; max-width: 1120px; margin: 0 auto; }
+    .histoire-photo { height: clamp(340px,45vw,520px); border-radius: 20px; overflow: hidden; box-shadow: 0 30px 80px rgba(60,40,20,0.18); }
+    .histoire-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 22% center; }
+    .histoire p { font-size: clamp(15px,1.5vw,17px); line-height: 1.95; color: var(--gris); margin-bottom: 22px; }
+
+    /* ════════════════════════════════
+       PHILOSOPHIE
+    ════════════════════════════════ */
+    .philosophie {
+      background: var(--noir); padding: clamp(60px,8vw,100px) clamp(20px,5vw,60px);
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .philosophie::before {
+      content: ''; position: absolute; inset: 0;
+      background: url('images/massage-2.jpg') center/cover no-repeat;
+      opacity: 0.12; z-index: 0; filter: blur(1.5px);
+    }
+    .philosophie > * { position: relative; z-index: 1; }
+    .philosophie h2 { color: #fff; }
+    .philosophie blockquote {
+      font-size: 19px; color: #d4c4a8; line-height: 2; font-style: italic;
+      max-width: 720px; margin: 0 auto 28px;
+      border-left: 3px solid var(--or); padding-left: 24px; text-align: left;
+    }
+    .philosophie p { color: var(--or); font-size: 16px; line-height: 1.9; max-width: 600px; margin: 0 auto; }
+
+    /* ════════════════════════════════
+       SERVICES
+    ════════════════════════════════ */
+    .services { background: var(--beige); padding: clamp(60px,8vw,100px) clamp(20px,5vw,60px); position: relative; overflow: hidden; }
+    .services::before {
+      content: ''; position: absolute; inset: 0;
+      background: url('images/massage-3.jpg') center 25%/cover no-repeat;
+      opacity: 0.14; z-index: 0; filter: blur(1.5px);
+    }
+    .services > * { position: relative; z-index: 1; }
+    .text-center { text-align: center; }
+    .services-bulles { display: flex; flex-direction: column; align-items: center; gap: 40px; max-width: 1100px; margin: 0 auto; }
+    .services-row { display: flex; justify-content: center; gap: clamp(12px, 3vw, 36px); flex-wrap: nowrap; width: 100%; }
+    .service-bulle { display: flex; flex-direction: column; align-items: center; text-align: center; flex: 1 1 0; min-width: 0; }
+    .services-row-bottom .service-bulle { flex: 0 0 auto; width: clamp(140px, 18vw, 220px); }
+    .bulle-cercle {
+      width: clamp(90px, 14vw, 172px); height: clamp(90px, 14vw, 172px);
+      border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      margin-bottom: 18px; transition: transform 0.3s, box-shadow 0.3s;
+      cursor: pointer; position: relative;
+    }
+    .bulle-cercle:hover { transform: translateY(-7px) scale(1.05); }
+    .bulle-cercle.or { background: radial-gradient(circle, rgba(201,169,110,0.82), rgba(180,130,50,0.88)); box-shadow: 0 10px 36px rgba(201,169,110,0.4); }
+    .bulle-cercle.sombre { background: radial-gradient(circle, rgba(58,42,30,0.82), rgba(40,28,18,0.90)); box-shadow: 0 10px 36px rgba(58,42,30,0.4); }
+    .bulle-cercle.creme { background: radial-gradient(circle, rgba(253,247,240,0.85), rgba(237,224,204,0.90)); box-shadow: 0 10px 36px rgba(122,92,68,0.2); border: 2px solid var(--or); }
+    .bulle-cercle .bulle-bg { position: absolute; inset: 0; border-radius: 50%; background-size: cover; background-position: center; opacity: 0.22; z-index: 0; }
+    .bulle-nom { position: relative; z-index: 1; font-size: clamp(10px, 1.1vw, 13px); font-weight: bold; letter-spacing: 0.5px; padding: 0 8px; line-height: 1.4; }
+    .bulle-cercle.or .bulle-nom, .bulle-cercle.sombre .bulle-nom { color: #fff; }
+    .bulle-cercle.creme .bulle-nom { color: var(--brun-fonce); }
+    .bulle-info { position: absolute; top: 10px; right: 10px; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; color: #fff; z-index: 2; background: rgba(255,255,255,0.3); }
+    .bulle-cercle.creme .bulle-info { background: rgba(122,92,68,0.2); color: var(--brun); }
+    .bulle-prix-list { display: flex; flex-direction: column; gap: 7px; width: 100%; }
+    .bulle-prix-item { background: var(--blanc); border: 1px solid #d8ccbe; border-radius: 20px; padding: clamp(4px,0.5vw,6px) clamp(8px,1vw,14px); font-size: clamp(10px,1vw,13px); display: flex; justify-content: space-between; align-items: center; transition: border-color 0.2s; }
+    .bulle-prix-item:hover { border-color: var(--or); }
+    .bulle-prix-duree { color: var(--gris); font-size: clamp(9px,0.9vw,12px); }
+    .bulle-prix-montant { font-weight: bold; color: var(--or); }
+
+    /* Tarif partagé */
+    .services-top-group { display: flex; flex-direction: column; align-items: center; width: 100%; gap: 10px; }
+    .tarif-groupe { width: 100%; display: flex; flex-direction: column; align-items: center; }
+    .tarif-groupe-connecteur { width: 100%; height: 20px; position: relative; margin-bottom: -1px; }
+    .tarif-groupe-connecteur::before { content: ''; position: absolute; top: 0; left: 16.67%; right: 16.67%; height: 1px; background: linear-gradient(to right, transparent, rgba(201,169,110,0.5) 15%, rgba(201,169,110,0.5) 85%, transparent); }
+    .tarif-groupe-tick { position: absolute; top: 0; width: 1px; height: 16px; background: rgba(201,169,110,0.55); }
+    .tarif-groupe-tick:nth-child(1) { left: 16.67%; transform: translateX(-50%); }
+    .tarif-groupe-tick:nth-child(2) { left: 50%; transform: translateX(-50%); }
+    .tarif-groupe-tick:nth-child(3) { right: 16.67%; transform: translateX(50%); }
+    .tarif-groupe-inner { max-width: 480px; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .tarif-groupe-label { font-size: clamp(9px,0.85vw,11px); letter-spacing: 2px; text-transform: uppercase; color: var(--or); opacity: 0.85; margin: 0; }
+    .tarif-groupe-bar { width: 100%; background: var(--blanc); border: 1px solid rgba(201,169,110,0.4); border-radius: 18px; padding: clamp(12px,1.5vw,18px) clamp(16px,2vw,28px); display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 20px rgba(60,40,20,0.07); }
+    .tarif-option { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .tarif-sep { width: 1px; height: 32px; background: #e0d5c8; margin: 0 clamp(8px,1.5vw,20px); flex-shrink: 0; }
+    .tarif-duree { font-size: clamp(10px,0.9vw,12px); color: var(--gris); }
+    .tarif-montant { font-size: clamp(17px,1.8vw,23px); font-weight: bold; color: var(--or); }
+
+    /* Modal services */
+    #modal-service { display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(15,12,10,0.75); align-items: center; justify-content: center; padding: 20px; }
+    #modal-service.ouvert { display: flex; }
+    .modal-box { background: var(--blanc); border-radius: 20px; max-width: 520px; width: 100%; padding: 40px 36px; position: relative; box-shadow: 0 20px 70px rgba(0,0,0,0.4); animation: fadeUp 0.3s ease; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);} }
+    .modal-close { position: absolute; top: 16px; right: 20px; background: none; border: none; font-size: 22px; cursor: pointer; color: var(--gris); }
+    .modal-box .modal-icon { font-size: 48px; margin-bottom: 12px; }
+    .modal-box h3 { font-size: 24px; color: var(--brun-fonce); margin-bottom: 8px; }
+    .modal-tag { display: inline-block; background: var(--or); color: #fff; font-size: 11px; letter-spacing: 2px; padding: 4px 14px; border-radius: 12px; margin-bottom: 18px; text-transform: uppercase; }
+    .modal-box p { font-size: 15px; color: var(--gris); line-height: 1.9; margin-bottom: 14px; white-space: pre-line; }
+    .modal-btn { display: inline-block; background: var(--or); color: var(--noir); padding: 12px 28px; border-radius: 24px; text-decoration: none; font-weight: bold; font-size: 14px; margin-top: 8px; }
+
+    /* ════════════════════════════════
+       AVIS
+    ════════════════════════════════ */
+    .avis { min-height: 680px; padding: clamp(60px,8vw,100px) clamp(20px,5vw,60px); position: relative; overflow: hidden; }
+    .avis::before { content: ''; position: absolute; inset: 0; background: url('images/avis-fond.jpg') center/cover no-repeat; z-index: 0; }
+    .avis > * { position: relative; z-index: 2; }
+    .avis-header { text-align: center; margin-bottom: 60px; }
+    .avis-bulle-titre { position: relative; display: inline-block; background: #fff; border-radius: 40px; padding: 18px 44px 20px; box-shadow: 0 6px 28px rgba(0,0,0,0.22); }
+    .avis-bulle-titre::before { content: ''; position: absolute; bottom: -22px; left: 38%; width: 14px; height: 14px; background: #fff; border-radius: 50%; box-shadow: -10px 18px 0 -2px rgba(255,255,255,0.85), -22px 34px 0 -4px rgba(255,255,255,0.65); }
+    .avis-header .section-tag { display: block; color: var(--or); letter-spacing: 0.16em; font-size: 11px; margin-bottom: 4px; }
+    .avis-header h2 { color: var(--brun-fonce); margin: 0; }
+    .avis-vedettes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; max-width: 1050px; margin: 0 auto; }
+    .bulle { background: var(--blanc); border-radius: 22px 22px 22px 6px; padding: 22px 24px 20px; box-shadow: 0 18px 56px rgba(60,40,20,0.28), 0 2px 8px rgba(60,40,20,0.10); position: relative; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .bulle::after { content: ''; position: absolute; bottom: -11px; left: 22px; width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 12px solid var(--blanc); }
+    .bulle.dark { background: var(--brun-fonce); border-radius: 22px 22px 6px 22px; }
+    .bulle.dark::after { border-top-color: var(--brun-fonce); left: auto; right: 22px; }
+    .bulle.gold { background: var(--or); border-radius: 6px 22px 22px 22px; }
+    .bulle.gold::after { border-top-color: var(--or); left: 50%; transform: translateX(-50%); }
+    .etoiles { color: var(--or); font-size: 14px; margin-bottom: 10px; letter-spacing: 3px; }
+    .bulle.dark .etoiles { color: var(--or-clair); }
+    .bulle.gold .etoiles { color: var(--noir); }
+    .bulle p { font-size: 14px; line-height: 1.8; font-style: italic; margin-bottom: 14px; color: var(--gris); }
+    .bulle.dark p { color: #c8b89a; }
+    .bulle.gold p { color: var(--noir-doux); }
+    .bulle-footer { display: flex; align-items: center; gap: 10px; margin-top: 14px; }
+    .bulle-avatar { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; background: var(--or); color: var(--noir); }
+    .bulle.dark .bulle-avatar { background: rgba(201,169,110,0.25); color: var(--or-clair); }
+    .bulle.gold .bulle-avatar { background: rgba(58,42,30,0.2); color: var(--brun-fonce); }
+    .avis-nom { font-size: 12px; font-weight: bold; letter-spacing: 0.5px; color: var(--brun); }
+    .bulle.dark .avis-nom { color: var(--or-clair); }
+    .bulle.gold .avis-nom { color: var(--brun-fonce); }
+    .avis-vedettes .bulle:nth-child(1) { transform: rotate(-6deg); }
+    .avis-vedettes .bulle:nth-child(2) { transform: rotate(9deg); }
+    .avis-vedettes .bulle:nth-child(3) { transform: rotate(-4deg); }
+    .avis-vedettes .bulle:nth-child(4) { transform: rotate(7deg); }
+    .avis-vedettes .bulle:nth-child(5) { transform: rotate(-10deg); }
+    .avis-vedettes .bulle:nth-child(6) { transform: rotate(5deg); }
+    .avis-vedettes .bulle:hover { transform: rotate(0deg) translateY(-7px) !important; box-shadow: 0 26px 70px rgba(60,40,20,0.34); }
+
+    /* ════════════════════════════════
+       CONTACT — style pied questionnaire
+    ════════════════════════════════ */
+    .contact {
+      background: url('images/footer-bg.jpg') center top / cover no-repeat;
+      text-align: center;
+      padding: 70px 40px 50px; position: relative; overflow: hidden;
+    }
+    .contact::before {
+      content: ''; position: absolute; inset: 0; z-index: 0;
+      background: rgba(10,5,1,0.50);
+    }
+    .contact > * { position: relative; z-index: 1; }
+    .contact .section-tag { color: var(--or); }
+    .btn-fiche-cta {
+      display: inline-block; margin: 0 auto 28px;
+      background: var(--or); color: var(--noir);
+      padding: 16px 36px; border-radius: 30px;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 17px; font-weight: 700; letter-spacing: 0.5px;
+      text-decoration: none; box-shadow: 0 6px 28px rgba(201,169,110,0.55);
+      transition: all 0.3s; position: relative; z-index: 1;
+    }
+    .btn-fiche-cta:hover { background: var(--or-clair); transform: translateY(-3px); box-shadow: 0 10px 36px rgba(201,169,110,0.70); }
+
+    .contact h2 { color: #ffffff; text-shadow: 0 2px 16px rgba(0,0,0,0.9); }
+    .contact > p { font-size: 17px; color: #f0e4cc; margin-bottom: 10px; text-shadow: 0 1px 8px rgba(0,0,0,0.8); }
+    .contact-methodes { display: flex; gap: 24px; justify-content: center; margin: 36px 0 44px; flex-wrap: wrap; }
+    .contact-methode { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; background: url('images/fiche-bg.jpg') center/cover no-repeat; border: 1.5px solid rgba(201,169,110,0.45); border-radius: 22px; padding: 32px 36px; text-decoration: none; color: #1a0800; transition: all 0.35s; min-width: 170px; text-align: center; box-shadow: 0 10px 36px rgba(0,0,0,0.30), 0 2px 8px rgba(201,169,110,0.20); font-weight: 700; position: relative; overflow: hidden; }
+    .contact-methode::after { content: ''; position: absolute; inset: 0; background: rgba(248,238,220,0.30); border-radius: 22px; transition: background 0.35s; }
+    .contact-methode > * { position: relative; z-index: 1; }
+    .contact-methode:hover::after { background: rgba(248,238,220,0.10); }
+    .contact-methode:hover { transform: translateY(-7px) scale(1.03); box-shadow: 0 20px 50px rgba(0,0,0,0.35), 0 0 0 2px rgba(201,169,110,0.55); }
+    .methode-icone { display: flex; align-items: center; justify-content: center; width: 56px; height: 56px; }
+    .methode-label { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(30,12,0,0.60); font-weight: 800; text-align: center; }
+    .methode-valeur { font-size: 15px; color: #2a1200; font-weight: 800; letter-spacing: 0.5px; white-space: nowrap; text-align: center; }
+    .social-vb { text-align: center; margin-top: 48px; padding-top: 40px; border-top: 1px solid rgba(201,169,110,0.25); }
+    .social-titre { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: rgba(220,190,130,0.90); margin-bottom: 24px; font-family: Georgia, serif; }
+    .social-liens { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .social-btn { display: flex; align-items: center; gap: 10px; padding: 14px 26px; border-radius: 30px; font-size: 15px; font-family: 'Cormorant Garamond', Georgia, serif; font-weight: 700; letter-spacing: 0.5px; text-decoration: none; border: none; color: #fff; transition: all 0.30s; }
+    .social-tiktok { background: #010101; box-shadow: 0 4px 20px rgba(0,0,0,0.45); }
+    .social-tiktok:hover { background: #1a1a1a; transform: translateY(-4px); box-shadow: 0 10px 32px rgba(0,0,0,0.55); }
+    .social-instagram { background: linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%); box-shadow: 0 4px 20px rgba(253,29,29,0.35); }
+    .social-instagram:hover { filter: brightness(1.12); transform: translateY(-4px); box-shadow: 0 10px 32px rgba(253,29,29,0.45); }
+    .social-facebook { background: #1877f2; box-shadow: 0 4px 20px rgba(24,119,242,0.40); }
+    .social-facebook:hover { background: #1565d8; transform: translateY(-4px); box-shadow: 0 10px 32px rgba(24,119,242,0.50); }
+
+    /* ════════════════════════════════
+       FOOTER
+    ════════════════════════════════ */
+    .site-footer {
+      background: url('images/footer-bg.jpg') center center / cover no-repeat;
+      text-align: center; padding: 60px 40px 36px; position: relative; overflow: hidden;
+      border-top: 1px solid rgba(201,169,110,0.30);
+    }
+    .site-footer::before { content: ''; position: absolute; inset: 0; z-index: 0;
+      background: rgba(10,5,1,0.40);
+      pointer-events: none; }
+    .site-footer > * { position: relative; z-index: 1; }
+    .footer-logo-wrap { margin-bottom: 24px; }
+    .footer-logo-wrap img { height: 56px; width: 56px; border-radius: 50%; object-fit: cover;
+      border: 1.5px solid rgba(201,169,110,0.4);
+      box-shadow: 0 0 0 4px rgba(201,169,110,0.08); }
+    .footer-marque { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; color: #e8d5b0; letter-spacing: 1px; margin-top: 12px; }
+    .footer-tagline { font-family: Georgia, serif; font-size: 12px; color: rgba(220,195,145,0.85); letter-spacing: 2.5px; text-transform: uppercase; margin-top: 4px; }
+    .footer-or { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 22px auto; }
+    .footer-or-line { width: 60px; height: 1px; background: linear-gradient(to right, transparent, rgba(201,169,110,0.4)); }
+    .footer-or-line.rev { background: linear-gradient(to left, transparent, rgba(201,169,110,0.4)); }
+    .footer-or-symbol { color: rgba(220,190,130,0.85); font-size: 14px; }
+    .footer-cols { display: flex; justify-content: center; gap: 60px; margin-bottom: 32px; flex-wrap: wrap; }
+    .footer-col { text-align: center; }
+    .footer-col-titre { font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(201,169,110,0.5); margin-bottom: 10px; font-family: Georgia, serif; }
+    .footer-col p, .footer-col a { font-size: 13px; color: #c8b89a; line-height: 2; text-decoration: none; display: block; transition: color 0.2s; }
+    .footer-col a:hover { color: var(--or); }
+    .footer-sep { width: 100%; height: 1px; background: rgba(201,169,110,0.1); margin: 0 auto 20px; }
+    .divider { width: 50px; height: 2px; background: var(--or); margin: 0 auto 32px; }
+    .footer-copy { font-size: 11px; color: rgba(230,205,155,0.90); letter-spacing: 0.5px; }
+
+    /* ════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════ */
+    @media (max-width: 900px) {
+      .hamburger { display: flex; }
+      nav ul { display: flex; flex-direction: column; gap: 0; position: fixed; top: 0; right: -100%; width: 260px; height: 100vh; background: rgba(15,12,10,0.98); backdrop-filter: blur(10px); padding: 80px 32px 40px; transition: right 0.35s ease; border-left: 1px solid rgba(201,169,110,0.2); z-index: 1000; }
+      nav ul.mobile-ouvert { right: 0; }
+      nav ul li { border-bottom: 1px solid rgba(201,169,110,0.1); }
+      nav ul a { display: block; padding: 16px 0; font-size: 14px; letter-spacing: 2px; }
+      .avis-vedettes { grid-template-columns: repeat(2,1fr); gap: 18px; }
+    }
+    @media (max-width: 768px) {
+      .hero h1 { font-size: clamp(26px, 7vw, 36px); }
+      .hero-photo-simple { width: 140px; height: 140px; }
+      .hero::after { display: none; }
+      .histoire-grid { grid-template-columns: 1fr; gap: 32px; }
+      .histoire-photo { height: clamp(260px, 55vw, 380px); }
+      .services-row { flex-direction: column; align-items: center; gap: 24px; }
+      .bulle-cercle { width: 150px !important; height: 150px !important; }
+      .contact-methodes { flex-direction: column; align-items: center; gap: 16px; }
+      .contact-methode { width: 100%; max-width: 320px; flex-direction: column; align-items: center; padding: 24px 20px; text-align: center; }
+      .methode-valeur { white-space: normal; word-break: break-word; }
+      .cta-flottant { bottom: 18px; right: 18px; padding: 12px 18px; font-size: 13px; }
+    }
+    @media (max-width: 580px) {
+      .avis-vedettes { grid-template-columns: 1fr; max-width: 380px; }
+      .logo-nom { font-size: 11px; }
+      .logo-sous { display: none; }
+      .footer-cols { gap: 30px; }
+      .site-footer { padding: 48px 24px 28px; }
+      /* Padding horizontal réduit sur petit écran */
+      nav { padding: 5px 20px; }
+      .hero { padding: 90px 20px 50px; }
+      .contact { padding: 50px 20px 40px; }
+      .modal-box { padding: 28px 20px; }
+    }
+    /* ─── ANIMATIONS AU SCROLL ──────────────────────────────────── */
+    .anim-entree {
+      opacity: 0;
+      transform: translateY(90px) scale(0.95);
+      filter: blur(4px);
+      transition: opacity 1.1s cubic-bezier(0.16,1,0.3,1),
+                  transform 1.1s cubic-bezier(0.16,1,0.3,1),
+                  filter 1.1s cubic-bezier(0.16,1,0.3,1);
+    }
+    .anim-entree.visible { opacity:1; transform:translateY(0) scale(1); filter:blur(0px); }
+    .anim-entree.delai-1 { transition-delay:0.15s; }
+    .anim-entree.delai-2 { transition-delay:0.30s; }
+    .anim-entree.delai-3 { transition-delay:0.45s; }
+    .anim-entree.delai-4 { transition-delay:0.60s; }
+  </style>
+</head>
+<body>
+<div class="curseur-or" id="curseur-or"></div>
+<div class="curseur-or-anneau" id="curseur-anneau"></div>
+
+<!-- CTA flottant -->
+<a href="#contact" class="cta-flottant" id="cta-flottant">
+  <div class="cta-pulse"></div>
+  <span data-fr>Prendre rendez-vous</span>
+  <span data-en>Book now</span>
+</a>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <div class="logo-wrap">
+    <a class="logo" href="#hero">
+      <img src="images/logo-original.jpg" alt="Vitalité Bohème" />
+      <div class="logo-texte">
+        <span class="logo-nom">Vitalité Bohème</span>
+        <span class="logo-sous">Massothérapie</span>
+      </div>
+    </a>
+    <button class="lang-btn" id="lang-btn" onclick="toggleLang()">
+      <span class="lbl actif" id="lbl-fr">FR</span>
+      <span class="sep">|</span>
+      <span class="lbl" id="lbl-en">EN</span>
+    </button>
+  </div>
+  <button class="hamburger" id="hamburger-btn" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul id="nav-menu">
+    <li><a href="#histoire" onclick="fermerMenu()"><span data-fr>Histoire</span><span data-en>Story</span></a></li>
+    <li><a href="#services" onclick="fermerMenu()"><span data-fr>Services</span><span data-en>Services</span></a></li>
+    <li><a href="fiche.html"><span data-fr>Questionnaire</span><span data-en>Intake Form</span></a></li>
+    <li><a href="#avis" onclick="fermerMenu()"><span data-fr>Avis</span><span data-en>Reviews</span></a></li>
+    <li><a href="#contact" onclick="fermerMenu()"><span data-fr>Contact</span><span data-en>Contact</span></a></li>
+    <li><a href="https://rmpq.ca" target="_blank" rel="noopener noreferrer" class="badge-rmpq" onclick="fermerMenu()"><span data-fr>✦ Membre RMPQ</span><span data-en>✦ RMPQ Member</span></a></li>
+  </ul>
+</nav>
+
+<!-- ═══════════════════════════════════════
+     SECTION 1 — HERO
+═══════════════════════════════════════ -->
+<section class="hero" id="hero">
+  <canvas id="hero-marble-canvas" aria-hidden="true"></canvas>
+  <div class="hero-content">
+    <div class="hero-badges">
+      <div class="hero-badge">
+        <span data-fr>Massothérapie certifiée</span>
+        <span data-en>Certified Massage Therapy</span>
+      </div>
+      <a href="https://rmpq.ca" target="_blank" rel="noopener" class="hero-badge-rmpq">
+        <span>✦</span>
+        <span data-fr>Membre RMPQ</span>
+        <span data-en>RMPQ Member</span>
+      </a>
+    </div>
+    <div class="hero-photo-simple">
+      <img src="images/kevin-sourire.jpg" alt="Vitalité Bohème — Massothérapeute" />
+    </div>
+    <a href="fiche.html" class="hero-fiche-badge">📋 Questionnaire santé</a>
+    <h1 data-fr>Découvrez Votre<br><em>Harmonie Personnelle</em></h1>
+    <h1 data-en>Discover Your<br><em>Personal Harmony</em></h1>
+    <p data-fr>Un refuge de bien-être sur mesure, où chaque instant est dédié à votre ressourcement complet. Explorez un nouvel horizon avec Vitalité Bohème.</p>
+    <p data-en>A bespoke wellness sanctuary where every moment is devoted to your complete renewal. Explore a new horizon with Vitalité Bohème.</p>
+    <div class="hero-btns">
+      <a href="#contact" class="btn"><span data-fr>Prendre rendez-vous</span><span data-en>Book a session</span></a>
+      <a href="#services" class="btn-ghost"><span data-fr>Voir les services</span><span data-en>See services</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- DIVIDER -->
+
+<!-- ═══════════════════════════════════════
+     SECTION 2 — HISTOIRE
+═══════════════════════════════════════ -->
+<section class="histoire" id="histoire">
+  <div class="histoire-grid">
+    <div class="histoire-photo anim-entree">
+      <img src="images/kevin-cascade.jpg" alt="Vitalité Bohème — Massothérapeute" />
+    </div>
+    <div>
+      <span class="section-tag anim-entree"><span data-fr>Mon histoire</span><span data-en>My story</span></span>
+      <h2 class="anim-entree delai-1">Kevin Bibeau</h2>
+      <div class="divider-or left"></div>
+      <p class="anim-entree delai-2" data-fr>À 25 ans, j'ai tout laissé derrière. Un sac sur le dos, aucune idée précise… mais un feu bien vivant à l'intérieur. Trois ans à voyager à travers le monde. Un an sans argent. Juste moi, la route, et ce que la vie allait m'enseigner.</p>
+      <p data-en>At 25, I left everything behind. A backpack, no clear plan… but a fire burning inside. Three years traveling the world. One year without money. Just me, the road, and what life had to teach me.</p>
+      <p data-fr>C'est dans ce grand saut que le bohème en moi s'est révélé. Pas un bohème qui flotte… Mais un bohème en action. Celui qui ose. Qui se dépasse. Qui choisit la rencontre, l'effort, le risque.</p>
+      <p data-en>It was in that great leap that the bohemian in me was revealed. Not a drifting bohemian — but one in action. One who dares, who pushes limits, who chooses connection, effort, and risk.</p>
+      <p data-fr><em>Vitalité Bohème, c'est né de ça. C'est plus qu'un service. C'est une façon de vivre.</em></p>
+      <p data-en><em>Vitalité Bohème was born from that. It's more than a service. It's a way of living.</em></p>
+      <a href="#contact" class="btn" style="margin-top:12px;">
+        <span data-fr>Réserver ma séance</span><span data-en>Book my session</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- DIVIDER -->
+
+<!-- ═══════════════════════════════════════
+     SECTION 3 — PHILOSOPHIE
+═══════════════════════════════════════ -->
+<section class="philosophie" id="philosophie">
+  <div style="max-width:780px;margin:0 auto;">
+    <span class="section-tag anim-entree"><span data-fr>Ma vision</span><span data-en>My vision</span></span>
+    <h2 class="anim-entree delai-1" data-fr>Une énergie profonde, globale</h2>
+    <h2 class="anim-entree delai-1" data-en>A deep, whole-body energy</h2>
+    <div class="divider-or"></div>
+    <blockquote class="anim-entree delai-2" data-fr>« Vitalité Bohème, c'est une vision où le corps est un allié. Où l'action juste transforme. Où tout est interrelié : ton alimentation, ton mouvement, ton sommeil, ton toucher, ta relation à l'autre. Chaque choix crée ton niveau d'énergie. Et ta vitalité, c'est ta liberté. »</blockquote>
+    <blockquote data-en>« Vitalité Bohème is a vision where the body is an ally. Where right action transforms. Where everything is interconnected: your nutrition, your movement, your sleep, your touch, your relationship with others. Every choice creates your energy level. And your vitality is your freedom. »</blockquote>
+    <p data-fr>On mérite tous ça : un moment où l'on peut enfin déposer ce qui pèse.<br>Un moment où l'on n'a pas besoin d'aller bien pour être accueilli.<br><strong style="color:#fff;">Un moment juste à soi.</strong></p>
+    <p data-en>We all deserve this: a moment to finally set down what weighs on us.<br>A moment where you don't need to be okay to be welcomed.<br><strong style="color:#fff;">A moment just for you.</strong></p>
+  </div>
+</section>
+
+<!-- DIVIDER -->
+
+<!-- ═══════════════════════════════════════
+     SECTION 4 — SERVICES
+═══════════════════════════════════════ -->
+<section class="services" id="services">
+  <div class="text-center">
+    <span class="section-tag anim-entree"><span data-fr>Ce que j'offre</span><span data-en>What I offer</span></span>
+    <h2 class="anim-entree delai-1" data-fr>Mes services</h2>
+    <h2 class="anim-entree delai-1" data-en>My services</h2>
+    <div class="divider-or"></div>
+  </div>
+
+  <div class="services-bulles">
+
+    <!-- RANGÉE HAUT : 3 massages -->
+    <div class="services-top-group">
+      <div class="services-row">
+
+        <div class="service-bulle">
+          <div class="bulle-cercle or" onclick="ouvrirService('relaxation')">
+            <div class="bulle-bg" style="background-image:url('images/svc-foret.jpg');"></div>
+            <div class="bulle-nom"><span data-fr>Relaxation<br>Suédoise</span><span data-en>Swedish<br>Relaxation</span></div>
+            <div class="bulle-info">?</div>
+          </div>
+        </div>
+
+        <div class="service-bulle">
+          <div class="bulle-cercle sombre" onclick="ouvrirService('therapeutique')">
+            <div class="bulle-bg" style="background-image:url('images/svc-therapeutique.jpg');"></div>
+            <div class="bulle-nom"><span data-fr>Massage<br>Thérapeutique</span><span data-en>Therapeutic<br>Massage</span></div>
+            <div class="bulle-info">?</div>
+          </div>
+        </div>
+
+        <div class="service-bulle">
+          <div class="bulle-cercle or" onclick="ouvrirService('signature')">
+            <div class="bulle-bg" style="background-image:url('images/svc-vagues.jpg');"></div>
+            <div class="bulle-nom"><span data-fr>Inspiration<br>Lomi Lomi</span><span data-en>Lomi Lomi<br>Inspired</span></div>
+            <div class="bulle-info">?</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tarif partagé -->
+      <div class="tarif-groupe">
+        <div class="tarif-groupe-connecteur">
+          <span class="tarif-groupe-tick"></span>
+          <span class="tarif-groupe-tick"></span>
+          <span class="tarif-groupe-tick"></span>
+        </div>
+        <div class="tarif-groupe-inner">
+          <p class="tarif-groupe-label"><span data-fr>Les 3 massages · même tarif</span><span data-en>All 3 massages · same rate</span></p>
+          <div class="tarif-groupe-bar">
+            <div class="tarif-option"><span class="tarif-duree">60 min</span><span class="tarif-montant">100 $</span></div>
+            <div class="tarif-sep"></div>
+            <div class="tarif-option"><span class="tarif-duree">90 min</span><span class="tarif-montant">145 $</span></div>
+            <div class="tarif-sep"></div>
+            <div class="tarif-option"><span class="tarif-duree">2 h</span><span class="tarif-montant">185 $</span></div>
+          </div>
+          <p style="font-size:10px;color:var(--gris);margin:6px 0 0;opacity:0.75;text-align:center;letter-spacing:1px;"><span data-fr>✦ Inspiration Lomi Lomi disponible en 1 h seulement</span><span data-en>✦ Lomi Lomi Inspired available in 1 h only</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RANGÉE BAS : cours de couple -->
+    <div class="services-row services-row-bottom">
+      <div class="service-bulle">
+        <div class="bulle-cercle creme" onclick="ouvrirService('couple')">
+          <div class="bulle-bg" style="background-image:url('images/cp6.jpg');"></div>
+          <div class="bulle-nom"><span data-fr>Cours<br>de<br>couple</span><span data-en>Couples<br>Massage<br>Course</span></div>
+          <div class="bulle-info">?</div>
+        </div>
+        <div class="bulle-prix-list">
+          <div class="bulle-prix-item">
+            <span class="bulle-prix-duree">3 h</span>
+            <span class="bulle-prix-montant">250 $</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     SECTION 5 — AVIS
+═══════════════════════════════════════ -->
+<section class="avis" id="avis">
+  <div class="avis-header">
+    <div class="avis-bulle-titre">
+      <span class="section-tag"><span data-fr>Ce qu'on dit de moi</span><span data-en>What people say</span></span>
+      <h2 data-fr>Avis clients</h2>
+      <h2 data-en>Client reviews</h2>
+    </div>
+  </div>
+
+  <div class="avis-vedettes">
+
+    <div class="bulle">
+      <div class="etoiles">★★★★★</div>
+      <p>« Ce n'est pas seulement le soin qui est 20/10, c'est aussi la personne qui le donne. Kevin est une personne formidable, humble, à l'écoute et surtout il est humain. Je recommande 1000/10. 🙏❤️ »</p>
+      <div class="bulle-footer"><div class="bulle-avatar">FM</div><div class="avis-nom">Francis Ménard</div></div>
+    </div>
+
+    <div class="bulle gold">
+      <div class="etoiles">★★★★★</div>
+      <p>« Un massage incroyable qui a su soulager toutes mes tensions. Mes muscles, surtout au dos, se sentent beaucoup mieux. Un professionnel super à l'écoute, accueillant, avec des gestes justes et un toucher tonique. »</p>
+      <div class="bulle-footer"><div class="bulle-avatar">MM</div><div class="avis-nom">Marie-Ève Monfils</div></div>
+    </div>
+
+    <div class="bulle dark">
+      <div class="etoiles">★★★★★</div>
+      <p>« Great massotherapist, he's very attentive and friendly! Professional · Luxurious experience · Amazing results »</p>
+      <div class="bulle-footer"><div class="bulle-avatar">RG</div><div class="avis-nom">Raffaele Aaron Giampaolo</div></div>
+    </div>
+
+    <div class="bulle dark">
+      <div class="etoiles">★★★★★</div>
+      <p>« Une belle qualité de présence et un toucher juste, à l'écoute du corps. Un massage à la fois professionnel, apaisant et ressourçant. »</p>
+      <div class="bulle-footer"><div class="bulle-avatar">ÉB</div><div class="avis-nom">Émilie Beauchesne</div></div>
+    </div>
+
+    <div class="bulle">
+      <div class="etoiles">★★★★★</div>
+      <p>« Un essentiel à une bonne santé ✨ Un soin incroyable et efficace 🌟 Merci »</p>
+      <div class="bulle-footer"><div class="bulle-avatar">MG</div><div class="avis-nom">Melanie Giguere</div></div>
+    </div>
+
+    <div class="bulle gold">
+      <div class="etoiles">★★★★★</div>
+      <p>« Amazing results »</p>
+      <div class="bulle-footer"><div class="bulle-avatar">DT</div><div class="avis-nom">Danny Thompson</div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- DIVIDER -->
+
+<!-- ═══════════════════════════════════════
+     SECTION 7 — CONTACT + FOOTER
+     (style pied de page questionnaire santé)
+═══════════════════════════════════════ -->
+<section class="contact" id="contact">
+
+  <span class="section-tag"><span data-fr>Prenons rendez-vous</span><span data-en>Let's connect</span></span>
+  <h2><span data-fr>Contactez-nous</span><span data-en>Contact us</span></h2>
+  <div class="divider"></div>
+  <p><span data-fr>Disponible par appel, texto ou courriel — nous vous répondons dans les plus brefs délais.</span><span data-en>Available by call, text, or email — we'll get back to you as soon as possible.</span></p>
+  <p style="margin-top:10px;"><span data-fr>🧾 <strong>Reçus d'assurance disponibles</strong> — des reçus officiels sont remis après chaque séance pour vos réclamations d'assurance.</span><span data-en>🧾 <strong>Insurance receipts available</strong> — official receipts are provided after each session for your insurance claims.</span></p>
+
+
+  <div class="contact-methodes">
+    <a href="tel:4383683282" class="contact-methode">
+      <div class="methode-icone">
+        <svg width="34" height="34" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 6h5.5l2.5 6-3 1.5c1.2 2.5 3.5 4.8 6 6l1.5-3 6 2.5V24c0 1.1-.9 2-2 2C13 26 6 19 6 10c0-1.1.9-2 2-2h1z" stroke="#3a1800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="methode-label"><span data-fr>Téléphone</span><span data-en>Call</span></div>
+      <div class="methode-valeur">438&#8209;368&#8209;3282</div>
+    </a>
+    <a href="sms:4383683282" class="contact-methode">
+      <div class="methode-icone">
+        <svg width="34" height="34" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 7a2 2 0 0 1 2-2h22a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H12l-7 5V7z" stroke="#3a1800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="11" y1="14" x2="25" y2="14" stroke="#3a1800" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="11" y1="19" x2="20" y2="19" stroke="#3a1800" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="methode-label"><span data-fr>Texto</span><span data-en>Text</span></div>
+      <div class="methode-valeur">438&#8209;368&#8209;3282</div>
+    </a>
+    <a href="mailto:bibeaukevin9@gmail.com" class="contact-methode">
+      <div class="methode-icone">
+        <svg width="34" height="34" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="8" width="30" height="22" rx="2" stroke="#3a1800" stroke-width="2" fill="none"/>
+          <polyline points="3,8 18,21 33,8" stroke="#3a1800" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="methode-label"><span data-fr>Courriel</span><span data-en>Email</span></div>
+      <div class="methode-valeur"><span data-fr>Écrire un message</span><span data-en>Send a message</span></div>
+    </a>
+  </div>
+
+  <div class="social-vb">
+    <p class="social-titre"><span data-fr>Suivez Vitalité Bohème</span><span data-en>Follow Vitalité Bohème</span></p>
+    <div class="social-liens">
+      <a href="https://www.tiktok.com/@viltalit.bohme" target="_blank" rel="noopener" class="social-btn social-tiktok">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.27 6.27 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.95a8.16 8.16 0 004.77 1.53V7.04a4.85 4.85 0 01-1-.35z"/></svg>
+        TikTok
+      </a>
+      <a href="https://www.instagram.com/vitaliteboheme" target="_blank" rel="noopener" class="social-btn social-instagram">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        Instagram
+      </a>
+      <a href="https://www.facebook.com/vitaliteboheme" target="_blank" rel="noopener" class="social-btn social-facebook">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        Facebook
+      </a>
+    </div>
+  </div>
+
+  <div class="footer-or" style="margin-top:32px;">
+    <div class="footer-or-line rev"></div>
+    <span class="footer-or-symbol">✦</span>
+    <div class="footer-or-line"></div>
+  </div>
+  <div class="footer-logo-wrap" style="margin-bottom:16px;">
+    <img src="images/logo-original.jpg" alt="Vitalité Bohème" />
+    <div class="footer-marque">Vitalité Bohème</div>
+    <div class="footer-tagline">Massothérapie — Waterville, Estrie</div>
+  </div>
+  <p class="footer-copy">© 2026 Vitalité Bohème &nbsp;·&nbsp; <span data-fr>Tous droits réservés</span><span data-en>All rights reserved</span></p>
+
+</section>
+
+<!-- Modal services -->
+<div id="modal-service" onclick="fermerService(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="fermerService(null, true)">✕</button>
+    <div class="modal-icon" id="modal-icon"></div>
+    <h3 id="modal-titre"></h3>
+    <div class="modal-tag" id="modal-tag"></div>
+    <p id="modal-desc"></p>
+    <p id="modal-bienfaits"></p>
+    <a href="fiche.html" class="modal-btn" id="modal-cta">Questionnaire santé</a>
+  </div>
+</div>
+
+<script>document.body.style.overflow='';document.body.classList.remove('modal-ouvert');</script>
+<script src="script.js?v=20260615c"></script>
+</body>
+</html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         

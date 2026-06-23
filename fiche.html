@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Questionnaire de santé — Vitalité Bohème</title>
+
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <!-- jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- Logique formulaire -->
+  <script src="fiche-script.js"></script>
+
+  <style>
+    :root {
+      --noir: #1c1208;
+      --noir-doux: #261a0e;
+      --or: #cfa96a;
+      --or-clair: #e8c98a;
+      --beige: #f5ede0;
+      --beige-doux: #ede0cc;
+      --brun: #8a6a50;
+      --brun-fonce: #4a3220;
+      --blanc: #fdfaf6;
+      --texte: #3a2e28;
+      --gris: #7a6a58;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { overflow-x: clip; }
+    body { font-family: 'Georgia', serif; background: none; color: var(--texte); overflow-x: clip; max-width: 100vw; }
+    body::before { content: ''; position: fixed; inset: 0; background: url('images/fiche-bg.jpg') center center / cover; z-index: -1; }
+
+    /* LANGUE */
+    .lang-btn {
+      position: fixed; top: 20px; left: 24px; z-index: 1100;
+      background: rgba(30,22,14,0.82); color: #c8b89a; border: 1px solid rgba(201,169,110,0.35);
+      padding: 7px 16px; border-radius: 20px; cursor: pointer;
+      font-size: 12px; letter-spacing: 1px; font-family: Georgia, serif;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+      backdrop-filter: blur(8px); display: flex; align-items: center; gap: 0;
+    }
+    .lang-btn:hover { border-color: rgba(201,169,110,0.7); }
+    .lang-btn .lbl { padding: 0 6px; transition: color 0.2s; }
+    .lang-btn .lbl.actif { color: var(--or); font-weight: bold; }
+    .lang-btn .sep { color: rgba(201,169,110,0.4); font-size: 11px; }
+    [data-en] { display: none; }
+    body.en [data-fr] { display: none; }
+    body.en [data-en] { display: block; }
+    body.en span[data-en] { display: inline; }
+    body.en span[data-fr] { display: none; }
+    /* Fix labels formulaire */
+    .q-form label.field-label[data-en] { display: none; }
+    body.en .q-form label.field-label[data-fr] { display: none; }
+    body.en .q-form label.field-label[data-en] { display: block; }
+
+    /* GRILLE ALVÉOLES — fond de texture sur toute la page */
+    body { position: relative; }
+
+    /* EN-TÊTE — même fond solide que le hero */
+    .fiche-header {
+      background: url('images/hero-bg.jpg') center center / cover no-repeat;
+      padding: 44px 40px 36px;
+      text-align: center;
+      border-bottom: 1px solid rgba(201,169,110,0.25);
+      position: relative; z-index: 1; overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+    }
+    .fiche-header::before {
+      content: ''; position: absolute; inset: 0; z-index: 0;
+      background:
+        linear-gradient(180deg, rgba(10,5,1,0.50) 0%, rgba(15,8,2,0.32) 50%, rgba(10,5,1,0.46) 100%),
+        radial-gradient(ellipse 55% 40% at 50% 0%, rgba(255,220,130,0.16) 0%, transparent 65%);
+    }
+    .fiche-header > *:not(svg) { position: relative; z-index: 2; }
+    .header-logo {
+      width: 72px; height: 72px; border-radius: 50%;
+      border: 2px solid var(--or);
+      box-shadow: 0 0 0 5px rgba(201,169,110,0.14), 0 8px 30px rgba(0,0,0,0.35);
+      margin: 0 auto 18px;
+      overflow: hidden;
+    }
+    .header-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .fiche-header h1 {
+      font-size: 28px; color: #ffffff; margin-bottom: 8px; line-height: 1.3;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.8), 0 1px 3px rgba(0,0,0,0.9);
+      font-weight: bold;
+    }
+    .fiche-header h1 em { color: var(--or-clair); font-style: italic; }
+    .fiche-header p {
+      font-size: 14px; color: #f0e4d0; max-width: 520px;
+      margin: 0 auto 20px; line-height: 1.85;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+    }
+    .header-badge {
+      display: inline-block; border: 1px solid rgba(201,169,110,0.8);
+      color: #e8c98a; padding: 5px 22px; border-radius: 20px;
+      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+      margin-bottom: 16px; background: rgba(0,0,0,0.25);
+      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+    }
+    .retour-lien {
+      display: inline-block; color: rgba(201,169,110,0.75);
+      font-size: 12px; letter-spacing: 1px; text-decoration: none;
+      margin-top: 14px; transition: color 0.2s;
+    }
+    .retour-lien:hover { color: var(--or-clair); }
+
+    /* ─── BORDURES DÉCORATIVES ENTRE ZONES ─────────────────────── */
+
+    /* CONTENEUR FORMULAIRE */
+    .fiche-body {
+      max-width: 800px; margin: 0 auto;
+      padding: 50px 40px 80px;
+      position: relative; z-index: 1;
+    }
+
+    /* SECTIONS FORMULAIRE */
+    .q-section {
+      background: #ffffff; border-radius: 16px;
+      padding: 32px 36px; margin-bottom: 24px;
+      border: 1.5px solid rgba(201,169,110,0.20);
+      box-shadow:
+        0 4px 24px rgba(60,40,20,0.10),
+        0 1px 4px rgba(60,40,20,0.06),
+        inset 0 1px 0 rgba(255,255,255,0.9);
+    }
+    .q-section h3 {
+      font-size: 17px; color: var(--brun-fonce);
+      margin-bottom: 20px; padding-bottom: 10px;
+      border-bottom: 1px solid #e8ddd0;
+    }
+    .q-form input, .q-form textarea, .q-form select {
+      width: 100%; padding: 12px 16px; border: 1.5px solid #d8cfc4;
+      border-radius: 8px; font-size: 15px; font-family: Georgia, serif;
+      background: #fdfaf6; color: var(--texte); transition: border 0.2s;
+    }
+    .q-form input::placeholder, .q-form textarea::placeholder { color: #b0a090; }
+    .q-form input:focus, .q-form textarea:focus, .q-form select:focus {
+      outline: none; border-color: var(--or); background: #fff;
+      box-shadow: 0 0 0 3px rgba(201,169,110,0.12);
+    }
+    .q-form textarea { height: 90px; resize: vertical; }
+    .q-form label.field-label {
+      font-size: 13px; color: var(--brun); margin-bottom: 6px;
+      display: block; font-weight: bold; letter-spacing: 0.3px;
+    }
+    .q-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .q-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+    .field-group { margin-bottom: 16px; }
+
+    .checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .checkbox-item { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+    .checkbox-item input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--or); cursor: pointer; flex-shrink:0; }
+    .checkbox-item span { font-size: 14px; color: var(--texte); line-height: 1.4; }
+    .radio-group { display: flex; gap: 24px; }
+    .radio-item { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .radio-item input { accent-color: var(--or); width: 16px; height: 16px; }
+
+    /* Corps interactif */
+    .corps-anatomique-wrap {
+      position: relative; display: block; margin: 20px 0;
+      border-radius: 14px; overflow: hidden;
+      background: #fff; border: 1.5px solid #d8ccbe;
+    }
+    .corps-anatomique-wrap img { width: 100%; height: auto; display: block; }
+    .zone-btn {
+      position: absolute; width: 22px; height: 22px; border-radius: 50%;
+      background: transparent; border: 2.5px solid transparent;
+      cursor: pointer; transform: translate(-50%, -50%); transition: all 0.2s;
+    }
+    .zone-btn:hover { background: rgba(201,169,110,0.5); border-color: var(--or); transform: translate(-50%,-50%) scale(1.25); }
+    .zone-btn.actif { background: var(--or); border-color: var(--or); transform: translate(-50%,-50%) scale(1.2); box-shadow: 0 0 0 4px rgba(201,169,110,0.35); }
+
+    .corps-mode-btns { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+    .mode-corps-btn {
+      padding: 9px 20px; border-radius: 20px; border: 2px solid var(--or);
+      background: transparent; color: var(--or); cursor: pointer;
+      font-size: 13px; font-family: Georgia, serif; transition: all 0.2s;
+    }
+    .mode-corps-btn.active-douleur { background: var(--or); color: var(--noir); }
+    .mode-corps-btn.active-interdit { background: #c44; color: #fff; border-color: #c44; }
+
+    /* Outils collants ⊘ */
+    #sticker-tools {
+      display: none; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px;
+    }
+    .sticker-clear-btn {
+      padding: 6px 14px; border-radius: 16px; border: 1.5px solid #a09080;
+      background: transparent; color: #a09080; cursor: pointer;
+      font-size: 12px; font-family: Georgia, serif; transition: all 0.2s;
+    }
+    .sticker-clear-btn:hover { background: rgba(160,144,128,0.1); }
+    .zone-tag-interdit {
+      display: inline-block; background: #c44; color: #fff;
+      padding: 3px 12px; border-radius: 10px; font-size: 12px; margin: 3px;
+    }
+
+    /* Collant ⊘ positionné sur le corps */
+    .zone-interdit-sticker {
+      position: absolute; transform: translate(-50%, -50%);
+      pointer-events: auto; cursor: pointer; z-index: 3;
+      transition: transform 0.15s; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.2));
+    }
+    .zone-interdit-sticker:hover { transform: translate(-50%, -50%) scale(1.18); }
+
+    #draw-canvas {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      border-radius: 14px; pointer-events: none; z-index: 2;
+    }
+    #draw-canvas.active { pointer-events: auto; cursor: crosshair; }
+    #draw-canvas.eraser { cursor: cell; }
+
+    .corps-labels {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 6px; margin-top: 10px; font-size: 12px; color: var(--gris); text-align: center;
+    }
+    .zones-tags-container {
+      background: #fdfaf6; border-radius: 10px; padding: 16px;
+      margin: 16px 0; min-height: 50px; border: 1.5px dashed #d8ccbe;
+    }
+    .zone-tag {
+      display: inline-block; background: var(--or); color: #fff;
+      padding: 3px 12px; border-radius: 10px; font-size: 12px; margin: 3px;
+    }
+
+    .signature-canvas {
+      border: 1.5px solid #d8ccbe; border-radius: 10px;
+      width: 100%; height: 100px; background: var(--blanc);
+      cursor: crosshair; touch-action: none;
+    }
+
+    .btn-submit {
+      background: var(--or); color: var(--noir); border: none;
+      padding: 16px 40px; border-radius: 30px; font-size: 17px;
+      cursor: pointer; font-family: Georgia, serif; letter-spacing: 1px;
+      transition: all 0.3s; width: 100%; font-weight: bold; margin-top: 8px;
+    }
+    .btn-submit:hover { background: var(--or-clair); transform: translateY(-2px); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    /* Message de succès */
+    #succes-msg {
+      display: none; background: #e8f5e9; border: 2px solid #81c784;
+      border-radius: 14px; padding: 28px 32px; text-align: center;
+      margin-bottom: 24px;
+    }
+    #succes-msg h3 { color: #2e7d32; font-size: 22px; margin-bottom: 10px; }
+    #succes-msg p { color: #388e3c; font-size: 15px; line-height: 1.7; }
+
+    /* PIED DE PAGE */
+    .fiche-footer {
+      background: url('images/footer-bg.jpg') center center / cover no-repeat;
+      text-align: center; padding: 48px 40px 32px;
+      border-top: 1px solid rgba(201,169,110,0.30);
+      position: relative; z-index: 1; overflow: hidden;
+    }
+    .fiche-footer::before {
+      content: ''; position: absolute; inset: 0; z-index: 0;
+      background: rgba(10,5,1,0.55);
+      pointer-events: none;
+    }
+    .fiche-footer > *:not(svg) { position: relative; z-index: 2; }
+    .fiche-footer-logo { width: 52px; height: 52px; border-radius: 50%; margin: 0 auto 14px; overflow: hidden; border: 1.5px solid rgba(201,169,110,0.4); box-shadow: 0 0 0 4px rgba(201,169,110,0.08); }
+    .fiche-footer-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .fiche-footer-marque { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 18px; color: #e8d5b0; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .fiche-footer-tagline { font-size: 10px; color: rgba(201,169,110,0.5); letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 18px; }
+    .fiche-footer-or { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 14px auto 18px; }
+    .fiche-footer-or-line { width: 48px; height: 1px; background: rgba(201,169,110,0.3); }
+    .fiche-footer-or-sym { color: rgba(201,169,110,0.55); font-size: 12px; }
+    .fiche-footer p { color: #c8b89a; font-size: 13px; line-height: 1.9; }
+    .fiche-footer a { color: #e8c98a; text-decoration: none; transition: color 0.2s; }
+    .fiche-footer a:hover { color: var(--or); }
+    .fiche-footer .divider-or { width: 40px; height: 1px; background: var(--or); opacity: 0.3; margin: 16px auto; }
+
+    /* RESPONSIVE */
+    /* Champ date manuelle */
+    input.date-manuelle::placeholder { color: #b0a090; font-style: italic; letter-spacing: 1px; }
+    input.date-manuelle:focus::placeholder { color: transparent; }
+
+    @media (max-width: 640px) {
+      .zone-btn { width: 12px !important; height: 12px !important; border-width: 1.5px !important; }
+      .zone-btn.actif { box-shadow: 0 0 0 2px rgba(201,169,110,0.35) !important; }
+      .fiche-body { padding: 40px 20px 60px; }
+      .fiche-header { padding: 30px 20px 26px; }
+      .q-grid-2, .q-grid-3 { grid-template-columns: 1fr; }
+      .q-section { padding: 20px 18px; }
+      .fiche-header h1 { font-size: 22px; }
+    }
+    /* ─── CURSEUR DORÉ ─────────────────────────────────────────── */
+    .curseur-or {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: rgba(201,169,110,0.7);
+      position: fixed; pointer-events: none; z-index: 9999;
+      transition: transform 0.15s ease, opacity 0.2s;
+      transform: translate(-50%, -50%);
+    }
+    .curseur-or-anneau {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1.5px solid rgba(201,169,110,0.35);
+      position: fixed; pointer-events: none; z-index: 9998;
+      transition: transform 0.35s ease, opacity 0.2s;
+      transform: translate(-50%, -50%);
+    }
+    @media (hover: none) { .curseur-or, .curseur-or-anneau { display: none; } }
+
+    /* ─── ANIMATIONS AU SCROLL ──────────────────────────────────── */
+    .anim-entree {
+      opacity: 0;
+      transform: translateY(60px) scale(0.97);
+      transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1),
+                  transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .anim-entree.visible {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .anim-entree.delai-1 { transition-delay: 0.14s; }
+    .anim-entree.delai-2 { transition-delay: 0.28s; }
+    .anim-entree.delai-3 { transition-delay: 0.42s; }
+    .anim-entree.delai-4 { transition-delay: 0.56s; }
+  </style>
+</head>
+<body>
+
+<div class="curseur-or" id="curseur-or"></div>
+<div class="curseur-or-anneau" id="curseur-anneau"></div>
+
+<!-- ALVÉOLES — grille pleine page, intensité dégradée -->
+
+
+<button class="lang-btn" id="lang-btn" onclick="toggleLang()">
+  <span class="lbl actif" id="lbl-fr">FR</span>
+  <span class="sep">|</span>
+  <span class="lbl" id="lbl-en">EN</span>
+</button>
+
+<!-- EN-TÊTE -->
+<header class="fiche-header">
+  <div class="header-logo">
+    <img src="images/logo-original.jpg" alt="Vitalité Bohème" />
+  </div>
+  <div class="header-badge"><span data-fr>Avant votre visite</span><span data-en>Before your visit</span></div>
+  <h1 data-fr>Questionnaire de <em>santé</em></h1>
+  <h1 data-en>Health <em>Intake Form</em></h1>
+  <p data-fr>Veuillez remplir ce formulaire avant votre séance. Les informations demeurent confidentielles et servent uniquement à assurer votre sécurité et la qualité des soins.</p>
+  <p data-en>Please complete this form before your session. All information is confidential and used solely to ensure your safety and the quality of care.</p>
+  <a href="index.html" class="retour-lien"><span data-fr>← Retour au site</span><span data-en>← Back to website</span></a>
+</header>
+
+
+<!-- CORPS -->
+<main class="fiche-body">
+
+  <!-- Message succès -->
+  <div id="succes-msg">
+    <h3 data-fr>✅ Questionnaire envoyé !</h3>
+    <h3 data-en>✅ Form submitted!</h3>
+    <p data-fr>Merci — votre PDF a été téléchargé et votre questionnaire a été transmis. À très bientôt !</p>
+    <p data-en>Thank you — your PDF has been downloaded and your form has been transmitted. See you soon!</p>
+    <div style="margin-top:20px;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;">
+      <a href="tel:4383683282" style="display:inline-block;background:#cfa96a;color:#1c1208;padding:12px 28px;border-radius:30px;font-family:Georgia,serif;font-size:15px;font-weight:bold;text-decoration:none;">
+        <span data-fr>📞 Appeler</span><span data-en>📞 Call us</span>
+      </a>
+      <a href="mailto:bibeaukevin9@gmail.com" style="display:inline-block;background:transparent;border:2px solid #cfa96a;color:#2e7d32;padding:12px 28px;border-radius:30px;font-family:Georgia,serif;font-size:15px;font-weight:bold;text-decoration:none;">
+        <span data-fr>✉️ Envoyer un courriel</span><span data-en>✉️ Send an email</span>
+      </a>
+      <a href="index.html" style="display:inline-block;background:transparent;border:2px solid #81c784;color:#2e7d32;padding:12px 28px;border-radius:30px;font-family:Georgia,serif;font-size:15px;text-decoration:none;">
+        <span data-fr>← Retour au site</span><span data-en>← Back to website</span>
+      </a>
+    </div>
+  </div>
+
+  <form class="q-form" id="fiche-form" onsubmit="soumettreFormulaire(event)">
+
+    <!-- INFORMATIONS PERSONNELLES -->
+    <div class="q-section anim-entree">
+      <h3 data-fr>📋 Informations personnelles</h3>
+      <h3 data-en>📋 Personal information</h3>
+      <div class="q-grid-2">
+        <div class="field-group">
+          <label class="field-label" data-fr>Nom *</label>
+          <label class="field-label" data-en>Last name *</label>
+          <input type="text" name="nom" id="nom" />
+        </div>
+        <div class="field-group">
+          <label class="field-label" data-fr>Prénom *</label>
+          <label class="field-label" data-en>First name *</label>
+          <input type="text" name="prenom" id="prenom" />
+        </div>
+      </div>
+      <div class="q-grid-3" style="margin-top:16px;">
+        <div class="field-group">
+          <label class="field-label" data-fr>Date de naissance *</label>
+          <label class="field-label" data-en>Date of birth *</label>
+          <input type="text" name="ddn" id="ddn" class="date-manuelle" placeholder="AAAA-MM-JJ" maxlength="10" inputmode="numeric" autocomplete="bday" />
+        </div>
+        <div class="field-group">
+          <label class="field-label" data-fr>Téléphone *</label>
+          <label class="field-label" data-en>Phone *</label>
+          <input type="tel" name="telephone" id="telephone" />
+        </div>
+        <div class="field-group">
+          <label class="field-label" data-fr>Courriel *</label>
+          <label class="field-label" data-en>Email *</label>
+          <input type="email" name="email" id="email" autocomplete="email" />
+        </div>
+      </div>
+      <div class="field-group" style="margin-top:16px;">
+        <label class="field-label" data-fr>Adresse</label>
+        <label class="field-label" data-en>Address</label>
+        <input type="text" name="adresse" />
+      </div>
+      <div class="field-group" style="margin-top:16px;">
+        <label class="field-label" data-fr>Profession</label>
+        <label class="field-label" data-en>Occupation</label>
+        <input type="text" name="profession" id="profession" />
+      </div>
+    </div>
+
+    <!-- CONTACT D'URGENCE -->
+    <div class="q-section anim-entree">
+      <h3 data-fr>🚨 Contact d'urgence</h3>
+      <h3 data-en>🚨 Emergency contact</h3>
+      <div class="q-grid-3">
+        <div class="field-group">
+          <label class="field-label" data-fr>Nom</label>
+          <label class="field-label" data-en>Name</label>
+          <input type="text" name="urgence_nom" />
+        </div>
+        <div class="field-group">
+          <label class="field-label" data-fr>Lien avec vous</label>
+          <label class="field-label" data-en>Relationship</label>
+          <input type="text" name="urgence_lien" />
+        </div>
+        <div class="field-group">
+          <label class="field-label" data-fr>Téléphone</label>
+          <label class="field-label" data-en>Phone</label>
+          <input type="tel" name="urgence_tel" />
+        </div>
+      </div>
+    </div>
+
+    <!-- MOTIF DE CONSULTATION -->
+    <div class="q-section anim-entree">
+      <h3 data-fr>🎯 Motif de consultation</h3>
+      <h3 data-en>🎯 Reason for visit</h3>
+      <div class="checkbox-grid">
+        <label class="checkbox-item"><input type="checkbox" name="motif" value="Détente" /><span data-fr>Détente</span><span data-en>Relaxation</span></label>
+        <label class="checkbox-item"><input type="checkbox" name="motif" value="Douleurs musculaires" /><span data-fr>Douleurs musculaires</span><span data-en>Muscle pain</span></label>
+        <label class="checkbox-item"><input type="checkbox" name="motif" value="Stress / anxiété" /><span data-fr>Stress / anxiété</span><span data-en>Stress / anxiety</span></label>
+        <label class="checkbox-item"><input type="checkbox" name="motif" value="Blessure" /><span data-fr>Blessure</span><span data-en>Injury</span></label>
+        <label class="checkbox-item"><input type="checkbox" name="motif" value="Suivi thérapeutique" /><span data-fr>Suivi thérapeutique</span><span data-en>Therapeutic follow-up</span></label>
+        <label class="checkbox-item"><input type="checkbox" name="motif" value="Autre" /><span data-fr>Autre</span><span data-en>Other</span></label>
+      </div>
+      <div class="field-group" style="margin-top:16px;">
+        <label class="field-label" data-fr>Expliquez brièvement :</label>
+        <label class="field-label" data-en>Brief explanation:</label>
+        <textarea name="motif_detail"></textarea>
+      </div>
+    </div>
+
+    <!-- ZONES DOULOUREUSES -->
+    <div class="q-section anim-entree">
+      <h3 data-fr>🗺️ Douleurs, tensions et zones sensibles</h3>
+      <h3 data-en>🗺️ Pain, tension & sensitive areas</h3>
+      <p style="font-size:14px; color:var(--brun); margin-bottom:20px; line-height:1.7;" data-fr>Cliquez sur les zones du corps pour indiquer vos zones de douleur ou d'inconfort.</p>
+      <p style="font-size:14px; color:var(--brun); margin-bottom:20px; line-height:1.7;" data-en>Click on body areas to indicate pain or discomfort zones.</p>
+
+      <div class="corps-mode-btns">
+        <button type="button" id="btn-mode-douleur" class="mode-corps-btn active-douleur" onclick="setCorpsMode('douleur')">
+          <span data-fr>🟡 Douleur / Tension</span><span data-en>🟡 Pain / Tension</span>
+        </button>
+        <button type="button" id="btn-mode-interdit" class="mode-corps-btn" onclick="toggleStickerMode()">
+          <span data-fr>⊘ Zones à éviter</span><span data-en>⊘ Areas to avoid</span>
+        </button>
+      </div>
+
+      <!-- Outils collants ⊘ -->
+      <div id="sticker-tools">
+        <button type="button" class="sticker-clear-btn" onclick="clearStickers()">
+          🗑 <span data-fr>Tout effacer</span><span data-en>Clear all</span>
+        </button>
+      </div>
+
+      <div class="corps-anatomique-wrap" id="corps-wrap" onclick="placerSticker(event)">
+        <img src="images/corps-anatomique.png" alt="Corps humain — zones de douleur" />
+
+        <!-- FACE — tête -->
+        <div class="zone-btn" style="top:8.0%;left:27.0%" onclick="toggleZone(this,'Tête')" title="Tête"></div>
+        <!-- FACE — ventre / abdomen -->
+        <div class="zone-btn" style="top:34.5%;left:24.2%" onclick="toggleZone(this,'Ventre droit')" title="Ventre droit"></div>
+        <div class="zone-btn" style="top:34.5%;left:29.8%" onclick="toggleZone(this,'Ventre gauche')" title="Ventre gauche"></div>
+        <!-- FACE — bras gauche patient (côté droit de l'image, x > 27%) -->
+        <div class="zone-btn" style="top:21.3%;left:32.7%" onclick="toggleZone(this,'Deltoïde gauche')" title="Deltoïde gauche"></div>
+        <div class="zone-btn" style="top:22.2%;left:37.5%" onclick="toggleZone(this,'Biceps brachial gauche')" title="Biceps brachial gauche"></div>
+        <div class="zone-btn" style="top:22.2%;left:42.4%" onclick="toggleZone(this,'Avant-bras gauche')" title="Avant-bras gauche"></div>
+        <div class="zone-btn" style="top:21.6%;left:47.0%" onclick="toggleZone(this,'Poignet gauche')" title="Poignet gauche"></div>
+        <!-- FACE — bras droit patient (côté gauche de l'image, x < 27%) -->
+        <div class="zone-btn" style="top:20.3%;left:20.4%" onclick="toggleZone(this,'Deltoïde droit')" title="Deltoïde droit"></div>
+        <div class="zone-btn" style="top:22.2%;left:16.7%" onclick="toggleZone(this,'Biceps brachial droit')" title="Biceps brachial droit"></div>
+        <div class="zone-btn" style="top:22.0%;left:12.0%" onclick="toggleZone(this,'Avant-bras droit')" title="Avant-bras droit"></div>
+        <div class="zone-btn" style="top:22.0%;left:7.8%" onclick="toggleZone(this,'Poignet droit')" title="Poignet droit"></div>
+        <!-- FACE — tronc -->
+        <div class="zone-btn" style="top:23.5%;left:24.3%" onclick="toggleZone(this,'Grand pectoral droit')" title="Grand pectoral droit"></div>
+        <div class="zone-btn" style="top:23.9%;left:29.6%" onclick="toggleZone(this,'Grand pectoral gauche')" title="Grand pectoral gauche"></div>
+        <!-- FACE — jambes -->
+        <div class="zone-btn" style="top:45.2%;left:23.4%" onclick="toggleZone(this,'Hanche droite')" title="Hanche droite"></div>
+        <div class="zone-btn" style="top:45.9%;left:31.1%" onclick="toggleZone(this,'Hanche gauche')" title="Hanche gauche"></div>
+        <div class="zone-btn" style="top:54.7%;left:22.8%" onclick="toggleZone(this,'Quadriceps droit')" title="Quadriceps droit"></div>
+        <div class="zone-btn" style="top:54.7%;left:31.1%" onclick="toggleZone(this,'Quadriceps gauche')" title="Quadriceps gauche"></div>
+        <div class="zone-btn" style="top:63.0%;left:23.7%" onclick="toggleZone(this,'Genou droit')" title="Genou droit"></div>
+        <div class="zone-btn" style="top:63.7%;left:30.6%" onclick="toggleZone(this,'Genou gauche')" title="Genou gauche"></div>
+        <div class="zone-btn" style="top:76.6%;left:22.8%" onclick="toggleZone(this,'Tibia droit')" title="Tibia droit"></div>
+        <div class="zone-btn" style="top:76.9%;left:31.5%" onclick="toggleZone(this,'Tibia gauche')" title="Tibia gauche"></div>
+        <div class="zone-btn" style="top:86.5%;left:23.5%" onclick="toggleZone(this,'Pied droit')" title="Pied droit"></div>
+        <div class="zone-btn" style="top:86.9%;left:31.0%" onclick="toggleZone(this,'Pied gauche')" title="Pied gauche"></div>
+
+        <!-- DOS — tête -->
+        <div class="zone-btn" style="top:8.0%;left:73.5%" onclick="toggleZone(this,'Tête (dos)')" title="Tête (dos)"></div>
+        <!-- DOS — nuque (centré) -->
+        <div class="zone-btn" style="top:16.4%;left:73.4%" onclick="toggleZone(this,'Nuque')" title="Nuque"></div>
+        <!-- DOS — trapèze (x < 74 = gauche patient, x > 74 = droit patient) -->
+        <div class="zone-btn" style="top:25.9%;left:75.9%" onclick="toggleZone(this,'Trapèze droit')" title="Trapèze droit"></div>
+        <div class="zone-btn" style="top:26.4%;left:70.6%" onclick="toggleZone(this,'Trapèze gauche')" title="Trapèze gauche"></div>
+        <!-- DOS — épaules et bras -->
+        <div class="zone-btn" style="top:21.8%;left:67.6%" onclick="toggleZone(this,'Deltoïde gauche (dos)')" title="Deltoïde gauche (dos)"></div>
+        <div class="zone-btn" style="top:22.0%;left:80.2%" onclick="toggleZone(this,'Deltoïde droit (dos)')" title="Deltoïde droit (dos)"></div>
+        <div class="zone-btn" style="top:22.6%;left:84.1%" onclick="toggleZone(this,'Triceps brachial droit')" title="Triceps brachial droit"></div>
+        <div class="zone-btn" style="top:22.4%;left:59.7%" onclick="toggleZone(this,'Avant-bras gauche (dos)')" title="Avant-bras gauche (dos)"></div>
+        <div class="zone-btn" style="top:23.1%;left:87.9%" onclick="toggleZone(this,'Avant-bras droit (dos)')" title="Avant-bras droit (dos)"></div>
+        <div class="zone-btn" style="top:23.5%;left:63.8%" onclick="toggleZone(this,'Triceps brachial gauche')" title="Triceps brachial gauche"></div>
+        <div class="zone-btn" style="top:21.6%;left:55.6%" onclick="toggleZone(this,'Poignet gauche (dos)')" title="Poignet gauche (dos)"></div>
+        <div class="zone-btn" style="top:22.0%;left:93.0%" onclick="toggleZone(this,'Poignet droit (dos)')" title="Poignet droit (dos)"></div>
+        <!-- DOS — lombaires -->
+        <div class="zone-btn" style="top:36.4%;left:71.1%" onclick="toggleZone(this,'Lombaires gauche')" title="Lombaires gauche"></div>
+        <div class="zone-btn" style="top:36.8%;left:76.2%" onclick="toggleZone(this,'Lombaires droit')" title="Lombaires droit"></div>
+        <!-- DOS — fessier et jambes -->
+        <div class="zone-btn" style="top:45.2%;left:70.3%" onclick="toggleZone(this,'Fessier gauche')" title="Fessier gauche"></div>
+        <div class="zone-btn" style="top:45.4%;left:76.2%" onclick="toggleZone(this,'Fessier droit')" title="Fessier droit"></div>
+        <div class="zone-btn" style="top:54.9%;left:69.7%" onclick="toggleZone(this,'Ischio-jambiers gauche')" title="Ischio-jambiers gauche"></div>
+        <div class="zone-btn" style="top:54.7%;left:76.9%" onclick="toggleZone(this,'Ischio-jambiers droit')" title="Ischio-jambiers droit"></div>
+        <div class="zone-btn" style="top:70.5%;left:69.7%" onclick="toggleZone(this,'Mollet gauche')" title="Mollet gauche"></div>
+        <div class="zone-btn" style="top:71.2%;left:77.6%" onclick="toggleZone(this,'Mollet droit')" title="Mollet droit"></div>
+        <div class="zone-btn" style="top:86.7%;left:69.7%" onclick="toggleZone(this,'Cheville gauche')" title="Cheville gauche"></div>
+        <div class="zone-btn" style="top:87.3%;left:78.1%" onclick="toggleZone(this,'Cheville droite')" title="Cheville droite"></div>
+      </div>
+
+      <div class="corps-labels">
+        <span data-fr>⬅ Vue de face</span><span data-en>⬅ Front view</span>
+        <span data-fr>Vue de dos ➡</span><span data-en>Back view ➡</span>
+      </div>
+
+      <div class="zones-tags-container">
+        <p style="font-size:12px; color:#a09080; margin-bottom:6px;" data-fr>Zones sélectionnées :</p>
+        <p style="font-size:12px; color:#a09080; margin-bottom:6px;" data-en>Selected areas:</p>
+        <div id="zones-tags">
+          <em style="color:#c0b0a0;font-size:13px" data-fr>Aucune zone sélectionnée</em>
+          <em style="color:#c0b0a0;font-size:13px" data-en>No area selected</em>
+        </div>
+      </div>
+
+      <div class="zones-tags-container" id="zones-interdites-container" style="display:none; border-color:rgba(204,68,68,0.4); background:#fff8f8;">
+        <p style="font-size:12px; color:#c44; margin-bottom:6px;" data-fr>⊘ Zones à éviter :</p>
+        <p style="font-size:12px; color:#c44; margin-bottom:6px;" data-en>⊘ Areas to avoid:</p>
+        <div id="zones-interdites-tags"></div>
+      </div>
+
+      <input type="hidden" name="zones" id="zones-input" />
+      <input type="hidden" name="zones_interdites" id="zones-interdites-input" />
+    </div>
+
+    <!-- HISTORIQUE DE SANTÉ -->
+    <div class="q-section anim-entree">
+      <h3 data-fr>🏥 Historique de santé</h3>
+      <h3 data-en>🏥 Health history</h3>
+      <div class="checkbox-grid">
+        <label class="checkbox-item"><input type="checkbox" name="sante" value="Problèmes cardiaques"/><span data-fr>Problèmes cardiaques</span><span data-en>Heart conditions</span></label>
+        <label class="checkbox-item"><input type="checkbox" name="sante" value="Problèmes respiratoires"/><span data-fr>Problèmes respiratoires (asthme, MPOC)</span><span data-en>Respiratory issues</span></label>
+        <label class="checkbox-item"><input type="checkbox" name="sante" value="Hypertension"/><span data-fr>Hypertension / hypotension</span><span data-en>Hypertension / hypotension</span></label>
+        <label class="checkbox-item"><input type="checkbox" name="sante" value="Diabète"/><span data-fr>Diabète</span><span data-en>Diabetes</span></label>
+        <label class="checkbox-item"><input type="checkbox" name="sante" value="Problèmes neurologiques"/><span data-fr>Problèmes neurologiques</span><span data-en>Neurological conditions</span></label>
+        <label class="checkbox-item"><input type="checkbox" name="sante" value="Problèmes digestifs"/><span data-fr>Problèmes digestifs</span><span data-en>Digestive issues</span></label>
+        <label class="checkbox-item"><input type="checkbox" name="sante" value="Problèmes cutanés"/><span data-fr>Problèmes cutanés (eczéma, psoriasis, mycose, verrues)</span><span data-en>Skin conditions (eczema, psoriasis, fungal infection, warts)</span></label>
+        <label class="checkbox-item"><input type="checkbox" name="sante" value="Maladies chroniques"/><span data-fr>Maladies chroniques</span><span data-en>Chronic illness</span></label>
+        <label class="checkbox-item"><input type="checkbox" name="sante" value="Cancer"/><span data-fr>Cancer (actuel ou passé)</span><span data-en>Cancer (current or past)</span></label>
+        <label class="checkbox-item"><input type="checkbox" name="sante" value="Chirurgie récente"/><span data-fr>Chirurgie récente (moins de 2 ans)</span><span data-en>Recent surgery</span></label>
+        <label class="checkbox-item"><input type="checkbox" name="sante" value="Blessures musculo-squelettiques"/><span data-fr>Blessures musculo-squelettiques</span><span data-en>Musculoskeletal injuries</span></label>
+        <label class="checkbox-item"><input type="checkbox" name="sante" value="Hernie discale"/><span data-fr>Hernie discale / sciatalgie</span><span data-en>Disc herniation / sciatica</span></label>
+        <label class="checkbox-item"><input type="checkbox" name="sante" value="Ostéoporose"/><span data-fr>Ostéoporose</span><span data-en>Osteoporosis</span></label>
+        <label class="checkbox-item"><input type="checkbox" name="sante" value="Grossesse"/><span data-fr>Grossesse</span><span data-en>Pregnancy</span></label>
+      </div>
+      <div class="field-group" style="margin-top:16px;">
+        <label class="field-label" data-fr>Autre condition médicale :</label>
+        <label class="field-label" data-en>Other medical condition:</label>
+        <input type="text" name="sante_autre" />
+      </div>
+      <div class="field-group" style="margin-top:12px;">
+        <label class="field-label" data-fr>Précisions :</label>
+        <label class="field-label" data-en>Details:</label>
+        <textarea name="sante_detail"></textarea>
+      </div>
+    </div>
+
+    <!-- MÉDICATION -->
+    <div class="q-section anim-entree">
+      <h3 data-fr>💊 Médication et traitements</h3>
+      <h3 data-en>💊 Medication and treatments</h3>
+      <div class="field-group">
+        <label class="field-label" data-fr>Prenez-vous des médicaments ?</label>
+        <label class="field-label" data-en>Are you taking any medication?</label>
+        <div class="radio-group">
+          <label class="radio-item"><input type="radio" name="medicaments" value="Oui" /><span data-fr>Oui</span><span data-en>Yes</span></label>
+          <label class="radio-item"><input type="radio" name="medicaments" value="Non" checked /><span data-fr>Non</span><span data-en>No</span></label>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" data-fr>Si oui, lesquels :</label>
+        <label class="field-label" data-en>If yes, which ones:</label>
+        <textarea name="medicaments_detail"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label" data-fr>Autre traitement en cours ? (physio, chiro, ostéo...)</label>
+        <label class="field-label" data-en>Other ongoing treatment?</label>
+        <input type="text" name="autre_traitement" />
+      </div>
+    </div>
+
+    <!-- CONSENTEMENT -->
+    <div class="q-section anim-entree">
+      <h3 data-fr>✅ Consentement et politiques</h3>
+      <h3 data-en>✅ Consent and policies</h3>
+      <div style="background:#fdfaf6;border:1px solid #e2d8cc;border-left:4px solid var(--or);border-radius:10px;padding:24px 28px;position:relative;">
+        <div style="position:absolute;top:16px;right:20px;font-size:22px;opacity:0.15;">📜</div>
+        <p data-fr style="font-size:14px;color:var(--texte);line-height:2.1;margin:0 0 20px;">
+          Je m'engage à me présenter avec une <strong>hygiène corporelle de base</strong> et à reporter mon rendez-vous en cas de symptômes contagieux. Je confirme ne pas être sous l'effet d'alcool ou de drogues. Je comprends que la massothérapie est un <strong>service de soin professionnel et thérapeutique</strong>. J'accepte la <strong>politique d'annulation</strong> : des frais de <strong>50 $</strong> s'appliquent pour toute annulation de moins de 24 heures. Je déclare que les informations fournies sont exactes et je reconnais que la massothérapie <strong>ne remplace pas un avis médical</strong>. <strong>Je m'engage à signaler toute condition cutanée</strong> (mycose, verrues, plaies ouvertes, infection) avant la séance afin d'assurer la sécurité de tous.
+        </p>
+        <p data-en style="font-size:14px;color:var(--texte);line-height:2.1;margin:0 0 20px;">
+          I commit to attending with <strong>basic personal hygiene</strong> and to rescheduling if I have contagious symptoms. I confirm I will not be under the influence of alcohol or drugs. I understand that massage therapy is a <strong>professional and therapeutic service</strong>. I accept the <strong>cancellation policy</strong>: a fee of <strong>$50</strong> applies for any cancellation under 24 hours. I declare that all information provided is accurate and acknowledge that massage therapy <strong>does not replace medical advice</strong>. <strong>I agree to report any skin condition</strong> (fungal infection, warts, open wounds, infection) before my session to ensure the safety of all.
+        </p>
+        <div style="display:flex;align-items:center;gap:12px;padding-top:16px;border-top:1px solid #e2d8cc;">
+          <input type="checkbox" name="consentement_global" id="consentement_global" style="width:20px;height:20px;accent-color:var(--or);flex-shrink:0;cursor:pointer;" />
+          <span data-fr style="font-size:14px;color:var(--texte);"><strong>J'ai lu, compris et j'accepte l'ensemble de ces conditions.</strong></span>
+          <span data-en style="font-size:14px;color:var(--texte);"><strong>I have read, understood and agree to all of the above conditions.</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIGNATURE -->
+    <div class="q-section anim-entree">
+      <h3 data-fr>✍️ Signature</h3>
+      <h3 data-en>✍️ Signature</h3>
+      <canvas class="signature-canvas" id="sigCanvas" width="800" height="100"></canvas>
+      <button type="button" onclick="effacerSignature()" style="margin-top:10px;background:transparent;border:1.5px solid #c0b0a0;color:var(--gris);padding:8px 20px;border-radius:20px;cursor:pointer;font-size:13px;">
+        <span data-fr>Effacer</span><span data-en>Clear</span>
+      </button>
+      <input type="hidden" name="signature" id="sig-input" />
+      <div style="margin-top:20px;max-width:260px;">
+        <label class="field-label" data-fr>Date *</label>
+        <label class="field-label" data-en>Date *</label>
+        <input type="text" name="date_signature" id="date_signature" class="date-manuelle" placeholder="AAAA-MM-JJ" maxlength="10" autocomplete="off" inputmode="numeric" />
+      </div>
+    </div>
+
+    <button type="submit" class="btn-submit" id="btn-submit">
+      <span data-fr>📨 Envoyer mon questionnaire</span>
+      <span data-en>📨 Submit my intake form</span>
+    </button>
+
+  </form>
+</main>
+
+
+<!-- PIED DE PAGE -->
+<footer class="fiche-footer">
+  <div class="fiche-footer-logo"><img src="images/logo-original.jpg" alt="Vitalité Bohème" /></div>
+  <div class="fiche-footer-marque">Vitalité Bohème</div>
+  <div class="fiche-footer-tagline">Massothérapie — Waterville, Estrie</div>
+  <div class="fiche-footer-or">
+    <div class="fiche-footer-or-line"></div>
+    <span class="fiche-footer-or-sym">✦</span>
+    <div class="fiche-footer-or-line"></div>
+  </div>
+  <p><span data-fr>Vitalité Bohème · Massothérapie certifiée · Membre RMPQ</span><span data-en>Vitalité Bohème · Certified Massage Therapy · RMPQ Member</span></p>
+  <p style="margin-top:6px;">
+    <a href="tel:4383683282">438-368-3282</a> &nbsp;·&nbsp;
+    <a href="mailto:bibeaukevin9@gmail.com">bibeaukevin9@gmail.com</a>
+  </p>
+</footer>
+</body>
+</html>
