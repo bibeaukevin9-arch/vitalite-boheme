@@ -58,8 +58,8 @@ function applyLang(lang) {
   document.querySelectorAll('[data-en]').forEach(function(el) {
     el.style.display = isEn ? displayVal(el) : 'none';
   });
-  document.getElementById('lbl-fr').classList.toggle('actif', !isEn);
-  document.getElementById('lbl-en').classList.toggle('actif', isEn);
+  var lblFr = document.getElementById('lbl-fr'); if (lblFr) lblFr.classList.toggle('actif', !isEn);
+  var lblEn = document.getElementById('lbl-en'); if (lblEn) lblEn.classList.toggle('actif', isEn);
   document.documentElement.lang = isEn ? 'en' : 'fr';
   try { localStorage.setItem('vb-lang', lang); } catch(e) {}
   if (typeof renderZoneTags === 'function' && Array.isArray(zonesDouleur)) renderZoneTags();
@@ -703,3 +703,24 @@ function soumettreFormulaire(e) {
     onSuccess();
   }
 }
+
+
+// ─── ANIMATIONS AU SCROLL ──────────────────────────────────────────────────
+(function() {
+  var elems = document.querySelectorAll('.anim-entree');
+  if (!elems.length) return;
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    elems.forEach(function(el) { obs.observe(el); });
+  } else {
+    // Fallback : tout visible immédiatement
+    elems.forEach(function(el) { el.classList.add('visible'); });
+  }
+})();
