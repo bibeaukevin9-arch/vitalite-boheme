@@ -116,9 +116,9 @@ var servicesData = {
     en: {
       titre: 'Lomi Lomi Inspired',
       tag: '⚠ For informed clients',
-      desc: 'Rooted in Hawaiian tradition, Lomi Lomi is a sensory experience unlike any other. A treatment that moves through the body with rare fluidity — closer to a moving meditation than a traditional massage.
+      desc: `Rooted in Hawaiian tradition, Lomi Lomi is a sensory experience unlike any other. A treatment that moves through the body with rare fluidity — closer to a moving meditation than a traditional massage.
 
-⚠ Please note: this treatment involves very minimal draping. Touch covers many areas of the body and may be considered invasive. For informed clients only.',
+⚠ Please note: this treatment involves very minimal draping. Touch covers many areas of the body and may be considered invasive. For informed clients only.`,
       bienfaits: '<strong>Benefits:</strong> deep relaxation, improved circulation, fascial release, feeling of lightness and fluidity.'
     }
   },
