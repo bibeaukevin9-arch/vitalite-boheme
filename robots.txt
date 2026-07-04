@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://vitalitefboheme.ca/sitemap.xml
+Sitemap: https://vitaliteboheme.ca/sitemap.xml
