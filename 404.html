@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page introuvable — Vitalité Bohème</title>
+  <meta name="robots" content="noindex, follow" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --noir: #1c1208;
+      --or: #cfa96a;
+      --or-clair: #e8c98a;
+      --beige: #f5ede0;
+      --brun: #8a6a50;
+      --blanc: #fdfaf6;
+      --texte: #3a2e28;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 22px;
+      background: linear-gradient(160deg, var(--noir) 0%, #2b1c0e 55%, #3a2714 100%);
+      font-family: Georgia, serif;
+      color: var(--beige);
+      text-align: center;
+    }
+
+    .bloc { max-width: 560px; width: 100%; }
+
+    .logo {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--or);
+      margin-bottom: 30px;
+    }
+
+    .ornement {
+      color: var(--or);
+      font-size: 20px;
+      letter-spacing: 10px;
+      margin-bottom: 22px;
+    }
+
+    .surtitre {
+      color: var(--or);
+      font-size: 12px;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 40px;
+      font-weight: 600;
+      line-height: 1.25;
+      color: var(--blanc);
+      margin-bottom: 20px;
+    }
+
+    h1 em { color: var(--or-clair); font-style: italic; }
+
+    p {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #ddd0bd;
+      margin-bottom: 14px;
+    }
+
+    p.en { font-size: 14px; color: #b3a48f; font-style: italic; }
+
+    .liens {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 34px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 14px 30px;
+      border-radius: 30px;
+      font-size: 15px;
+      font-weight: bold;
+      text-decoration: none;
+      transition: background .25s ease, color .25s ease;
+    }
+
+    .btn-plein { background: var(--or); color: var(--noir); }
+    .btn-plein:hover { background: var(--or-clair); }
+
+    .btn-vide { border: 2px solid var(--or); color: var(--or-clair); }
+    .btn-vide:hover { background: var(--or); color: var(--noir); }
+
+    .contact {
+      margin-top: 40px;
+      padding-top: 26px;
+      border-top: 1px solid rgba(207, 169, 106, .28);
+      font-size: 14px;
+      color: #b3a48f;
+      line-height: 2;
+    }
+
+    .contact a { color: var(--or-clair); text-decoration: none; }
+    .contact a:hover { text-decoration: underline; }
+
+    @media (max-width: 520px) {
+      h1 { font-size: 31px; }
+      .btn { padding: 13px 24px; font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bloc">
+
+    <img src="images/logo-original.jpg" alt="Vitalité Bohème" class="logo" />
+
+    <div class="ornement">✦</div>
+
+    <div class="surtitre">Vitalité Bohème</div>
+
+    <h1>Cette page s'est <em>perdue en chemin</em></h1>
+
+    <p>Le lien que vous avez suivi ne mène nulle part. Ça arrive. Reprenons la route ensemble.</p>
+
+    <p class="en">The link you followed doesn't lead anywhere. It happens. Let's get you back on track.</p>
+
+    <div class="liens">
+      <a class="btn btn-plein" href="/fiche.html">Questionnaire de santé</a>
+      <a class="btn btn-vide" href="/">Retour à l'accueil</a>
+    </div>
+
+    <div class="contact">
+      Une question ? <a href="tel:4383683282">438-368-3282</a><br />
+      <a href="mailto:bibeaukevin9@gmail.com">bibeaukevin9@gmail.com</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

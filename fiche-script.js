@@ -649,9 +649,24 @@ function soumettreFormulaire(e) {
     .replace(/__+/g, '_')
     + '.pdf';
 
-  // ─── PDF : téléchargement client + base64 pour pièce jointe email ──
-  doc.save(nomFichier); // téléchargement sur l'appareil du client
-  var pdfBase64 = doc.output('base64'); // copie base64 pour l'email
+  // ─── PDF : base64 pour l'email D'ABORD, téléchargement APRÈS l'envoi ──
+  // Ordre volontaire. Dans les navigateurs intégrés (Facebook, Messenger,
+  // Instagram), doc.save() peut faire quitter la page vers une URL blob.
+  // Si ça se produisait avant l'envoi, le questionnaire serait perdu.
+  // On envoie donc le courriel en premier ; la copie PDF vient ensuite,
+  // via un bouton que la personne clique elle-même.
+  // jsPDF 2.5.1 ne connait PAS le type de sortie 'base64' : il renvoie null.
+  // On passe donc par 'datauristring' et on coupe apres la virgule.
+  // Verifie : le resultat commence par JVBERi0 et se decode en %PDF-
+  var pdfBase64 = '';
+  try {
+    var dataUri = doc.output('datauristring');
+    pdfBase64 = (dataUri.split(',')[1] || '');
+  } catch (ePdf) {
+    console.error('PDF base64 error:', ePdf);
+  }
+  window.__vbPdfDoc = doc;
+  window.__vbPdfNom = nomFichier;
 
   // EmailJS
   var btn = document.getElementById('btn-submit');
@@ -678,24 +693,51 @@ function soumettreFormulaire(e) {
     pdf_filename:       nomFichier,
     // pdf_data contient le PDF encodé en base64.
     // Pour l'activer comme pièce jointe : dans ton tableau de bord EmailJS →
-    // Modèle v3vdoji → ajouter un champ "Attachment" → nom de fichier : {{pdf_filename}} → data : {{pdf_data}}
+    // Modèle template_iumkg2s → ajouter un champ "Attachment" → nom de fichier : {{pdf_filename}} → data : {{pdf_data}}
     pdf_data:           pdfBase64,
     contre_indications: contre_indications_str,
     langue:             isEn ? 'EN' : 'FR'
   };
+
+  // Affiche le bouton « Télécharger ma copie PDF ». Le téléchargement est
+  // déclenché par un vrai clic : c'est ce qui passe le mieux dans les
+  // navigateurs intégrés. Et si ça échoue quand même, l'envoi est déjà fait.
+  function preparerTelechargement() {
+    var zone  = document.getElementById('dl-zone');
+    var btnDl = document.getElementById('btn-dl-pdf');
+    if (!zone || !btnDl || !window.__vbPdfDoc) return;
+    zone.style.display = 'block';
+    btnDl.onclick = function() {
+      try {
+        window.__vbPdfDoc.save(window.__vbPdfNom);
+      } catch (e1) {
+        try {
+          window.open(window.__vbPdfDoc.output('bloburl'), '_blank');
+        } catch (e2) {
+          alert(isEn
+            ? 'Download is not available in this browser. Your form was sent successfully.'
+            : "Le telechargement n'est pas disponible dans ce navigateur. Votre questionnaire a bien ete envoye.");
+        }
+      }
+    };
+  }
 
   function onSuccess() {
     document.getElementById('succes-msg').style.display = 'block';
     form.reset();
     btn.disabled = false;
     btn.innerHTML = isEn ? '<span>📨 Submit my intake form</span>' : '<span>📨 Envoyer mon questionnaire</span>';
+    preparerTelechargement();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
   function onError(err) {
     console.error('EmailJS error:', err);
     btn.disabled = false;
     btn.innerHTML = isEn ? '<span>📨 Submit my intake form</span>' : '<span>📨 Envoyer mon questionnaire</span>';
-    alert(isEn ? 'PDF downloaded. Email failed — please contact us directly.' : 'PDF telecharge. Envoi echoue — contactez-nous directement.');
+    preparerTelechargement();
+    alert(isEn
+      ? 'Sending failed. Please download your PDF with the button below and contact us directly.'
+      : "L'envoi a echoue. Telechargez votre PDF avec le bouton ci-dessous et contactez-nous directement.");
   }
   if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== 'VOTRE_CLE_PUBLIQUE') {
     emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams).then(onSuccess, onError);
@@ -723,4 +765,18 @@ function soumettreFormulaire(e) {
     // Fallback : tout visible immédiatement
     elems.forEach(function(el) { el.classList.add('visible'); });
   }
+})();
+
+
+// ─── NAVIGATEUR INTÉGRÉ (Facebook, Messenger, Instagram…) ──────────────────
+// Ces navigateurs ne gèrent pas les téléchargements de fichiers générés
+// dans la page. Le questionnaire part quand même, mais on prévient la
+// personne avant qu'elle remplisse, pas après.
+(function() {
+  var ua = navigator.userAgent || '';
+  var inApp = /FBAN|FBAV|FB_IAB|FBIOS|Messenger|Instagram|Line\/|Snapchat|TikTok|Twitter/i.test(ua)
+              || (/Android/i.test(ua) && /; wv\)/i.test(ua));
+  if (!inApp) return;
+  var el = document.getElementById('inapp-warn');
+  if (el) el.style.display = 'block';
 })();

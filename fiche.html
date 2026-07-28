@@ -10,7 +10,7 @@
   <!-- jsPDF -->
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <!-- Logique formulaire -->
-  <script defer src="fiche-script.js?v=20260623b"></script>
+  <script defer src="fiche-script.js?v=20260728a"></script>
 
   <style>
     :root {
@@ -319,9 +319,46 @@
     .anim-entree.delai-2 { transition-delay: 0.28s; }
     .anim-entree.delai-3 { transition-delay: 0.42s; }
     .anim-entree.delai-4 { transition-delay: 0.56s; }
+
+    /* ─── Avertissement navigateur intégré (Facebook / Messenger / Instagram) ─── */
+    #inapp-warn {
+      display: none;
+      background: #fff8e6;
+      border-bottom: 2px solid var(--or);
+      color: #5a4420;
+      font-family: Georgia, serif;
+      font-size: 14px;
+      line-height: 1.65;
+      padding: 15px 22px;
+      text-align: center;
+    }
+    #inapp-warn b { color: #3d2c12; font-size: 15px; }
+
+    /* ─── Bouton de téléchargement du PDF (affiché après l'envoi) ─── */
+    #dl-zone { display: none; margin-top: 20px; }
+    #btn-dl-pdf {
+      background: var(--or);
+      color: var(--noir);
+      border: none;
+      padding: 13px 30px;
+      border-radius: 30px;
+      font-family: Georgia, serif;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background .25s ease;
+    }
+    #btn-dl-pdf:hover { background: var(--or-clair); }
+    #dl-note { color: #55703f; font-size: 13px; margin-top: 10px; line-height: 1.5; }
   </style>
 </head>
 <body>
+
+<!-- Avertissement : navigateur intégré (Facebook, Messenger, Instagram…) -->
+<div id="inapp-warn">
+  <div data-fr><b>Ouvrez cette page dans votre navigateur.</b><br>Touchez le menu ••• en haut de l'écran, puis « Ouvrir dans le navigateur ». Votre questionnaire sera transmis dans tous les cas, mais votre copie PDF ne pourra se télécharger que de cette façon.</div>
+  <div data-en><b>Open this page in your browser.</b><br>Tap the ••• menu at the top of the screen, then "Open in browser". Your form will be sent either way, but your PDF copy can only be downloaded that way.</div>
+</div>
 
 <div class="curseur-or" id="curseur-or"></div>
 <div class="curseur-or-anneau" id="curseur-anneau"></div>
@@ -356,8 +393,17 @@
   <div id="succes-msg">
     <h3 data-fr>✅ Questionnaire envoyé !</h3>
     <h3 data-en>✅ Form submitted!</h3>
-    <p data-fr>Merci — votre PDF a été téléchargé et votre questionnaire a été transmis. À très bientôt !</p>
-    <p data-en>Thank you — your PDF has been downloaded and your form has been transmitted. See you soon!</p>
+    <p data-fr>Merci, votre questionnaire a bien été transmis. Vous pouvez télécharger votre copie ci-dessous. À très bientôt !</p>
+    <p data-en>Thank you, your form has been sent. You can download your copy below. See you soon!</p>
+    <div id="dl-zone">
+      <button type="button" id="btn-dl-pdf">
+        <span data-fr>⬇ Télécharger ma copie PDF</span><span data-en>⬇ Download my PDF copy</span>
+      </button>
+      <div id="dl-note">
+        <span data-fr>Ce téléchargement est pour vos dossiers seulement. Kevin a déjà reçu votre questionnaire.</span>
+        <span data-en>This download is for your records only. Kevin has already received your form.</span>
+      </div>
+    </div>
     <div style="margin-top:20px;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;">
       <a href="tel:4383683282" style="display:inline-block;background:#cfa96a;color:#1c1208;padding:12px 28px;border-radius:30px;font-family:Georgia,serif;font-size:15px;font-weight:bold;text-decoration:none;">
         <span data-fr>📞 Appeler</span><span data-en>📞 Call us</span>
