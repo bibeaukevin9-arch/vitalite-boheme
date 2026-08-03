@@ -1,17 +1,20 @@
 // FICHE-SCRIPT.JS — Vitalité Bohème questionnaire de santé
 
 // ─── DATE SIGNATURE — remplissage automatique à l'ouverture ───
-(function() {
-  function setDateAujourdhui() {
-    var champ = document.getElementById('date_signature');
-    if (champ && !champ.value) {
-      var today = new Date();
-      var yyyy = today.getFullYear();
-      var mm = String(today.getMonth() + 1).padStart(2, '0');
-      var dd = String(today.getDate()).padStart(2, '0');
-      champ.value = yyyy + '-' + mm + '-' + dd;
-    }
+// Exposee globalement : form.reset() vide ce champ apres un envoi reussi, et
+// il faut pouvoir le re-remplir pour qu'un 2e questionnaire (un couple sur le
+// meme telephone, par exemple) ne bloque pas sur « Date de signature ».
+function setDateAujourdhui() {
+  var champ = document.getElementById('date_signature');
+  if (champ && !champ.value) {
+    var today = new Date();
+    var yyyy = today.getFullYear();
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var dd = String(today.getDate()).padStart(2, '0');
+    champ.value = yyyy + '-' + mm + '-' + dd;
   }
+}
+(function() {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', setDateAujourdhui);
   } else {
@@ -649,22 +652,19 @@ function soumettreFormulaire(e) {
     .replace(/__+/g, '_')
     + '.pdf';
 
-  // ─── PDF : base64 pour l'email D'ABORD, téléchargement APRÈS l'envoi ──
-  // Ordre volontaire. Dans les navigateurs intégrés (Facebook, Messenger,
-  // Instagram), doc.save() peut faire quitter la page vers une URL blob.
-  // Si ça se produisait avant l'envoi, le questionnaire serait perdu.
-  // On envoie donc le courriel en premier ; la copie PDF vient ensuite,
-  // via un bouton que la personne clique elle-même.
-  // jsPDF 2.5.1 ne connait PAS le type de sortie 'base64' : il renvoie null.
-  // On passe donc par 'datauristring' et on coupe apres la virgule.
-  // Verifie : le resultat commence par JVBERi0 et se decode en %PDF-
-  var pdfBase64 = '';
-  try {
-    var dataUri = doc.output('datauristring');
-    pdfBase64 = (dataUri.split(',')[1] || '');
-  } catch (ePdf) {
-    console.error('PDF base64 error:', ePdf);
-  }
+  // ─── PDF : copie client seulement, JAMAIS dans le courriel ────────────────
+  // ⚠ NE PAS remettre le PDF en base64 dans les variables EmailJS.
+  // EmailJS refuse toute requete dont les variables depassent 50 Ko
+  // (reponse HTTP 413 « Variables size limit »). Un questionnaire signe pese
+  // ~430 Ko en base64, soit 8 a 9 fois la limite : le 28 juillet 2026, ajouter
+  // pdf_data a bloque 100 % des envois, dans tous les navigateurs.
+  // Le courriel transporte deja tout le contenu du questionnaire en texte
+  // (incluant les contre-indications). La personne garde sa copie PDF via le
+  // bouton de telechargement affiche apres l'envoi.
+  //
+  // Le telechargement vient APRES l'envoi, volontairement : dans les
+  // navigateurs integres (Facebook, Messenger, Instagram), doc.save() peut
+  // faire quitter la page vers une URL blob et le questionnaire serait perdu.
   window.__vbPdfDoc = doc;
   window.__vbPdfNom = nomFichier;
 
@@ -691,13 +691,30 @@ function soumettreFormulaire(e) {
     autre_traitement:   v('autre_traitement') || '-',
     date_signature:     v('date_signature') || '-',
     pdf_filename:       nomFichier,
-    // pdf_data contient le PDF encodé en base64.
-    // Pour l'activer comme pièce jointe : dans ton tableau de bord EmailJS →
-    // Modèle template_iumkg2s → ajouter un champ "Attachment" → nom de fichier : {{pdf_filename}} → data : {{pdf_data}}
-    pdf_data:           pdfBase64,
     contre_indications: contre_indications_str,
     langue:             isEn ? 'EN' : 'FR'
   };
+
+  // ─── Garde-fou : ne jamais depasser la limite de 50 Ko d'EmailJS ──────────
+  // Filet de securite au cas ou quelqu'un colle un texte enorme dans un champ
+  // libre. On tronque plutot que de laisser l'envoi echouer.
+  (function limiterTaille() {
+    var LIMITE = 45000;
+    function taille() { return JSON.stringify(templateParams).length; }
+    if (taille() <= LIMITE) return;
+    Object.keys(templateParams).forEach(function(k) {
+      var val = templateParams[k];
+      if (typeof val === 'string' && val.length > 2000) {
+        templateParams[k] = val.slice(0, 2000) + (isEn ? ' […truncated]' : ' […tronque]');
+      }
+    });
+    if (taille() > LIMITE) {
+      ['motif_detail', 'sante_detail', 'medicaments_detail', 'autre_traitement'].forEach(function(k) {
+        templateParams[k] = isEn ? '[Too long — ask the client]' : '[Trop long — a demander au client]';
+      });
+    }
+    console.warn('Variables tronquees pour respecter la limite EmailJS (50 Ko).');
+  })();
 
   // Affiche le bouton « Télécharger ma copie PDF ». Le téléchargement est
   // déclenché par un vrai clic : c'est ce qui passe le mieux dans les
@@ -722,25 +739,81 @@ function soumettreFormulaire(e) {
     };
   }
 
+  var LIBELLE_BOUTON = isEn
+    ? '<span>📨 Submit my intake form</span>'
+    : '<span>📨 Envoyer mon questionnaire</span>';
+
+  // Message d'echec persistant : une alerte se ferme et ne laisse aucune
+  // trace. Ici la personne garde sous les yeux quoi faire et comment joindre
+  // la clinique.
+  function afficherEchec(statut, detail) {
+    var boite = document.getElementById('echec-msg');
+    if (!boite) {
+      boite = document.createElement('div');
+      boite.id = 'echec-msg';
+      boite.style.cssText = 'margin:20px 0;padding:18px 20px;border:2px solid #c0392b;'
+        + 'border-radius:10px;background:#fdf0ee;color:#7b241c;line-height:1.5;font-size:15px;';
+      btn.parentNode.insertBefore(boite, btn);
+    }
+    boite.innerHTML = (isEn
+      ? '<strong>Your form could not be sent.</strong><br>'
+        + 'Download your PDF copy with the button below and send it to us — '
+        + 'or simply call us, we will complete it together.<br>'
+      : "<strong>Votre questionnaire n'a pas pu etre envoye.</strong><br>"
+        + 'Telechargez votre copie PDF avec le bouton ci-dessous et faites-la nous parvenir — '
+        + 'ou appelez-nous simplement, on le remplira ensemble.<br>')
+      + '<a href="mailto:bibeaukevin9@gmail.com" style="color:#7b241c;font-weight:600;">bibeaukevin9@gmail.com</a>'
+      + ' &nbsp;·&nbsp; '
+      + '<a href="tel:+14383683282" style="color:#7b241c;font-weight:600;">438-368-3282</a>'
+      + '<br><span style="font-size:12px;opacity:.75;">Code technique : ' + (statut || '?') + ' ' + (detail || '') + '</span>';
+    boite.style.display = 'block';
+    boite.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
   function onSuccess() {
+    var echec = document.getElementById('echec-msg');
+    if (echec) echec.style.display = 'none';
     document.getElementById('succes-msg').style.display = 'block';
     form.reset();
+    // form.reset() vide la date de signature et laisse le trace de signature
+    // dessine a l'ecran : on remet la page dans un etat coherent pour un
+    // eventuel 2e questionnaire.
+    try { effacerSignature(); } catch (eSig) {}
+    try { setDateAujourdhui(); } catch (eDate) {}
     btn.disabled = false;
-    btn.innerHTML = isEn ? '<span>📨 Submit my intake form</span>' : '<span>📨 Envoyer mon questionnaire</span>';
+    btn.innerHTML = LIBELLE_BOUTON;
     preparerTelechargement();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+
   function onError(err) {
-    console.error('EmailJS error:', err);
+    var statut = (err && err.status) || 0;
+    var detail = (err && (err.text || err.message)) || '';
+    console.error('EmailJS error:', statut, detail, err);
     btn.disabled = false;
-    btn.innerHTML = isEn ? '<span>📨 Submit my intake form</span>' : '<span>📨 Envoyer mon questionnaire</span>';
+    btn.innerHTML = LIBELLE_BOUTON;
     preparerTelechargement();
-    alert(isEn
-      ? 'Sending failed. Please download your PDF with the button below and contact us directly.'
-      : "L'envoi a echoue. Telechargez votre PDF avec le bouton ci-dessous et contactez-nous directement.");
+    afficherEchec(statut, detail);
   }
+
+  // Une seule nouvelle tentative en cas de coupure reseau ou d'erreur
+  // temporaire du serveur. Les erreurs de configuration (400, 413, 422) ne
+  // sont pas rejouees : elles echoueraient exactement pareil.
+  function envoyer(essai) {
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+      .then(onSuccess, function(err) {
+        var statut = (err && err.status) || 0;
+        var temporaire = (statut === 0 || statut === 408 || statut === 429 || statut >= 500);
+        if (essai < 2 && temporaire) {
+          setTimeout(function() { envoyer(essai + 1); }, 1500);
+          return;
+        }
+        onError(err);
+      });
+  }
+
   if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== 'VOTRE_CLE_PUBLIQUE') {
-    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams).then(onSuccess, onError);
+    envoyer(1);
   } else {
     onSuccess();
   }
