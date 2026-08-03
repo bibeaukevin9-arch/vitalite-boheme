@@ -411,6 +411,31 @@ canvas.addEventListener('touchend', function() { drawing = false; document.getEl
 
 function effacerSignature() { ctx.clearRect(0, 0, canvas.width, canvas.height); document.getElementById('sig-input').value = ''; }
 
+// ─── Signature compressee, pour le courriel de la clinique ─────────────────
+// Le PDF du client garde la signature PNG pleine qualite. Pour le courriel, on
+// la redessine plus petite, sur fond blanc, et on la compresse en JPEG :
+// les variables EmailJS sont plafonnees a 50 Ko et le PNG brut en pese ~28.
+// Le fond blanc est obligatoire — le JPEG ne gere pas la transparence, et sans
+// lui le trace fonce se retrouverait sur du noir, donc invisible.
+function signatureCompressee() {
+  var champ = document.getElementById('sig-input');
+  if (!canvas || !champ || !champ.value) return '';
+  try {
+    var mini = document.createElement('canvas');
+    var largeur = 520;
+    mini.width  = largeur;
+    mini.height = Math.max(1, Math.round(canvas.height * (largeur / canvas.width)));
+    var mctx = mini.getContext('2d');
+    mctx.fillStyle = '#ffffff';
+    mctx.fillRect(0, 0, mini.width, mini.height);
+    mctx.drawImage(canvas, 0, 0, mini.width, mini.height);
+    return mini.toDataURL('image/jpeg', 0.6);
+  } catch (eSig) {
+    console.error('Signature compressee :', eSig);
+    return '';
+  }
+}
+
 // ─── SOUMISSION ────────────────────────────────────────────────
 function soumettreFormulaire(e) {
   e.preventDefault();
@@ -692,7 +717,10 @@ function soumettreFormulaire(e) {
     date_signature:     v('date_signature') || '-',
     pdf_filename:       nomFichier,
     contre_indications: contre_indications_str,
-    langue:             isEn ? 'EN' : 'FR'
+    langue:             isEn ? 'EN' : 'FR',
+    // Signature compressee (~10 Ko) : c'est la trace signee que la clinique
+    // conserve. Le PDF complet, lui, reste chez le client.
+    signature_image:    signatureCompressee()
   };
 
   // ─── Garde-fou : ne jamais depasser la limite de 50 Ko d'EmailJS ──────────
@@ -702,12 +730,18 @@ function soumettreFormulaire(e) {
     var LIMITE = 45000;
     function taille() { return JSON.stringify(templateParams).length; }
     if (taille() <= LIMITE) return;
+
+    // 1. Tronquer les champs texte. La signature est epargnee : une image
+    //    coupee en deux ne s'affiche pas, autant la garder entiere ou pas du tout.
     Object.keys(templateParams).forEach(function(k) {
       var val = templateParams[k];
-      if (typeof val === 'string' && val.length > 2000) {
+      if (k !== 'signature_image' && typeof val === 'string' && val.length > 2000) {
         templateParams[k] = val.slice(0, 2000) + (isEn ? ' […truncated]' : ' […tronque]');
       }
     });
+    // 2. Toujours trop gros : on sacrifie la signature, pas le questionnaire.
+    if (taille() > LIMITE) templateParams.signature_image = '';
+    // 3. Dernier recours.
     if (taille() > LIMITE) {
       ['motif_detail', 'sante_detail', 'medicaments_detail', 'autre_traitement'].forEach(function(k) {
         templateParams[k] = isEn ? '[Too long — ask the client]' : '[Trop long — a demander au client]';
