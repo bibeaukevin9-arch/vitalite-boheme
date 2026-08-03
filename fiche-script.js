@@ -821,9 +821,28 @@ function soumettreFormulaire(e) {
 
 
 // ─── ANIMATIONS AU SCROLL ──────────────────────────────────────────────────
+// ⚠ Les .anim-entree sont a opacity:0 en CSS. Si rien ne leur ajoute la classe
+// .visible, TOUT le questionnaire est invisible et personne ne peut le remplir.
+// D'ou le filet de securite plus bas : si au bout de 3 secondes l'observateur
+// n'a revele aucune section, on les affiche toutes d'un coup.
 (function() {
   var elems = document.querySelectorAll('.anim-entree');
   if (!elems.length) return;
+
+  function toutAfficher() {
+    for (var i = 0; i < elems.length; i++) elems[i].classList.add('visible');
+  }
+
+  // Filet de securite — ne se declenche que si l'animation a completement
+  // echoue. Si au moins une section est apparue, l'observateur fonctionne et
+  // on laisse l'animation se derouler normalement au fil du defilement.
+  setTimeout(function() {
+    if (!document.querySelector('.anim-entree.visible')) {
+      console.warn('Animation d\'entree inactive — affichage force du questionnaire.');
+      toutAfficher();
+    }
+  }, 3000);
+
   if ('IntersectionObserver' in window) {
     var obs = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
@@ -835,8 +854,8 @@ function soumettreFormulaire(e) {
     }, { threshold: 0.08 });
     elems.forEach(function(el) { obs.observe(el); });
   } else {
-    // Fallback : tout visible immédiatement
-    elems.forEach(function(el) { el.classList.add('visible'); });
+    // Navigateur sans IntersectionObserver : tout visible immédiatement
+    toutAfficher();
   }
 })();
 
