@@ -10,7 +10,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:title" content="Vitalité Bohème — Massothérapie à Waterville, Estrie" />
   <meta property="og:description" content="Massothérapie certifiée par Vitalité Bohème, membre RMPQ. Relaxation suédoise, thérapeutique, Lomi Lomi, cours de couple. Reçus d'assurance. À Waterville, Estrie." />
-  <meta property="og:image" content="images/hero-bg.jpg" />
+  <meta property="og:image" content="https://vitaliteboheme.ca/images/hero-bg.jpg" />
   <meta property="og:locale" content="fr_CA" />
   <meta property="og:url" content="https://vitaliteboheme.ca/" />
   <meta property="og:site_name" content="Vitalité Bohème" />
@@ -25,28 +25,40 @@
   <!-- Géolocalisation -->
   <meta name="geo.region" content="CA-QC" />
   <meta name="geo.placename" content="Waterville, Québec" />
+  <meta name="geo.position" content="45.2667;-71.9000" />
+  <meta name="ICBM" content="45.2667, -71.9000" />
 
   <!-- Schema.org LocalBusiness — crucial pour Google Maps et recherche locale -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "MassageTherapist",
+    "@id": "https://vitaliteboheme.ca/#business",
     "name": "Vitalité Bohème",
-    "description": "Massothérapie certifiée à Waterville, Estrie. Spécialisé en relaxation suédoise, massage thérapeutique et Lomi Lomi. Membre RMPQ, reçus d'assurance disponibles.",
-    "url": "https://vitaliteboheme.ca",
+    "alternateName": "Vitalité Bohème Massothérapie",
+    "description": "Massothérapie haut de gamme à Waterville, en Estrie. Kevin Bibeau, massothérapeute certifié membre du RMPQ, offre le massage suédois de détente, le massage thérapeutique et le Lomi Lomi dans un espace privé et chaleureux. Reçus d'assurance remis après chaque séance.",
+    "url": "https://vitaliteboheme.ca/",
     "telephone": "+14383683282",
     "email": "bibeaukevin9@gmail.com",
-    "image": "https://vitaliteboheme.ca/images/hero-bg.jpg",
+    "image": "https://vitaliteboheme.ca/images/kevin-sourire.jpg",
     "logo": "https://vitaliteboheme.ca/images/logo-original.jpg",
     "priceRange": "$$",
     "currenciesAccepted": "CAD",
-    "paymentAccepted": "Cash, Credit Card, Interac",
+    "paymentAccepted": "Comptant, Carte de crédit, Interac",
+    "knowsLanguage": ["fr-CA", "en-CA"],
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Waterville",
       "addressRegion": "QC",
+      "postalCode": "J0B 3H0",
       "addressCountry": "CA"
     },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 45.2667,
+      "longitude": -71.9000
+    },
+    "hasMap": "https://maps.google.com/?q=Waterville+QC",
     "areaServed": [
       { "@type": "City", "name": "Waterville" },
       { "@type": "City", "name": "Sherbrooke" },
@@ -54,7 +66,33 @@
       { "@type": "City", "name": "Coaticook" },
       { "@type": "AdministrativeArea", "name": "Estrie" }
     ],
-    "hasMap": "https://maps.google.com/?q=Waterville+QC",
+    "availableService": [
+      {
+        "@type": "Service",
+        "name": "Massage suédois (relaxation)",
+        "description": "Massage de détente qui apaise le système nerveux et relâche les tensions du quotidien."
+      },
+      {
+        "@type": "Service",
+        "name": "Massage thérapeutique",
+        "description": "Travail ciblé sur les douleurs et tensions musculaires, idéal pour les sportifs et les maux de dos."
+      },
+      {
+        "@type": "Service",
+        "name": "Massage inspiration Lomi Lomi",
+        "description": "Soin sensoriel inspiré des traditions hawaïennes, plus proche d'une méditation en mouvement qu'un massage classique."
+      }
+    ],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Soins de massothérapie",
+      "itemListElement": [
+        { "@type": "Offer", "name": "Massage 60 minutes", "price": "100", "priceCurrency": "CAD" },
+        { "@type": "Offer", "name": "Massage 90 minutes", "price": "145", "priceCurrency": "CAD" },
+        { "@type": "Offer", "name": "Massage 2 heures", "price": "185", "priceCurrency": "CAD" },
+        { "@type": "Offer", "name": "Cours de massage en couple (3 h)", "price": "250", "priceCurrency": "CAD" }
+      ]
+    },
     "founder": {
       "@type": "Person",
       "name": "Kevin Bibeau",
@@ -68,6 +106,50 @@
       "https://www.tiktok.com/@viltalit.bohme",
       "https://www.instagram.com/vitaliteboheme",
       "https://www.facebook.com/vitaliteboheme"
+    ],
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5",
+      "bestRating": "5",
+      "ratingCount": "6"
+    },
+    "review": [
+      {
+        "@type": "Review",
+        "author": { "@type": "Person", "name": "Francis Ménard" },
+        "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+        "reviewBody": "Ce n'est pas seulement le soin qui est 20/10, c'est aussi la personne qui le donne. Kevin est une personne formidable, humble, à l'écoute et surtout il est humain. Je recommande 1000/10."
+      },
+      {
+        "@type": "Review",
+        "author": { "@type": "Person", "name": "Marie-Ève Monfils" },
+        "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+        "reviewBody": "Un massage incroyable qui a su soulager toutes mes tensions. Mes muscles, surtout au dos, se sentent beaucoup mieux. Un professionnel super à l'écoute, accueillant, avec des gestes justes et un toucher tonique."
+      },
+      {
+        "@type": "Review",
+        "author": { "@type": "Person", "name": "Raffaele Aaron Giampaolo" },
+        "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+        "reviewBody": "Great massotherapist, he's very attentive and friendly! Professional, luxurious experience, amazing results."
+      },
+      {
+        "@type": "Review",
+        "author": { "@type": "Person", "name": "Émilie Beauchesne" },
+        "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+        "reviewBody": "Une belle qualité de présence et un toucher juste, à l'écoute du corps. Un massage à la fois professionnel, apaisant et ressourçant."
+      },
+      {
+        "@type": "Review",
+        "author": { "@type": "Person", "name": "Melanie Giguère" },
+        "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+        "reviewBody": "Un essentiel à une bonne santé. Un soin incroyable et efficace. Merci."
+      },
+      {
+        "@type": "Review",
+        "author": { "@type": "Person", "name": "Danny Thompson" },
+        "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+        "reviewBody": "Amazing results."
+      }
     ]
   }
   </script>
