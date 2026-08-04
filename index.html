@@ -357,6 +357,7 @@
     .bulle-prix-item:hover { border-color: var(--or); }
     .bulle-prix-duree { color: var(--gris); font-size: clamp(9px,0.9vw,12px); }
     .bulle-prix-montant { font-weight: bold; color: var(--or); }
+    .bulle-prix-taxes { font-size: clamp(9px,0.8vw,10px); font-weight: normal; color: var(--gris); letter-spacing: 0.5px; }
 
     /* Tarif partagé */
     .services-top-group { display: flex; flex-direction: column; align-items: center; width: 100%; gap: 10px; }
@@ -374,6 +375,7 @@
     .tarif-sep { width: 1px; height: 32px; background: #e0d5c8; margin: 0 clamp(8px,1.5vw,20px); flex-shrink: 0; }
     .tarif-duree { font-size: clamp(10px,0.9vw,12px); color: var(--gris); }
     .tarif-montant { font-size: clamp(17px,1.8vw,23px); font-weight: bold; color: var(--or); }
+    .tarif-taxes { font-size: clamp(9px,0.8vw,10px); color: var(--gris); letter-spacing: 0.5px; }
 
     /* Modal services */
     #modal-service { display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(15,12,10,0.75); align-items: center; justify-content: center; padding: 20px; }
@@ -728,11 +730,11 @@
         <div class="tarif-groupe-inner">
           <p class="tarif-groupe-label"><span data-fr>Les 3 massages · même tarif</span><span data-en>All 3 massages · same rate</span></p>
           <div class="tarif-groupe-bar">
-            <div class="tarif-option"><span class="tarif-duree">60 min</span><span class="tarif-montant">100 $</span></div>
+            <div class="tarif-option"><span class="tarif-duree">60 min</span><span class="tarif-montant">100 $</span><span class="tarif-taxes">+ tx</span></div>
             <div class="tarif-sep"></div>
-            <div class="tarif-option"><span class="tarif-duree">90 min</span><span class="tarif-montant">145 $</span></div>
+            <div class="tarif-option"><span class="tarif-duree">90 min</span><span class="tarif-montant">145 $</span><span class="tarif-taxes">+ tx</span></div>
             <div class="tarif-sep"></div>
-            <div class="tarif-option"><span class="tarif-duree">2 h</span><span class="tarif-montant">185 $</span></div>
+            <div class="tarif-option"><span class="tarif-duree">2 h</span><span class="tarif-montant">185 $</span><span class="tarif-taxes">+ tx</span></div>
           </div>
           <p style="font-size:10px;color:var(--gris);margin:6px 0 0;opacity:0.75;text-align:center;letter-spacing:1px;"><span data-fr>✦ Inspiration Lomi Lomi disponible en 1 h seulement</span><span data-en>✦ Lomi Lomi Inspired available in 1 h only</span></p>
         </div>
@@ -750,7 +752,7 @@
         <div class="bulle-prix-list">
           <div class="bulle-prix-item">
             <span class="bulle-prix-duree">3 h</span>
-            <span class="bulle-prix-montant">250 $</span>
+            <span class="bulle-prix-montant">250 $ <span class="bulle-prix-taxes">+ tx</span></span>
           </div>
         </div>
       </div>
