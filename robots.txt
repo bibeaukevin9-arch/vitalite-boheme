@@ -1,32 +1,49 @@
 User-agent: *
 Allow: /
 
-# --- Crawlers des moteurs IA : explicitement autorisés (visibilité générative / GEO) ---
+# /test-muscles.html : outil de travail interne, partagé par lien seulement.
+# Il n'est lié depuis aucune page et porte un meta noindex. Le bloc « * »
+# ci-dessus ne l'interdit PAS volontairement : un moteur doit pouvoir lire la
+# page pour voir son noindex et donc ne pas l'indexer. Le bloquer ici ferait
+# l'inverse de ce qu'on veut.
+# Les moteurs IA, eux, sont écartés : la page annonce elle-même contenir des
+# erreurs, elle n'a pas à être reprise comme une référence d'anatomie.
+
+# --- Crawlers des moteurs IA : autorisés sur le site, sauf l'outil interne ---
 User-agent: GPTBot
+Disallow: /test-muscles.html
 Allow: /
 
 User-agent: OAI-SearchBot
+Disallow: /test-muscles.html
 Allow: /
 
 User-agent: ChatGPT-User
+Disallow: /test-muscles.html
 Allow: /
 
 User-agent: PerplexityBot
+Disallow: /test-muscles.html
 Allow: /
 
 User-agent: Perplexity-User
+Disallow: /test-muscles.html
 Allow: /
 
 User-agent: ClaudeBot
+Disallow: /test-muscles.html
 Allow: /
 
 User-agent: Claude-User
+Disallow: /test-muscles.html
 Allow: /
 
 User-agent: Google-Extended
+Disallow: /test-muscles.html
 Allow: /
 
 User-agent: Applebot-Extended
+Disallow: /test-muscles.html
 Allow: /
 
 Sitemap: https://vitaliteboheme.ca/sitemap.xml
