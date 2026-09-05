@@ -144,6 +144,7 @@
     .vide { color: var(--gris); font-size: 14px; padding: 14px 4px; line-height: 1.6; }
     .avert { display: flex; gap: 10px; align-items: flex-start; background: #fbf3e4; border: 1px solid rgba(207,169,106,0.5); border-radius: 10px; padding: 12px 14px; font-size: 14px; line-height: 1.5; margin-top: 14px; }
     .avert a { color: var(--brun-fonce); font-weight: 600; }
+    .avert[hidden], .btn-ligne[hidden], .lien-bouton[hidden] { display: none; }
 
     /* FORMULAIRE */
     .champs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -436,6 +437,7 @@ function rendrePersonnes() {
                                 'Total time: <b>' + libDuree(dureeTotale()) + '</b>' + (n > 1 ? ' for ' + n + ' people, one after the other' : '') + ' · <b>$' + prixTotal() + '</b> + tx') : '';
 }
 $('btn-ajouter').addEventListener('click', function() { etat.ajoutEnCours = true; rendrePersonnes(); $('c-soin').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+function libHeure(h) { var p = h.split(':'); return (+p[0]) + ' h' + (p[1] === '00' ? '' : ' ' + p[1]); }
 function libDuree(m) { var h = Math.floor(m / 60), r = m % 60; return h ? (h + ' h' + (r ? ' ' + (r < 10 ? '0' : '') + r : '')) : (m + ' min'); }
 
 /* ─── PAS ─── */
@@ -511,7 +513,7 @@ function rendreHeures() {
   var heures = etat.dispo[etat.jour] || [];
   $('heure-sous').textContent = T('Le ' + libJour(etat.jour) + ', pour ' + libDuree(dureeTotale()) + '. L\'heure choisie est celle du début.',
                                   libJour(etat.jour) + ', for ' + libDuree(dureeTotale()) + '. The time you pick is the start time.');
-  $('heures').innerHTML = heures.length ? heures.map(function(h){ return '<button type="button" class="heure' + (etat.heure === h ? ' choisi' : '') + '" data-h="' + h + '">' + h.replace(':', ' h ') + '</button>'; }).join('')
+  $('heures').innerHTML = heures.length ? heures.map(function(h){ return '<button type="button" class="heure' + (etat.heure === h ? ' choisi' : '') + '" data-h="' + h + '">' + libHeure(h) + '</button>'; }).join('')
                                         : '<div class="vide">' + T('Plus rien de libre ce jour-là.', 'Nothing left that day.') + '</div>';
   $('heures').querySelectorAll('.heure').forEach(function(b) { b.addEventListener('click', function(){ etat.heure = b.getAttribute('data-h'); rendreHeures(); rendreRecap(); allerPas(4); }); });
   var p = etat.jour.split('-'), debut = new Date(+p[0], +p[1] - 1, +p[2], 12);
@@ -522,7 +524,7 @@ function rendreHeures() {
 function rendreRecap() {
   if (!etat.jour || !etat.heure) return;
   var n = etat.personnes.length;
-  $('recap').innerHTML = '<b>' + libJour(etat.jour) + ' · ' + etat.heure.replace(':', ' h ') + '</b><br>' +
+  $('recap').innerHTML = '<b>' + libJour(etat.jour) + ' · ' + libHeure(etat.heure) + '</b><br>' +
     etat.personnes.map(function(s, i){ return (n > 1 ? (i + 1) + '. ' : '') + s.min + ' min · ' + T(s.fr, s.en) + ' · ' + s.prix + ' $ + tx'; }).join('<br>') +
     (n > 1 ? '<br>' + T('L\'une après l\'autre, ' + REGLES.tamponGroupeMin + ' min entre chaque.', 'One after the other, ' + REGLES.tamponGroupeMin + ' min between each.') : '') +
     '<br>' + T('Total : ', 'Total: ') + '<b>' + prixTotal() + ' $</b> + tx · ' + T('Waterville, adresse envoyée après confirmation.', 'Waterville, address sent after confirmation.');
@@ -550,7 +552,7 @@ $('form').addEventListener('submit', function(e) {
     $('attente-envoi').hidden = true;
     if (data && data.ok) {
       $('c-toi').hidden = true; $('c-fin').hidden = false;
-      $('fin-detail').innerHTML = '<b>' + libJour(etat.jour) + ' · ' + etat.heure.replace(':', ' h ') + '</b> · ' + libDuree(dureeTotale());
+      $('fin-detail').innerHTML = '<b>' + libJour(etat.jour) + ' · ' + libHeure(etat.heure) + '</b> · ' + libDuree(dureeTotale());
       document.querySelectorAll('#pas span[data-pas]').forEach(function(s){ s.classList.add('fait'); s.classList.remove('actif'); });
       $('c-fin').scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
