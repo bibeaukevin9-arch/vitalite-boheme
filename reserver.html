@@ -455,7 +455,7 @@ function chargerDispo() {
   var fini = function(data) {
     etat.chargement = false; $('attente-jours').hidden = true;
     if (!data || !data.ok) { montrerErreurJours(); return; }
-    etat.dispo = data.dispo || {}; etat.semaine = 0; rendreJours();
+    etat.dispo = data.dispo || {}; etat.semaine = premiereSemaineLibre(); rendreJours();
   };
   if (!SCRIPT_URL) { setTimeout(function(){ fini(dispoDemo(duree)); }, 500); return; }
   var url = SCRIPT_URL + '?action=dispo&duree=' + duree + '&jours=' + REGLES.horizonJours + '&_=' + Date.now();
@@ -489,6 +489,14 @@ function rendreJours() {
   }
   $('jours').innerHTML = html;
   $('jours').querySelectorAll('.jour:not(.plein)').forEach(function(b) { b.addEventListener('click', function(){ etat.jour = b.getAttribute('data-k'); etat.heure = null; rendreJours(); rendreHeures(); allerPas(3); }); });
+}
+function premiereSemaineLibre() {
+  var auj = new Date(); auj.setHours(0, 0, 0, 0);
+  var lundi = new Date(auj); lundi.setDate(lundi.getDate() - ((lundi.getDay() + 6) % 7));
+  var cles = Object.keys(etat.dispo).sort();
+  if (!cles.length) return 0;
+  var p = cles[0].split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]);
+  return Math.max(0, Math.floor((d - lundi) / (7 * 86400000)));
 }
 $('prec').addEventListener('click', function(){ if (etat.semaine > 0) { etat.semaine--; rendreJours(); } });
 $('suiv').addEventListener('click', function(){ etat.semaine++; rendreJours(); });
