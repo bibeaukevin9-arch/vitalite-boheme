@@ -9,41 +9,62 @@ Allow: /
 # Les moteurs IA, eux, sont écartés : la page annonce elle-même contenir des
 # erreurs, elle n'a pas à être reprise comme une référence d'anatomie.
 
+# /reserver.html et /confidentialite.html : en essai, non liees depuis le site,
+# meta noindex. Meme logique : lisibles par les moteurs, ecartees des robots IA.
+
 # --- Crawlers des moteurs IA : autorisés sur le site, sauf l'outil interne ---
 User-agent: GPTBot
 Disallow: /test-muscles.html
+Disallow: /reserver.html
+Disallow: /confidentialite.html
 Allow: /
 
 User-agent: OAI-SearchBot
 Disallow: /test-muscles.html
+Disallow: /reserver.html
+Disallow: /confidentialite.html
 Allow: /
 
 User-agent: ChatGPT-User
 Disallow: /test-muscles.html
+Disallow: /reserver.html
+Disallow: /confidentialite.html
 Allow: /
 
 User-agent: PerplexityBot
 Disallow: /test-muscles.html
+Disallow: /reserver.html
+Disallow: /confidentialite.html
 Allow: /
 
 User-agent: Perplexity-User
 Disallow: /test-muscles.html
+Disallow: /reserver.html
+Disallow: /confidentialite.html
 Allow: /
 
 User-agent: ClaudeBot
 Disallow: /test-muscles.html
+Disallow: /reserver.html
+Disallow: /confidentialite.html
 Allow: /
 
 User-agent: Claude-User
 Disallow: /test-muscles.html
+Disallow: /reserver.html
+Disallow: /confidentialite.html
 Allow: /
 
 User-agent: Google-Extended
 Disallow: /test-muscles.html
+Disallow: /reserver.html
+Disallow: /confidentialite.html
 Allow: /
 
 User-agent: Applebot-Extended
 Disallow: /test-muscles.html
+Disallow: /reserver.html
+Disallow: /confidentialite.html
 Allow: /
 
 Sitemap: https://vitaliteboheme.ca/sitemap.xml

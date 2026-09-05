@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Réserver — Vitalité Bohème</title>
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <link rel="icon" href="images/logo-original.jpg" type="image/jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --noir: #1c1208; --noir-doux: #261a0e;
+      --or: #cfa96a; --or-clair: #e8c98a;
+      --beige: #f5ede0; --beige-doux: #ede0cc;
+      --brun: #8a6a50; --brun-fonce: #4a3220;
+      --blanc: #fdfaf6; --creme: #f2ebe2;
+      --texte: #3a2e28; --gris: #7a6a58;
+      --vert: #4d7a4a; --rouge: #9a4a3a;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { overflow-x: clip; scroll-behavior: smooth; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif;
+      color: var(--texte); overflow-x: clip; max-width: 100vw; position: relative;
+      background: var(--beige);
+    }
+    body::before { content: ''; position: fixed; inset: 0; background: url('images/fiche-bg.jpg') center center / cover; z-index: -1; }
+    h1, h2, h3, .serif { font-family: 'Cormorant Garamond', Georgia, serif; }
+
+    /* LANGUE */
+    .lang-btn {
+      position: fixed; top: 20px; left: 24px; z-index: 1100;
+      background: rgba(30,22,14,0.82); color: #c8b89a; border: 1px solid rgba(201,169,110,0.35);
+      padding: 7px 16px; border-radius: 20px; cursor: pointer;
+      font-size: 12px; letter-spacing: 1px; font-family: Georgia, serif;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25); backdrop-filter: blur(8px);
+      display: flex; align-items: center; gap: 0;
+    }
+    .lang-btn .lbl { padding: 0 6px; transition: color .2s; }
+    .lang-btn .lbl.actif { color: var(--or); font-weight: bold; }
+    .lang-btn .sep { color: rgba(201,169,110,0.4); font-size: 11px; }
+    [data-en] { display: none; }
+    body.en [data-fr] { display: none; }
+    body.en [data-en] { display: block; }
+    body.en span[data-en], body.en em[data-en], body.en a[data-en], body.en b[data-en] { display: inline; }
+    body.en span[data-fr], body.en em[data-fr], body.en a[data-fr], body.en b[data-fr] { display: none; }
+
+    /* EN-TÊTE */
+    .r-header {
+      background: url('images/hero-bg.jpg') center center / cover no-repeat;
+      padding: 44px 24px 36px; text-align: center;
+      border-bottom: 1px solid rgba(201,169,110,0.25);
+      position: relative; z-index: 1; overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+    }
+    .r-header::before {
+      content: ''; position: absolute; inset: 0; z-index: 0;
+      background: linear-gradient(180deg, rgba(10,5,1,0.55) 0%, rgba(15,8,2,0.35) 50%, rgba(10,5,1,0.5) 100%),
+                  radial-gradient(ellipse 55% 40% at 50% 0%, rgba(255,220,130,0.16) 0%, transparent 65%);
+    }
+    .r-header > * { position: relative; z-index: 2; }
+    .header-logo { width: 72px; height: 72px; border-radius: 50%; border: 2px solid var(--or);
+      box-shadow: 0 0 0 5px rgba(201,169,110,0.14), 0 8px 30px rgba(0,0,0,0.35); margin: 0 auto 18px; overflow: hidden; }
+    .header-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .header-badge { display: inline-block; border: 1px solid rgba(201,169,110,0.8); color: var(--or-clair);
+      padding: 5px 22px; border-radius: 20px; font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+      margin-bottom: 16px; background: rgba(0,0,0,0.25); }
+    .r-header h1 { font-size: 34px; color: var(--creme); margin-bottom: 8px; line-height: 1.2; font-weight: 600;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.8); }
+    .r-header h1 em { color: var(--or-clair); font-style: italic; }
+    .r-header p { font-size: 15px; color: var(--creme); max-width: 520px; margin: 0 auto 8px; line-height: 1.7;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.8); }
+    .retour-lien { display: inline-block; color: rgba(201,169,110,0.8); font-size: 12px; letter-spacing: 1px;
+      text-decoration: none; margin-top: 14px; }
+    .retour-lien:hover { color: var(--or-clair); }
+
+    /* CORPS */
+    .r-body { max-width: 760px; margin: 0 auto; padding: 36px 20px 90px; position: relative; z-index: 1; }
+
+    /* PARCOURS : les 4 pas */
+    .pas { display: flex; justify-content: center; gap: 6px; margin: 0 0 26px; flex-wrap: wrap; }
+    .pas span { font-size: 12px; letter-spacing: 1px; color: var(--gris); padding: 6px 12px; border-radius: 20px;
+      border: 1px solid rgba(138,106,80,0.25); background: rgba(255,255,255,0.55); transition: all .25s; }
+    .pas span.actif { color: var(--brun-fonce); border-color: var(--or); background: #fff; font-weight: 600; }
+    .pas span.fait { color: var(--vert); border-color: rgba(77,122,74,0.4); }
+    .pas span.fait::before { content: '✓ '; }
+
+    .carte { background: #fff; border-radius: 16px; padding: 26px 24px; margin-bottom: 18px;
+      border: 1.5px solid rgba(201,169,110,0.22);
+      box-shadow: 0 4px 24px rgba(60,40,20,0.10), 0 1px 4px rgba(60,40,20,0.06); }
+    .carte h2 { font-size: 24px; color: var(--brun-fonce); margin-bottom: 4px; font-weight: 600; }
+    .carte .sous { font-size: 14px; color: var(--gris); margin-bottom: 18px; line-height: 1.6; }
+    .carte[hidden] { display: none; }
+
+    /* SOINS */
+    .soins { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+    .soin { text-align: left; background: var(--beige); border: 1.5px solid rgba(201,169,110,0.25); border-radius: 12px;
+      padding: 14px 14px 12px; cursor: pointer; transition: transform .15s, border-color .15s, box-shadow .15s; font: inherit; color: var(--texte); }
+    .soin:hover { transform: translateY(-2px); border-color: var(--or); }
+    .soin.choisi { border-color: var(--or); background: #fff; box-shadow: 0 0 0 3px rgba(207,169,106,0.25); }
+    .soin .duree { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 700; color: var(--brun-fonce); line-height: 1; }
+    .soin .duree small { font-size: 14px; font-weight: 400; color: var(--gris); margin-left: 3px; }
+    .soin .nom { font-size: 13px; color: var(--texte); margin: 6px 0 4px; line-height: 1.35; min-height: 34px; }
+    .soin .prix { font-size: 13px; color: var(--brun); }
+    .soin .prix b { color: var(--brun-fonce); font-size: 15px; }
+    .soin .prix small { font-size: 10px; color: var(--gris); margin-left: 2px; }
+
+    /* GROUPE */
+    .personnes { margin-top: 16px; }
+    .personne { display: flex; align-items: center; gap: 10px; background: var(--beige); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; font-size: 14px; }
+    .personne .num { width: 26px; height: 26px; border-radius: 50%; background: var(--brun-fonce); color: var(--creme); display: grid; place-items: center; font-size: 12px; flex: none; }
+    .personne .detail { flex: 1; }
+    .personne .retirer { background: none; border: none; color: var(--gris); cursor: pointer; font-size: 18px; padding: 4px 8px; }
+    .lien-bouton { background: none; border: 1px dashed rgba(138,106,80,0.5); color: var(--brun-fonce); padding: 9px 14px; border-radius: 10px;
+      cursor: pointer; font: inherit; font-size: 13px; margin-top: 6px; }
+    .lien-bouton:hover { border-color: var(--or); }
+    .total { font-size: 14px; color: var(--gris); margin-top: 12px; }
+    .total b { color: var(--brun-fonce); }
+
+    /* JOURS */
+    .semaine-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .semaine-nav button { background: #fff; border: 1px solid rgba(201,169,110,0.35); border-radius: 50%; width: 36px; height: 36px; cursor: pointer; font-size: 16px; color: var(--brun-fonce); }
+    .semaine-nav button:disabled { opacity: .35; cursor: default; }
+    .semaine-nav .mois { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--brun-fonce); text-transform: capitalize; }
+    .jours { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+    .jour { border: 1.5px solid transparent; background: var(--beige); border-radius: 12px; padding: 10px 2px 8px; text-align: center; cursor: pointer; font: inherit; color: var(--texte); transition: all .15s; }
+    .jour .j { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--gris); }
+    .jour .d { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700; color: var(--brun-fonce); line-height: 1.1; }
+    .jour .n { font-size: 10px; color: var(--vert); min-height: 13px; }
+    .jour:hover { border-color: var(--or); }
+    .jour.choisi { background: #fff; border-color: var(--or); box-shadow: 0 0 0 3px rgba(207,169,106,0.25); }
+    .jour.plein { opacity: .38; cursor: default; }
+    .jour.plein .n { color: var(--gris); }
+    .jour.appel .n { color: var(--brun); }
+
+    /* HEURES */
+    .heures { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; margin-top: 14px; }
+    .heure { background: var(--beige); border: 1.5px solid rgba(201,169,110,0.25); border-radius: 10px; padding: 10px 4px; text-align: center; cursor: pointer;
+      font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 600; color: var(--brun-fonce); transition: all .15s; }
+    .heure:hover { border-color: var(--or); transform: translateY(-1px); }
+    .heure.choisi { background: var(--brun-fonce); color: var(--creme); border-color: var(--brun-fonce); }
+    .vide { color: var(--gris); font-size: 14px; padding: 14px 4px; line-height: 1.6; }
+    .avert { display: flex; gap: 10px; align-items: flex-start; background: #fbf3e4; border: 1px solid rgba(207,169,106,0.5); border-radius: 10px; padding: 12px 14px; font-size: 14px; line-height: 1.5; margin-top: 14px; }
+    .avert a { color: var(--brun-fonce); font-weight: 600; }
+
+    /* FORMULAIRE */
+    .champs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .champ { display: flex; flex-direction: column; gap: 5px; }
+    .champ.large { grid-column: 1 / -1; }
+    .champ label { font-size: 12px; letter-spacing: .5px; color: var(--gris); text-transform: uppercase; }
+    .champ input, .champ select, .champ textarea { font: inherit; font-size: 15px; padding: 11px 12px; border: 1.5px solid rgba(138,106,80,0.3); border-radius: 10px; background: var(--blanc); color: var(--texte); width: 100%; }
+    .champ input:focus, .champ select:focus, .champ textarea:focus { outline: none; border-color: var(--or); box-shadow: 0 0 0 3px rgba(207,169,106,0.2); }
+    .champ textarea { min-height: 70px; resize: vertical; }
+    .piege { position: absolute; left: -9999px; opacity: 0; height: 0; width: 0; }
+    .mineur { display: none; margin-top: 4px; font-size: 13px; color: var(--brun); background: #fbf3e4; border-radius: 8px; padding: 8px 10px; line-height: 1.5; }
+    .mineur.visible { display: block; }
+
+    .recap { background: var(--beige); border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.7; margin: 16px 0; }
+    .recap b { color: var(--brun-fonce); }
+    .politique { font-size: 13px; color: var(--gris); line-height: 1.6; margin: 14px 0; }
+    .politique a { color: var(--brun-fonce); }
+    .consent { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; line-height: 1.5; margin: 12px 0 18px; cursor: pointer; }
+    .consent input { width: 20px; height: 20px; accent-color: var(--brun-fonce); flex: none; margin-top: 2px; }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+      background: var(--brun-fonce); color: var(--creme); border: none; border-radius: 12px; padding: 15px 20px;
+      font: inherit; font-size: 16px; letter-spacing: .5px; cursor: pointer; transition: transform .15s, box-shadow .15s; }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(74,50,32,0.3); }
+    .btn:disabled { opacity: .5; cursor: default; transform: none; box-shadow: none; }
+    .btn.secondaire { background: transparent; color: var(--brun-fonce); border: 1.5px solid rgba(138,106,80,0.4); }
+    .btn-ligne { display: flex; gap: 10px; }
+
+    /* ATTENTE / RÉSULTAT */
+    .attente { text-align: center; padding: 30px 10px; color: var(--gris); }
+    .attente .pt { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--or); margin: 0 3px; animation: souffle 1.2s infinite ease-in-out; }
+    .attente .pt:nth-child(2) { animation-delay: .2s; } .attente .pt:nth-child(3) { animation-delay: .4s; }
+    @keyframes souffle { 0%,100% { transform: scale(.6); opacity: .4; } 50% { transform: scale(1); opacity: 1; } }
+    .fin { text-align: center; padding: 20px 6px; }
+    .fin .sceau { width: 78px; height: 78px; border-radius: 50%; margin: 0 auto 16px; display: grid; place-items: center;
+      border: 2px solid var(--or); color: var(--or); font-size: 34px; font-family: 'Cormorant Garamond', serif; animation: apparait .6s ease-out; }
+    @keyframes apparait { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .fin h2 { font-size: 28px; }
+    .fin p { font-size: 15px; line-height: 1.7; color: var(--texte); max-width: 480px; margin: 8px auto; }
+    .fin .tel { display: inline-block; margin-top: 10px; color: var(--brun-fonce); font-weight: 600; text-decoration: none; }
+    .erreur { background: #fbeeea; border: 1px solid rgba(154,74,58,0.4); color: var(--rouge); border-radius: 10px; padding: 12px 14px; font-size: 14px; line-height: 1.5; margin-top: 12px; }
+    .erreur a { color: var(--rouge); font-weight: 600; }
+
+    .demo { position: sticky; top: 0; z-index: 900; background: #3a2e28; color: var(--creme); text-align: center; font-size: 12px; letter-spacing: .5px; padding: 8px 12px; }
+    .demo[hidden] { display: none; }
+
+    footer { text-align: center; font-size: 12px; color: var(--gris); padding: 20px; position: relative; z-index: 1; }
+    footer a { color: var(--brun-fonce); }
+
+    @media (max-width: 560px) {
+      .r-header h1 { font-size: 28px; }
+      .champs { grid-template-columns: 1fr; }
+      .jour .d { font-size: 18px; }
+      .lang-btn { top: 12px; left: 12px; }
+      .carte { padding: 20px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="demo" id="demo" hidden>
+  <span data-fr>Mode démonstration : les plages sont fictives et aucune demande n'est envoyée.</span>
+  <span data-en>Demo mode: time slots are fictional and no request is sent.</span>
+</div>
+
+<button class="lang-btn" id="lang-btn" onclick="toggleLang()">
+  <span class="lbl actif" id="lbl-fr">FR</span><span class="sep">|</span><span class="lbl" id="lbl-en">EN</span>
+</button>
+
+<header class="r-header">
+  <div class="header-logo"><img src="images/logo-original.jpg" alt="Vitalité Bohème" /></div>
+  <div class="header-badge"><span data-fr>Waterville, Estrie</span><span data-en>Waterville, Estrie</span></div>
+  <h1 data-fr>Choisis ton <em>moment</em></h1>
+  <h1 data-en>Pick your <em>moment</em></h1>
+  <p data-fr>Ton soin, ton jour, ton heure. Kevin confirme lui-même chaque demande, en général dans la journée.</p>
+  <p data-en>Your treatment, your day, your time. Kevin personally confirms every request, usually the same day.</p>
+  <a href="index.html" class="retour-lien"><span data-fr>← Retour au site</span><span data-en>← Back to website</span></a>
+</header>
+
+<main class="r-body">
+
+  <div class="pas" id="pas">
+    <span class="actif" data-pas="1"><span data-fr>Soin</span><span data-en>Treatment</span></span>
+    <span data-pas="2"><span data-fr>Jour</span><span data-en>Day</span></span>
+    <span data-pas="3"><span data-fr>Heure</span><span data-en>Time</span></span>
+    <span data-pas="4"><span data-fr>Toi</span><span data-en>You</span></span>
+  </div>
+
+  <!-- 1. SOIN -->
+  <section class="carte" id="c-soin">
+    <h2 data-fr>1. Ton temps de massage</h2>
+    <h2 data-en>1. Your massage time</h2>
+    <p class="sous" data-fr>Un seul geste par personne. Tu peux ajouter quelqu'un qui passera juste après toi.</p>
+    <p class="sous" data-en>One tap per person. You can add someone who comes right after you.</p>
+    <div class="soins" id="soins"></div>
+    <div class="personnes" id="personnes"></div>
+    <button type="button" class="lien-bouton" id="btn-ajouter" hidden>
+      <span data-fr>+ Ajouter une personne</span><span data-en>+ Add a person</span>
+    </button>
+    <p class="total" id="total"></p>
+  </section>
+
+  <!-- 2. JOUR -->
+  <section class="carte" id="c-jour" hidden>
+    <h2 data-fr>2. Le jour</h2>
+    <h2 data-en>2. The day</h2>
+    <p class="sous" data-fr>Les jours affichés ont au moins une place libre. Rien n'est réservable à moins de 24 h : pour demain, un appel est plus simple.</p>
+    <p class="sous" data-en>Days shown have at least one free slot. Nothing can be booked less than 24 hours ahead: for tomorrow, a call is easier.</p>
+    <div class="semaine-nav">
+      <button type="button" id="prec" aria-label="Semaine précédente">‹</button>
+      <div class="mois" id="mois"></div>
+      <button type="button" id="suiv" aria-label="Semaine suivante">›</button>
+    </div>
+    <div class="jours" id="jours"></div>
+    <div id="attente-jours" class="attente" hidden><span class="pt"></span><span class="pt"></span><span class="pt"></span></div>
+    <div id="erreur-jours" class="erreur" hidden></div>
+  </section>
+
+  <!-- 3. HEURE -->
+  <section class="carte" id="c-heure" hidden>
+    <h2 data-fr>3. L'heure</h2>
+    <h2 data-en>3. The time</h2>
+    <p class="sous" id="heure-sous"></p>
+    <div class="heures" id="heures"></div>
+    <div class="avert" id="avert-48" hidden>
+      <span>⏱</span>
+      <div>
+        <span data-fr>C'est dans moins de 48 h. Tu peux réserver ici, mais un appel au <a href="tel:+14383683282">438 368-3282</a> est plus sûr pour un délai court.</span>
+        <span data-en>This is less than 48 hours away. You can book here, but a call to <a href="tel:+14383683282">438 368-3282</a> is safer on short notice.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. TOI -->
+  <section class="carte" id="c-toi" hidden>
+    <h2 data-fr>4. Toi</h2>
+    <h2 data-en>4. You</h2>
+    <p class="sous" data-fr>Le nécessaire, rien de plus. Le questionnaire de santé viendra après la confirmation.</p>
+    <p class="sous" data-en>Only what is needed. The health form comes after confirmation.</p>
+    <form id="form" novalidate>
+      <div class="champs">
+        <div class="champ"><label for="prenom"><span data-fr>Prénom</span><span data-en>First name</span></label><input id="prenom" name="prenom" required autocomplete="given-name"></div>
+        <div class="champ"><label for="nom"><span data-fr>Nom</span><span data-en>Last name</span></label><input id="nom" name="nom" required autocomplete="family-name"></div>
+        <div class="champ"><label for="courriel"><span data-fr>Courriel</span><span data-en>Email</span></label><input id="courriel" name="courriel" type="email" required autocomplete="email" inputmode="email"></div>
+        <div class="champ"><label for="tel"><span data-fr>Téléphone</span><span data-en>Phone</span></label><input id="tel" name="tel" type="tel" required autocomplete="tel" inputmode="tel" placeholder="819 000-0000"></div>
+        <div class="champ">
+          <label for="pourqui"><span data-fr>Le soin est pour</span><span data-en>The treatment is for</span></label>
+          <select id="pourqui" name="pourqui">
+            <option value="moi" data-fr-txt="Moi" data-en-txt="Me">Moi</option>
+            <option value="autre" data-fr-txt="Une autre personne" data-en-txt="Someone else">Une autre personne</option>
+            <option value="mineur" data-fr-txt="Un mineur (moins de 18 ans)" data-en-txt="A minor (under 18)">Un mineur (moins de 18 ans)</option>
+          </select>
+          <div class="mineur" id="mineur">
+            <span data-fr>Pour un mineur, un parent ou tuteur signe le questionnaire et reste joignable pendant le soin.</span>
+            <span data-en>For a minor, a parent or guardian signs the form and stays reachable during the treatment.</span>
+          </div>
+        </div>
+        <div class="champ"><label for="promo"><span data-fr>Code promo (facultatif)</span><span data-en>Promo code (optional)</span></label><input id="promo" name="promo" autocomplete="off" autocapitalize="characters"></div>
+        <div class="champ large"><label for="note"><span data-fr>Un mot pour Kevin (facultatif)</span><span data-en>A word for Kevin (optional)</span></label><textarea id="note" name="note" maxlength="500"></textarea></div>
+        <div class="piege" aria-hidden="true"><label>Site web<input name="site_web" tabindex="-1" autocomplete="off"></label></div>
+      </div>
+
+      <div class="recap" id="recap"></div>
+
+      <div class="politique">
+        <span data-fr>Un préavis de 24 h est demandé pour annuler ou déplacer. À moins de 24 h ou en cas d'absence, des frais pouvant aller jusqu'à 50 $ par plage peuvent être réclamés, selon la perte subie. Tes coordonnées servent à ce rendez-vous et à ton dossier client, rien d'autre : <a href="confidentialite.html" target="_blank" rel="noopener">politique de confidentialité</a>.</span>
+        <span data-en>24 hours' notice is requested to cancel or move an appointment. With less than 24 hours' notice or in case of absence, fees of up to $50 per slot may be claimed, based on the loss incurred. Your details are used for this appointment and your client file, nothing else: <a href="confidentialite.html" target="_blank" rel="noopener">privacy policy</a>.</span>
+      </div>
+      <label class="consent">
+        <input type="checkbox" id="consent" required>
+        <span><span data-fr>J'ai lu la politique et je demande ce rendez-vous.</span><span data-en>I have read the policy and I am requesting this appointment.</span></span>
+      </label>
+
+      <div class="btn-ligne">
+        <button type="button" class="btn secondaire" id="btn-retour" style="width:auto;padding-inline:18px">‹</button>
+        <button type="submit" class="btn" id="btn-envoyer"><span data-fr>Envoyer ma demande</span><span data-en>Send my request</span></button>
+      </div>
+      <div id="erreur-envoi" class="erreur" hidden></div>
+    </form>
+    <div id="attente-envoi" class="attente" hidden>
+      <span class="pt"></span><span class="pt"></span><span class="pt"></span>
+      <p data-fr style="margin-top:10px">On dépose ta demande dans l'agenda de Kevin…</p>
+      <p data-en style="margin-top:10px">Placing your request in Kevin's calendar…</p>
+    </div>
+  </section>
+
+  <!-- FIN -->
+  <section class="carte fin" id="c-fin" hidden>
+    <div class="sceau">✓</div>
+    <h2 data-fr>Demande reçue</h2>
+    <h2 data-en>Request received</h2>
+    <p id="fin-detail"></p>
+    <p data-fr>Kevin regarde chaque demande lui-même. Dès qu'il confirme, tu reçois un courriel avec l'adresse à Waterville et le questionnaire de santé à remplir avant ta visite.</p>
+    <p data-en>Kevin reviews every request himself. As soon as he confirms, you receive an email with the Waterville address and the health form to fill out before your visit.</p>
+    <p data-fr>Rien reçu dans les 24 h ? Regarde tes courriels indésirables, puis appelle.</p>
+    <p data-en>Nothing within 24 hours? Check your junk folder, then call.</p>
+    <a class="tel" href="tel:+14383683282">438 368-3282</a>
+  </section>
+
+</main>
+
+<footer>
+  <span data-fr>Vitalité Bohème · Massothérapie · Waterville, Estrie · </span><span data-en>Vitalité Bohème · Massage therapy · Waterville, Estrie · </span>
+  <a href="tel:+14383683282">438 368-3282</a>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   RÉGLAGES — la seule zone à toucher.
+   SCRIPT_URL vide  → mode démonstration (plages fictives, rien n'est envoyé).
+   SCRIPT_URL rempli → la page parle au programme dans le compte Google de Kevin.
+   Les règles (durées, prix, fenêtre, tampons) sont AUSSI dans le programme :
+   c'est lui qui a le dernier mot, la page ne fait qu'afficher.
+   ═══════════════════════════════════════════════════════════════════ */
+var SCRIPT_URL = '';
+var SOINS = [
+  { id: 'suedois60',  min: 60,  prix: 100, fr: 'Relaxation suédoise ou thérapeutique', en: 'Swedish relaxation or therapeutic' },
+  { id: 'suedois90',  min: 90,  prix: 145, fr: 'Relaxation suédoise ou thérapeutique', en: 'Swedish relaxation or therapeutic' },
+  { id: 'suedois120', min: 120, prix: 185, fr: 'Relaxation suédoise ou thérapeutique', en: 'Swedish relaxation or therapeutic' },
+  { id: 'lomi60',     min: 60,  prix: 100, fr: 'Inspiration Lomi Lomi', en: 'Lomi Lomi inspired' },
+  { id: 'couple180',  min: 180, prix: 300, fr: 'Cours de massage en couple (2 personnes, aucune expérience requise)', en: 'Couples massage class (2 people, no experience needed)' }
+];
+var REGLES = { horizonJours: 56, delaiMinH: 24, avertH: 48, tamponGroupeMin: 15, maxGroupeMin: 300 };
+var TEL = '438 368-3282';
+
+/* ─── LANGUE (même mécanique que le reste du site) ─── */
+var currentLang = 'fr';
+function applyLang(lang) {
+  currentLang = lang; var isEn = (lang === 'en');
+  document.body.classList.toggle('en', isEn);
+  document.getElementById('lbl-fr').classList.toggle('actif', !isEn);
+  document.getElementById('lbl-en').classList.toggle('actif', isEn);
+  document.documentElement.lang = isEn ? 'en' : 'fr';
+  document.querySelectorAll('#pourqui option').forEach(function(o){ o.textContent = o.getAttribute(isEn ? 'data-en-txt' : 'data-fr-txt'); });
+  try { localStorage.setItem('vb-lang', lang); } catch(e) {}
+  rendreTout();
+}
+function toggleLang() { applyLang(currentLang === 'fr' ? 'en' : 'fr'); }
+function T(fr, en) { return currentLang === 'en' ? en : fr; }
+
+/* ─── ÉTAT ─── */
+var etat = { personnes: [], jour: null, heure: null, dispo: {}, semaine: 0, chargement: false };
+var $ = function(id) { return document.getElementById(id); };
+
+function dureeTotale() {
+  var n = etat.personnes.length; if (!n) return 0;
+  return etat.personnes.reduce(function(a, s){ return a + s.min; }, 0) + REGLES.tamponGroupeMin * (n - 1);
+}
+function prixTotal() { return etat.personnes.reduce(function(a, s){ return a + s.prix; }, 0); }
+function soinParId(id) { return SOINS.filter(function(s){ return s.id === id; })[0]; }
+
+/* ─── 1. SOINS ─── */
+function rendreSoins() {
+  var html = SOINS.map(function(s) {
+    var h = s.min >= 120 ? (s.min / 60) + ' <small>h</small>' : s.min + ' <small>min</small>';
+    return '<button type="button" class="soin" data-id="' + s.id + '">' +
+      '<div class="duree">' + h + '</div>' +
+      '<div class="nom">' + T(s.fr, s.en) + '</div>' +
+      '<div class="prix"><b>' + s.prix + ' $</b><small>+ tx</small></div></button>';
+  }).join('');
+  $('soins').innerHTML = html;
+  $('soins').querySelectorAll('.soin').forEach(function(b) { b.addEventListener('click', function(){ choisirSoin(b.getAttribute('data-id')); }); });
+}
+function choisirSoin(id) {
+  var s = soinParId(id);
+  if (etat.personnes.length === 0) { etat.personnes = [s]; }
+  else {
+    if (etat.ajoutEnCours) {
+      var total = dureeTotale() + REGLES.tamponGroupeMin + s.min;
+      if (total > REGLES.maxGroupeMin) { alert(T('Au-delà de 5 h de soins d\'un coup, appelle Kevin : ' + TEL, 'For more than 5 hours of treatments at once, call Kevin: ' + TEL)); return; }
+      etat.personnes.push(s); etat.ajoutEnCours = false;
+    } else { etat.personnes = [s]; }
+  }
+  etat.jour = null; etat.heure = null; etat.dispo = {};
+  rendrePersonnes(); allerPas(2); chargerDispo();
+}
+function rendrePersonnes() {
+  var n = etat.personnes.length;
+  $('soins').querySelectorAll('.soin').forEach(function(b) { b.classList.toggle('choisi', n === 1 && b.getAttribute('data-id') === etat.personnes[0].id && !etat.ajoutEnCours); });
+  if (n <= 1 && !etat.ajoutEnCours) { $('personnes').innerHTML = ''; }
+  else {
+    $('personnes').innerHTML = etat.personnes.map(function(s, i) {
+      return '<div class="personne"><span class="num">' + (i + 1) + '</span><span class="detail">' + s.min + ' min · ' + T(s.fr, s.en) + ' · ' + s.prix + ' $ + tx</span>' +
+        (n > 1 ? '<button type="button" class="retirer" data-i="' + i + '" aria-label="Retirer">×</button>' : '') + '</div>';
+    }).join('') + (etat.ajoutEnCours ? '<div class="personne" style="border:1.5px dashed rgba(138,106,80,.5);background:#fff"><span class="num">' + (n + 1) + '</span><span class="detail">' + T('Choisis le soin de cette personne ci-dessus ↑', 'Pick this person\'s treatment above ↑') + '</span></div>' : '');
+    $('personnes').querySelectorAll('.retirer').forEach(function(b) { b.addEventListener('click', function() { etat.personnes.splice(+b.getAttribute('data-i'), 1); etat.jour = null; etat.heure = null; rendrePersonnes(); allerPas(2); chargerDispo(); }); });
+  }
+  $('btn-ajouter').hidden = !(n >= 1 && !etat.ajoutEnCours && dureeTotale() + REGLES.tamponGroupeMin + 60 <= REGLES.maxGroupeMin);
+  $('total').innerHTML = n ? T('Durée totale : <b>' + libDuree(dureeTotale()) + '</b>' + (n > 1 ? ' pour ' + n + ' personnes, l\'une après l\'autre' : '') + ' · <b>' + prixTotal() + ' $</b> + tx',
+                                'Total time: <b>' + libDuree(dureeTotale()) + '</b>' + (n > 1 ? ' for ' + n + ' people, one after the other' : '') + ' · <b>$' + prixTotal() + '</b> + tx') : '';
+}
+$('btn-ajouter').addEventListener('click', function() { etat.ajoutEnCours = true; rendrePersonnes(); $('c-soin').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+function libDuree(m) { var h = Math.floor(m / 60), r = m % 60; return h ? (h + ' h' + (r ? ' ' + (r < 10 ? '0' : '') + r : '')) : (m + ' min'); }
+
+/* ─── PAS ─── */
+function allerPas(n) {
+  document.querySelectorAll('#pas span[data-pas]').forEach(function(s) { var k = +s.getAttribute('data-pas'); s.classList.toggle('actif', k === n); s.classList.toggle('fait', k < n); });
+  $('c-jour').hidden = n < 2; $('c-heure').hidden = n < 3; $('c-toi').hidden = n < 4; $('c-fin').hidden = true;
+  var cible = { 2: 'c-jour', 3: 'c-heure', 4: 'c-toi' }[n];
+  if (cible) setTimeout(function(){ $(cible).scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+}
+
+/* ─── 2. JOURS ─── */
+function cleJour(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+function chargerDispo() {
+  if (!etat.personnes.length) return;
+  etat.chargement = true; $('attente-jours').hidden = false; $('erreur-jours').hidden = true; $('jours').innerHTML = '';
+  var duree = dureeTotale();
+  var fini = function(data) {
+    etat.chargement = false; $('attente-jours').hidden = true;
+    if (!data || !data.ok) { montrerErreurJours(); return; }
+    etat.dispo = data.dispo || {}; etat.semaine = 0; rendreJours();
+  };
+  if (!SCRIPT_URL) { setTimeout(function(){ fini(dispoDemo(duree)); }, 500); return; }
+  var url = SCRIPT_URL + '?action=dispo&duree=' + duree + '&jours=' + REGLES.horizonJours + '&_=' + Date.now();
+  fetch(url, { method: 'GET', redirect: 'follow' }).then(function(r){ return r.json(); }).then(fini).catch(function(){ etat.chargement = false; $('attente-jours').hidden = true; montrerErreurJours(); });
+}
+function montrerErreurJours() {
+  $('erreur-jours').hidden = false;
+  $('erreur-jours').innerHTML = T('Les plages ne se chargent pas pour le moment. Réessaie dans une minute, ou appelle Kevin au <a href="tel:+14383683282">' + TEL + '</a>.',
+                                  'Time slots are not loading right now. Try again in a minute, or call Kevin at <a href="tel:+14383683282">' + TEL + '</a>.');
+}
+function rendreJours() {
+  var auj = new Date(); auj.setHours(0, 0, 0, 0);
+  var debut = new Date(auj); debut.setDate(debut.getDate() - ((debut.getDay() + 6) % 7) + etat.semaine * 7);
+  var fin = new Date(debut); fin.setDate(fin.getDate() + 6);
+  var moisFr = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  var moisEn = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var mois = currentLang === 'en' ? moisEn : moisFr;
+  $('mois').textContent = debut.getMonth() === fin.getMonth() ? mois[debut.getMonth()] + ' ' + debut.getFullYear() : mois[debut.getMonth()] + ' · ' + mois[fin.getMonth()];
+  $('prec').disabled = etat.semaine === 0;
+  $('suiv').disabled = etat.semaine >= Math.ceil(REGLES.horizonJours / 7) - 1;
+  var jFr = ['lun','mar','mer','jeu','ven','sam','dim'], jEn = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  var html = '';
+  for (var i = 0; i < 7; i++) {
+    var d = new Date(debut); d.setDate(debut.getDate() + i);
+    var k = cleJour(d), heures = etat.dispo[k] || [];
+    var passe = d < auj, plein = passe || heures.length === 0;
+    var appel = !passe && heures.length === 0 && (d - auj) / 36e5 < REGLES.delaiMinH + 24;
+    var note = passe ? '' : heures.length ? (heures.length + ' ' + T('libre' + (heures.length > 1 ? 's' : ''), 'free')) : appel ? T('appelle', 'call') : T('complet', 'full');
+    html += '<button type="button" class="jour' + (plein ? ' plein' : '') + (appel ? ' appel' : '') + (etat.jour === k ? ' choisi' : '') + '" data-k="' + k + '"' + (plein ? ' disabled' : '') + '>' +
+      '<div class="j">' + (currentLang === 'en' ? jEn : jFr)[i] + '</div><div class="d">' + d.getDate() + '</div><div class="n">' + note + '</div></button>';
+  }
+  $('jours').innerHTML = html;
+  $('jours').querySelectorAll('.jour:not(.plein)').forEach(function(b) { b.addEventListener('click', function(){ etat.jour = b.getAttribute('data-k'); etat.heure = null; rendreJours(); rendreHeures(); allerPas(3); }); });
+}
+$('prec').addEventListener('click', function(){ if (etat.semaine > 0) { etat.semaine--; rendreJours(); } });
+$('suiv').addEventListener('click', function(){ etat.semaine++; rendreJours(); });
+
+/* ─── 3. HEURES ─── */
+function libJour(k) {
+  var p = k.split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]);
+  return d.toLocaleDateString(currentLang === 'en' ? 'en-CA' : 'fr-CA', { weekday: 'long', day: 'numeric', month: 'long' });
+}
+function rendreHeures() {
+  if (!etat.jour) return;
+  var heures = etat.dispo[etat.jour] || [];
+  $('heure-sous').textContent = T('Le ' + libJour(etat.jour) + ', pour ' + libDuree(dureeTotale()) + '. L\'heure choisie est celle du début.',
+                                  libJour(etat.jour) + ', for ' + libDuree(dureeTotale()) + '. The time you pick is the start time.');
+  $('heures').innerHTML = heures.length ? heures.map(function(h){ return '<button type="button" class="heure' + (etat.heure === h ? ' choisi' : '') + '" data-h="' + h + '">' + h.replace(':', ' h ') + '</button>'; }).join('')
+                                        : '<div class="vide">' + T('Plus rien de libre ce jour-là.', 'Nothing left that day.') + '</div>';
+  $('heures').querySelectorAll('.heure').forEach(function(b) { b.addEventListener('click', function(){ etat.heure = b.getAttribute('data-h'); rendreHeures(); rendreRecap(); allerPas(4); }); });
+  var p = etat.jour.split('-'), debut = new Date(+p[0], +p[1] - 1, +p[2], 12);
+  $('avert-48').hidden = !((debut - new Date()) / 36e5 < REGLES.avertH);
+}
+
+/* ─── 4. RÉCAP + ENVOI ─── */
+function rendreRecap() {
+  if (!etat.jour || !etat.heure) return;
+  var n = etat.personnes.length;
+  $('recap').innerHTML = '<b>' + libJour(etat.jour) + ' · ' + etat.heure.replace(':', ' h ') + '</b><br>' +
+    etat.personnes.map(function(s, i){ return (n > 1 ? (i + 1) + '. ' : '') + s.min + ' min · ' + T(s.fr, s.en) + ' · ' + s.prix + ' $ + tx'; }).join('<br>') +
+    (n > 1 ? '<br>' + T('L\'une après l\'autre, ' + REGLES.tamponGroupeMin + ' min entre chaque.', 'One after the other, ' + REGLES.tamponGroupeMin + ' min between each.') : '') +
+    '<br>' + T('Total : ', 'Total: ') + '<b>' + prixTotal() + ' $</b> + tx · ' + T('Waterville, adresse envoyée après confirmation.', 'Waterville, address sent after confirmation.');
+}
+function rendreTout() { rendreSoins(); rendrePersonnes(); if (Object.keys(etat.dispo).length) rendreJours(); if (etat.jour) rendreHeures(); if (etat.heure) rendreRecap(); }
+$('pourqui').addEventListener('change', function(){ $('mineur').classList.toggle('visible', this.value === 'mineur'); });
+$('btn-retour').addEventListener('click', function(){ allerPas(3); });
+
+$('form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var f = e.target, err = $('erreur-envoi'); err.hidden = true;
+  var manque = ['prenom', 'nom', 'courriel', 'tel'].filter(function(id){ return !$(id).value.trim(); });
+  if (manque.length) { err.hidden = false; err.textContent = T('Il manque : prénom, nom, courriel et téléphone sont nécessaires.', 'Missing: first name, last name, email and phone are required.'); $(manque[0]).focus(); return; }
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test($('courriel').value.trim())) { err.hidden = false; err.textContent = T('Le courriel ne semble pas complet.', 'The email address looks incomplete.'); $('courriel').focus(); return; }
+  if ($('tel').value.replace(/\D/g, '').length < 10) { err.hidden = false; err.textContent = T('Le téléphone doit avoir 10 chiffres.', 'The phone number needs 10 digits.'); $('tel').focus(); return; }
+  if (!$('consent').checked) { err.hidden = false; err.textContent = T('Coche la case pour confirmer que tu as lu la politique.', 'Tick the box to confirm you have read the policy.'); return; }
+  var demande = {
+    action: 'demande', lang: currentLang, jour: etat.jour, heure: etat.heure,
+    soins: etat.personnes.map(function(s){ return s.id; }),
+    prenom: $('prenom').value.trim(), nom: $('nom').value.trim(), courriel: $('courriel').value.trim(), tel: $('tel').value.trim(),
+    pourqui: $('pourqui').value, promo: $('promo').value.trim().toUpperCase(), note: $('note').value.trim(), site_web: f.site_web.value
+  };
+  f.hidden = true; $('attente-envoi').hidden = false;
+  var fini = function(data) {
+    $('attente-envoi').hidden = true;
+    if (data && data.ok) {
+      $('c-toi').hidden = true; $('c-fin').hidden = false;
+      $('fin-detail').innerHTML = '<b>' + libJour(etat.jour) + ' · ' + etat.heure.replace(':', ' h ') + '</b> · ' + libDuree(dureeTotale());
+      document.querySelectorAll('#pas span[data-pas]').forEach(function(s){ s.classList.add('fait'); s.classList.remove('actif'); });
+      $('c-fin').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else {
+      f.hidden = false; err.hidden = false;
+      var code = data && data.erreur;
+      if (code === 'plage_prise') { err.innerHTML = T('Quelqu\'un vient de prendre cette plage. Choisis-en une autre, la liste est à jour.', 'Someone just took this slot. Pick another one, the list is up to date.'); etat.heure = null; chargerDispo(); allerPas(2); }
+      else if (code === 'deja_en_attente') { err.innerHTML = T('Une demande est déjà en attente avec ce courriel ou ce téléphone. Kevin y répond sous 24 h. Pour en ajouter une autre, appelle-le.', 'A request is already pending with this email or phone. Kevin answers within 24 hours. To add another, call him.'); }
+      else { err.innerHTML = T('L\'envoi n\'a pas fonctionné. Réessaie, ou appelle Kevin au <a href="tel:+14383683282">' + TEL + '</a>.', 'Sending did not work. Try again, or call Kevin at <a href="tel:+14383683282">' + TEL + '</a>.'); }
+    }
+  };
+  if (!SCRIPT_URL) { setTimeout(function(){ fini({ ok: true }); }, 900); return; }
+  fetch(SCRIPT_URL, { method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(demande) })
+    .then(function(r){ return r.json(); }).then(fini).catch(function(){ fini(null); });
+});
+
+/* ─── DÉMO : plages fictives quand le programme n'est pas branché ─── */
+function dispoDemo(duree) {
+  var dispo = {}, auj = new Date(); auj.setHours(0, 0, 0, 0);
+  for (var i = 2; i < REGLES.horizonJours; i++) {
+    var d = new Date(auj); d.setDate(auj.getDate() + i);
+    if (d.getDay() === 5) continue;
+    var hs = [], seed = (d.getDate() * 7 + d.getMonth()) % 5;
+    ['06:30', '08:00', '09:30', '11:00', '13:00', '14:30', '16:00', '17:30', '19:00'].forEach(function(h, k){ if ((k + seed) % 3 !== 0 && finOk(h, duree)) hs.push(h); });
+    if (hs.length) dispo[cleJour(d)] = hs;
+  }
+  return { ok: true, dispo: dispo };
+}
+function finOk(h, duree) { var p = h.split(':'); return (+p[0] * 60 + +p[1] + duree) <= 21 * 60; }
+
+/* ─── DÉPART ─── */
+(function init() {
+  $('demo').hidden = !!SCRIPT_URL;
+  var saved = ''; try { saved = localStorage.getItem('vb-lang') || ''; } catch(e) {}
+  applyLang(saved === 'en' ? 'en' : 'fr');
+})();
+</script>
+</body>
+</html>
