@@ -145,6 +145,31 @@
     .personne .num { background: var(--or); color: var(--noir); }
 
     
+    /* ─── regroupement des rendez-vous : suggestions et repères ─── */
+    .sugg { margin: 0 0 16px; }
+    .sugg .t { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--or); margin-bottom: 8px; }
+    .sugg .t b { color: var(--brun-fonce); letter-spacing: 0; text-transform: none; font-size: 13px; font-weight: 400; margin-left: 8px; }
+    .sugg .liste { display: flex; flex-wrap: wrap; gap: 8px; }
+    .sugg button { font: inherit; font-size: 13px; padding: 9px 13px; border-radius: 10px; cursor: pointer; background: #fff;
+      border: 1px solid var(--or); color: var(--brun-fonce); box-shadow: 0 0 0 1px rgba(201,162,39,0.18) inset; }
+    .sugg button b { font-family: 'Cormorant Garamond', serif; font-size: 18px; margin-left: 6px; }
+    .sugg button:hover { background: var(--brun-fonce); color: var(--creme); }
+    .jour .n .etoile, .heure .etoile { color: var(--or); }
+    .heure.collee { border-color: var(--or); box-shadow: 0 0 0 1px rgba(201,162,39,0.22) inset; }
+    .vue-btn { background: none; border: 1px solid rgba(201,162,39,0.5); color: var(--brun-fonce); font: inherit; font-size: 11px;
+      letter-spacing: 2px; text-transform: uppercase; padding: 7px 12px; border-radius: 20px; cursor: pointer; }
+    .vue-btn:hover { border-color: var(--or); }
+    .mois-grille { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+    .mois-grille .jour { padding: 8px 2px 6px; }
+    .mois-grille .jour .d { font-size: 18px; }
+    .mois-grille .jour .n { font-size: 9px; }
+    .mois-grille .jour.autre { opacity: .28; }
+    .entete-jours { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
+    .entete-jours span { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: var(--gris); text-align: center; }
+    .infolettre { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 1.5; margin: 6px 0 10px; cursor: pointer; color: var(--gris); }
+    .infolettre input { width: 18px; height: 18px; accent-color: var(--brun-fonce); flex: none; margin-top: 2px; }
+    .aide { font-size: 11px; color: var(--gris); margin-top: 4px; line-height: 1.4; }
+
     /* ─── réglages propres à la page finale ─── */
     /* En-tête : la même pierre de fond que le reste du site, voilée, avec le filet or */
     .r-header { background: url('images/hero-bg.jpg') center center / cover no-repeat; position: relative; overflow: hidden; }
@@ -204,12 +229,17 @@
     <h2 data-num="II" data-en>The day</h2>
     <p class="sous" data-fr>Les jours affichés ont au moins une place libre. Rien n'est réservable à moins de 24 h : pour demain, un appel est plus simple.</p>
     <p class="sous" data-en>Days shown have at least one free slot. Nothing can be booked less than 24 hours ahead: for tomorrow, a call is easier.</p>
+    <div class="sugg" id="sugg" hidden>
+      <div class="t"><span data-fr>✦ Les meilleurs moments</span><span data-en>✦ Best moments</span><b data-fr>collés à un soin déjà prévu : la journée se remplit, la tienne comme la sienne.</b><b data-en>right next to a treatment already planned: the day fills up, yours as well as his.</b></div>
+      <div class="liste" id="sugg-liste"></div>
+    </div>
     <div class="semaine-nav">
       <button type="button" id="prec" aria-label="Précédent">‹</button>
       <div class="mois" id="mois"></div>
       <button type="button" id="suiv" aria-label="Suivant">›</button>
     </div>
-    <div class="entetes" id="entetes" hidden></div>
+    <div style="display:flex;justify-content:flex-end;margin:-4px 0 10px"><button type="button" class="vue-btn" id="vue-btn"><span data-fr>Voir le mois</span><span data-en>See the month</span></button></div>
+    <div class="entete-jours" id="entete-jours" hidden></div>
     <div class="jours" id="jours"></div>
     <div id="attente-jours" class="attente" hidden><span class="pt"></span><span class="pt"></span><span class="pt"></span></div>
     <div id="erreur-jours" class="erreur" hidden></div>
@@ -251,7 +281,8 @@
           </select>
           <div class="mineur" id="mineur"><span data-fr>Pour un mineur, un parent ou tuteur signe le questionnaire et reste joignable pendant le soin.</span><span data-en>For a minor, a parent or guardian signs the form and stays reachable during the treatment.</span></div>
         </div>
-        <div class="champ"><label for="promo"><span data-fr>Code promo (facultatif)</span><span data-en>Promo code (optional)</span></label><input id="promo" name="promo" autocomplete="off" autocapitalize="characters"></div>
+        <div class="champ"><label for="promo"><span data-fr>Code promo (facultatif)</span><span data-en>Promo code (optional)</span></label><input id="promo" name="promo" autocomplete="off" autocapitalize="characters" placeholder="BOHEME90">
+          <div class="aide"><span data-fr>BOHEME90 pour une première visite en 90 min · le code VB-… d'un ami · PARRAIN si tu as gagné un 90 min.</span><span data-en>BOHEME90 for a first 90 min visit · a friend's VB-… code · PARRAIN if you earned a 90 min.</span></div></div>
         <div class="champ large"><label for="note"><span data-fr>Un mot pour Kevin (facultatif)</span><span data-en>A word for Kevin (optional)</span></label><textarea id="note" name="note" maxlength="500"></textarea></div>
         <div class="piege" aria-hidden="true"><label>Site web<input name="site_web" tabindex="-1" autocomplete="off"></label></div>
       </div>
@@ -260,6 +291,10 @@
         <span data-fr>Un préavis de 24 h est demandé pour annuler ou déplacer. À moins de 24 h ou en cas d'absence, des frais pouvant aller jusqu'à 50 $ par plage peuvent être réclamés, selon la perte subie. Tes coordonnées servent à ce rendez-vous et à ton dossier client, rien d'autre : <a href="confidentialite.html" target="_blank" rel="noopener">politique de confidentialité</a>.</span>
         <span data-en>24 hours' notice is requested to cancel or move an appointment. With less than 24 hours' notice or in case of absence, fees of up to $50 per slot may be claimed, based on the loss incurred. Your details are used for this appointment and your client file, nothing else: <a href="confidentialite.html" target="_blank" rel="noopener">privacy policy</a>.</span>
       </div>
+      <label class="infolettre">
+        <input type="checkbox" id="infolettre" name="infolettre">
+        <span><span data-fr>Je veux recevoir les nouvelles de Vitalité Bohème. Rarement, et je me désabonne en un clic.</span><span data-en>I want to receive news from Vitalité Bohème. Rarely, and I can unsubscribe in one click.</span></span>
+      </label>
       <label class="consent"><input type="checkbox" id="consent" required><span><span data-fr>J'ai lu la politique et je demande ce rendez-vous.</span><span data-en>I have read the policy and I am requesting this appointment.</span></span></label>
       <div class="btn-ligne">
         <button type="button" class="btn secondaire" id="btn-retour" style="width:auto;padding-inline:18px">‹</button>
@@ -322,7 +357,7 @@ function toggleLang() { applyLang(currentLang === 'fr' ? 'en' : 'fr'); }
 function T(fr, en) { return currentLang === 'en' ? en : fr; }
 
 /* ─── ÉTAT ─── */
-var etat = { personnes: [], jour: null, heure: null, dispo: {}, semaine: 0, chargement: false };
+var etat = { personnes: [], jour: null, heure: null, dispo: {}, ouverts: [], colles: {}, semaine: 0, chargement: false, vueMois: false, mois: 0 };
 var $ = function(id) { return document.getElementById(id); };
 
 function dureeTotale() {
@@ -393,7 +428,7 @@ function chargerDispo() {
   var fini = function(data) {
     etat.chargement = false; $('attente-jours').hidden = true;
     if (!data || !data.ok) { montrerErreurJours(); return; }
-    etat.dispo = data.dispo || {}; etat.semaine = premiereSemaineLibre(); rendreJours();
+    etat.dispo = data.dispo || {}; etat.ouverts = data.ouverts || []; etat.colles = data.colles || {}; etat.semaine = premiereSemaineLibre(); etat.mois = 0; rendreSuggestions(); rendreJours();
   };
   if (!SCRIPT_URL) { setTimeout(function(){ fini(dispoDemo(duree)); }, 500); return; }
   var url = SCRIPT_URL + '?action=dispo&duree=' + duree + '&jours=' + REGLES.horizonJours + '&_=' + Date.now();
@@ -404,7 +439,21 @@ function montrerErreurJours() {
   $('erreur-jours').innerHTML = T('Les plages ne se chargent pas pour le moment. Réessaie dans une minute, ou appelle Kevin au <a href="tel:+14383683282">' + TEL + '</a>.',
                                   'Time slots are not loading right now. Try again in a minute, or call Kevin at <a href="tel:+14383683282">' + TEL + '</a>.');
 }
+function rendreSuggestions() {
+  var out = [], cles = Object.keys(etat.colles).sort();
+  for (var i = 0; i < cles.length && out.length < 3; i++) { var hs = etat.colles[cles[i]]; for (var k = 0; k < hs.length && out.length < 3; k++) out.push([cles[i], hs[k]]); }
+  $('sugg').hidden = !out.length;
+  $('sugg-liste').innerHTML = out.map(function (o) { return '<button type="button" data-k="' + o[0] + '" data-h="' + o[1] + '">' + libJourCourt(o[0]) + '<b>' + libHeure(o[1]) + '</b></button>'; }).join('');
+  $('sugg-liste').querySelectorAll('button').forEach(function (b) { b.addEventListener('click', function () { etat.jour = b.getAttribute('data-k'); etat.heure = b.getAttribute('data-h'); rendreJours(); rendreHeures(); rendreRecap(); allerPas(4); }); });
+}
+function libJourCourt(k) { var p = k.split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]); return d.toLocaleDateString(currentLang === 'en' ? 'en-CA' : 'fr-CA', { weekday: 'short', day: 'numeric', month: 'short' }); }
+function noteJour(k, heures) {
+  var etoile = etat.ouverts.indexOf(k) >= 0 ? '<span class="etoile">✦ </span>' : '';
+  return etoile + heures.length + ' ' + T('libre' + (heures.length > 1 ? 's' : ''), 'free');
+}
 function rendreJours() {
+  if (etat.vueMois) { rendreMois(); return; }
+  $('entete-jours').hidden = true; $('jours').classList.remove('mois-grille');
   var auj = new Date(); auj.setHours(0, 0, 0, 0);
   var debut = new Date(auj); debut.setDate(debut.getDate() - ((debut.getDay() + 6) % 7) + etat.semaine * 7);
   var fin = new Date(debut); fin.setDate(fin.getDate() + 6);
@@ -421,7 +470,7 @@ function rendreJours() {
     var k = cleJour(d), heures = etat.dispo[k] || [];
     var passe = d < auj, plein = passe || heures.length === 0;
     var appel = !passe && heures.length === 0 && (d - auj) / 36e5 < REGLES.delaiMinH + 24;
-    var note = passe ? '' : heures.length ? (heures.length + ' ' + T('libre' + (heures.length > 1 ? 's' : ''), 'free')) : appel ? T('appelle', 'call') : T('complet', 'full');
+    var note = passe ? '' : heures.length ? noteJour(k, heures) : appel ? T('appelle', 'call') : T('complet', 'full');
     html += '<button type="button" class="jour' + (plein ? ' plein' : '') + (appel ? ' appel' : '') + (etat.jour === k ? ' choisi' : '') + '" data-k="' + k + '"' + (plein ? ' disabled' : '') + '>' +
       '<div class="j">' + (currentLang === 'en' ? jEn : jFr)[i] + '</div><div class="d">' + d.getDate() + '</div><div class="n">' + note + '</div></button>';
   }
@@ -436,8 +485,36 @@ function premiereSemaineLibre() {
   var p = cles[0].split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]);
   return Math.max(0, Math.floor((d - lundi) / (7 * 86400000)));
 }
-$('prec').addEventListener('click', function(){ if (etat.semaine > 0) { etat.semaine--; rendreJours(); } });
-$('suiv').addEventListener('click', function(){ etat.semaine++; rendreJours(); });
+$('prec').addEventListener('click', function(){ if (etat.vueMois) { if (etat.mois > 0) { etat.mois--; rendreJours(); } } else if (etat.semaine > 0) { etat.semaine--; rendreJours(); } });
+$('suiv').addEventListener('click', function(){ if (etat.vueMois) { etat.mois++; rendreJours(); } else { etat.semaine++; rendreJours(); } });
+$('vue-btn').addEventListener('click', function(){ etat.vueMois = !etat.vueMois; $('vue-btn').innerHTML = etat.vueMois ? '<span>' + T('Voir la semaine', 'See the week') + '</span>' : '<span>' + T('Voir le mois', 'See the month') + '</span>'; rendreJours(); });
+
+/* Vue mois : les 8 semaines de l'horizon, mois par mois. Rien au-delà : pour plus loin, le téléphone. */
+function rendreMois() {
+  var auj = new Date(); auj.setHours(0, 0, 0, 0);
+  var limite = new Date(auj); limite.setDate(limite.getDate() + REGLES.horizonJours);
+  var m0 = new Date(auj.getFullYear(), auj.getMonth() + etat.mois, 1);
+  var nbMois = (limite.getFullYear() - auj.getFullYear()) * 12 + limite.getMonth() - auj.getMonth();
+  $('prec').disabled = etat.mois === 0; $('suiv').disabled = etat.mois >= nbMois;
+  var moisFr = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+  var moisEn = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  $('mois').textContent = (currentLang === 'en' ? moisEn : moisFr)[m0.getMonth()] + ' ' + m0.getFullYear();
+  var jFr = ['lun','mar','mer','jeu','ven','sam','dim'], jEn = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  $('entete-jours').hidden = false; $('entete-jours').innerHTML = (currentLang === 'en' ? jEn : jFr).map(function (j) { return '<span>' + j + '</span>'; }).join('');
+  $('jours').classList.add('mois-grille');
+  var debut = new Date(m0); debut.setDate(1 - ((m0.getDay() + 6) % 7));
+  var html = '';
+  for (var i = 0; i < 42; i++) {
+    var d = new Date(debut); d.setDate(debut.getDate() + i);
+    if (i >= 35 && d.getMonth() !== m0.getMonth()) break;
+    var k = cleJour(d), heures = etat.dispo[k] || [], autre = d.getMonth() !== m0.getMonth();
+    var passe = d < auj || d > limite, plein = passe || heures.length === 0 || autre;
+    var note = (passe || autre) ? '' : heures.length ? noteJour(k, heures) : '';
+    html += '<button type="button" class="jour' + (plein ? ' plein' : '') + (autre ? ' autre' : '') + (etat.jour === k ? ' choisi' : '') + '" data-k="' + k + '"' + (plein ? ' disabled' : '') + '><div class="d">' + d.getDate() + '</div><div class="n">' + note + '</div></button>';
+  }
+  $('jours').innerHTML = html;
+  $('jours').querySelectorAll('.jour:not(.plein)').forEach(function(b) { b.addEventListener('click', function(){ etat.jour = b.getAttribute('data-k'); etat.heure = null; rendreJours(); rendreHeures(); allerPas(3); }); });
+}
 
 /* ─── 3. HEURES ─── */
 function libJour(k) {
@@ -449,7 +526,9 @@ function rendreHeures() {
   var heures = etat.dispo[etat.jour] || [];
   $('heure-sous').textContent = T('Le ' + libJour(etat.jour) + ', pour ' + libDuree(dureeTotale()) + '. L\'heure choisie est celle du début.',
                                   libJour(etat.jour) + ', for ' + libDuree(dureeTotale()) + '. The time you pick is the start time.');
-  $('heures').innerHTML = heures.length ? heures.map(function(h){ return '<button type="button" class="heure' + (etat.heure === h ? ' choisi' : '') + '" data-h="' + h + '">' + libHeure(h) + '</button>'; }).join('')
+  var collees = etat.colles[etat.jour] || [];
+  var ordre = heures.filter(function (h) { return collees.indexOf(h) >= 0; }).concat(heures.filter(function (h) { return collees.indexOf(h) < 0; }));
+  $('heures').innerHTML = heures.length ? ordre.map(function(h){ var c = collees.indexOf(h) >= 0; return '<button type="button" class="heure' + (c ? ' collee' : '') + (etat.heure === h ? ' choisi' : '') + '" data-h="' + h + '">' + (c ? '<span class="etoile">✦ </span>' : '') + libHeure(h) + '</button>'; }).join('')
                                         : '<div class="vide">' + T('Plus rien de libre ce jour-là.', 'Nothing left that day.') + '</div>';
   $('heures').querySelectorAll('.heure').forEach(function(b) { b.addEventListener('click', function(){ etat.heure = b.getAttribute('data-h'); rendreHeures(); rendreRecap(); allerPas(4); }); });
   var p = etat.jour.split('-'), debut = new Date(+p[0], +p[1] - 1, +p[2], 12);
@@ -481,7 +560,8 @@ $('form').addEventListener('submit', function(e) {
     action: 'demande', lang: currentLang, jour: etat.jour, heure: etat.heure,
     soins: etat.personnes.map(function(s){ return s.id; }),
     prenom: $('prenom').value.trim(), nom: $('nom').value.trim(), courriel: $('courriel').value.trim(), tel: $('tel').value.trim(),
-    pourqui: $('pourqui').value, promo: $('promo').value.trim().toUpperCase(), note: $('note').value.trim(), site_web: f.site_web.value
+    pourqui: $('pourqui').value, promo: $('promo').value.trim().toUpperCase(), note: $('note').value.trim(), site_web: f.site_web.value,
+    infolettre: $('infolettre').checked
   };
   f.hidden = true; $('attente-envoi').hidden = false;
   var fini = function(data) {
@@ -495,6 +575,11 @@ $('form').addEventListener('submit', function(e) {
       f.hidden = false; err.hidden = false;
       var code = data && data.erreur;
       if (code === 'plage_prise') { err.innerHTML = T('Quelqu\'un vient de prendre cette plage. Choisis-en une autre, la liste est à jour.', 'Someone just took this slot. Pick another one, the list is up to date.'); etat.heure = null; chargerDispo(); allerPas(2); }
+      else if (code === 'promo_deja') { err.innerHTML = T('Ce code est réservé à une première visite, et tu es déjà venu. Retire-le, et le rendez-vous passe.', 'This code is for a first visit only, and you have been here before. Remove it and the booking goes through.'); $('promo').focus(); }
+      else if (code === 'promo_soin') { err.innerHTML = T('Ce code s\'applique au massage de 90 min. Choisis un 90 min, ou retire le code.', 'This code applies to the 90 min massage. Pick a 90 min, or remove the code.'); }
+      else if (code === 'promo_droit') { err.innerHTML = T('Aucun 90 min de parrainage n\'est encore gagné avec ce courriel. Il arrive après la première visite de la personne que tu as amenée.', 'No referral 90 min has been earned with this email yet. It comes after the first visit of the person you referred.'); $('promo').focus(); }
+      else if (code === 'promo_inconnu') { err.innerHTML = T('Ce code n\'existe pas. Vérifie l\'orthographe, ou retire-le.', 'This code does not exist. Check the spelling, or remove it.'); $('promo').focus(); }
+      else if (code === 'promo_soi') { err.innerHTML = T('C\'est ton propre code : il sert à un ami. Pour ton 90 min gagné, tape PARRAIN.', 'That is your own code: it is for a friend. For your earned 90 min, type PARRAIN.'); $('promo').focus(); }
       else if (code === 'deja_en_attente') { err.innerHTML = T('Une demande est déjà en attente avec ce courriel ou ce téléphone. Kevin y répond sous 24 h. Pour en ajouter une autre, appelle-le.', 'A request is already pending with this email or phone. Kevin answers within 24 hours. To add another, call him.'); }
       else { err.innerHTML = T('L\'envoi n\'a pas fonctionné. Réessaie, ou appelle Kevin au <a href="tel:+14383683282">' + TEL + '</a>.', 'Sending did not work. Try again, or call Kevin at <a href="tel:+14383683282">' + TEL + '</a>.'); }
     }
