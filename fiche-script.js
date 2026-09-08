@@ -42,6 +42,17 @@ function setDateAujourdhui() {
 var EMAILJS_PUBLIC_KEY  = 'nDDa_zp8R1h9YR_Df';
 var EMAILJS_SERVICE_ID  = 'service_w78vr2g';
 var EMAILJS_TEMPLATE_ID = 'template_iumkg2s';
+// Banque de clients : quand le questionnaire part, on signale l'identite au programme de reservation
+// (prenom, nom, courriel, telephone, langue). Jamais une reponse de sante. Si ca echoue, rien ne change.
+var BANQUE_URL = 'https://script.google.com/macros/s/AKfycby217WbbU_K_cAUy9L1H96Yseh376VTAyT8eYxd2dCNl8Gw6pMmQEO8pi2P0rud6FLG/exec';
+function signalerBanque(identite) {
+  try {
+    if (!BANQUE_URL || !window.fetch) return;
+    fetch(BANQUE_URL, { method: 'POST', redirect: 'follow', keepalive: true, headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'fiche', prenom: identite.prenom, nom: identite.nom, courriel: identite.courriel, tel: identite.tel, lang: identite.lang, site_web: '' }) })
+      .catch(function(e) { console.warn('banque clients :', e); });
+  } catch (e) { console.warn('banque clients :', e); }
+}
 if (typeof emailjs !== 'undefined') emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
 // ─── LANGUE ────────────────────────────────────────────────────
@@ -805,6 +816,8 @@ function soumettreFormulaire(e) {
   }
 
   function onSuccess() {
+    // Identite capturee AVANT form.reset(), puis envoyee a la banque de clients sans bloquer.
+    try { signalerBanque({ prenom: v('prenom'), nom: v('nom'), courriel: v('email'), tel: v('telephone'), lang: (typeof currentLang !== 'undefined' && currentLang === 'en') ? 'en' : 'fr' }); } catch (eB) {}
     var echec = document.getElementById('echec-msg');
     if (echec) echec.style.display = 'none';
     document.getElementById('succes-msg').style.display = 'block';
