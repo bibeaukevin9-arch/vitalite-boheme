@@ -447,6 +447,12 @@ function signatureCompressee() {
   }
 }
 
+// ─── MOINS DE 18 ANS ───────────────────────────────────────────
+function toggleMineur() {
+  var c = document.getElementById('mineur'), z = document.getElementById('mineur-champs');
+  if (z) z.style.display = (c && c.checked) ? 'block' : 'none';
+}
+
 // ─── SOUMISSION ────────────────────────────────────────────────
 function soumettreFormulaire(e) {
   e.preventDefault();
@@ -497,6 +503,22 @@ function soumettreFormulaire(e) {
     if (!consentOk && !premierChamp) premierChamp = consentEl;
   }
   if (!consentOk) erreurs.push(isEn ? '✅ Consent checkbox (mandatory)' : '✅ Case «J\'accepte» (obligatoire)');
+
+  // Moins de 18 ans : parent ou tuteur identifié, consentement parental coché
+  var mineur = !!fd.get('mineur');
+  if (mineur) {
+    [{ n: 'parent_nom', fr: 'Nom du parent ou tuteur', en: 'Parent or guardian name' },
+     { n: 'parent_lien', fr: 'Lien avec le client', en: 'Relationship to the client' },
+     { n: 'parent_tel', fr: 'Téléphone du parent ou tuteur', en: 'Parent or guardian phone' }].forEach(function(c) {
+      var ok = v(c.n) !== '';
+      marqueFin(c.n, ok);
+      if (!ok) erreurs.push(isEn ? c.en : c.fr);
+    });
+    var pcOk = !!fd.get('parent_consent');
+    var pcEl = document.getElementById('parent_consent');
+    if (pcEl) { pcEl.style.outline = pcOk ? '' : '3px solid #c44'; if (!pcOk && !premierChamp) premierChamp = pcEl; }
+    if (!pcOk) erreurs.push(isEn ? '✅ Parental consent (under 18)' : '✅ Consentement parental (moins de 18 ans)');
+  }
 
   // Signature
   var sigOk = v('signature') !== '';
@@ -566,7 +588,7 @@ function soumettreFormulaire(e) {
     s4: 'Pain & sensitive areas', s5: 'Health history', s6: 'Medication & treatments',
     s7: 'Consent & policies', s8: 'Signature',
     nom: 'Last name:', prenom: 'First name:', ddn: 'Date of birth:', tel: 'Phone:',
-    email: 'Email:', adr: 'Address:', prof: 'Occupation:', un: 'Name:', ul: 'Relationship:', ut: 'Phone:',
+    email: 'Email:', adr: 'Address:', prof: 'Occupation:', mineur: 'Under 18:', parent: 'Parent/guardian (stays in the room):', un: 'Name:', ul: 'Relationship:', ut: 'Phone:',
     motif: 'Reason:', motifd: 'Details:', zones: 'Selected areas:', none: 'None',
     sante: 'Conditions:', santea: 'Other:', santed: 'Details:',
     med: 'Medication:', medd: 'Which:', autre: 'Other treatment:',
@@ -578,7 +600,7 @@ function soumettreFormulaire(e) {
     s4: 'Douleurs et zones sensibles', s5: 'Historique de sante', s6: 'Medication et traitements',
     s7: 'Consentement et politiques', s8: 'Signature',
     nom: 'Nom :', prenom: 'Prenom :', ddn: 'Date de naissance :', tel: 'Telephone :',
-    email: 'Courriel :', adr: 'Adresse :', prof: 'Profession :', un: 'Nom :', ul: 'Lien :', ut: 'Telephone :',
+    email: 'Courriel :', adr: 'Adresse :', prof: 'Profession :', mineur: 'Moins de 18 ans :', parent: 'Parent/tuteur (reste dans la piece) :', un: 'Nom :', ul: 'Lien :', ut: 'Telephone :',
     motif: 'Motif :', motifd: 'Precisions :', zones: 'Zones :', none: 'Aucune',
     sante: 'Conditions :', santea: 'Autre :', santed: 'Precisions :',
     med: 'Medicaments :', medd: 'Lesquels :', autre: 'Autre traitement :',
@@ -623,6 +645,7 @@ function soumettreFormulaire(e) {
   heading(T.s1);
   field(T.nom, v('nom')); field(T.prenom, v('prenom')); field(T.ddn, v('ddn'));
   field(T.tel, v('telephone')); field(T.email, v('email')); field(T.adr, v('adresse')); field(T.prof, v('profession'));
+  if (v('mineur')) { field(T.mineur, T.yes); field(T.parent, v('parent_nom') + ' (' + v('parent_lien') + ') ' + v('parent_tel')); }
 
   if (v('urgence_nom') || v('urgence_lien') || v('urgence_tel')) {
     yy += 6; heading(T.s2);
@@ -710,13 +733,13 @@ function soumettreFormulaire(e) {
   btn.innerHTML = '<span>⏳ Envoi en cours…</span>';
 
   var templateParams = {
-    client_nom:         v('prenom') + ' ' + v('nom'),
+    client_nom:         v('prenom') + ' ' + v('nom') + (v('mineur') ? (isEn ? ' — UNDER 18' : ' — MOINS DE 18 ANS') : ''),
     name:               v('prenom') + ' ' + v('nom'),
     client_tel:         v('telephone') || '-',
     client_email:       v('email') || '-',
     email:              v('email') || '',
     motif:              all('motif').join(', ') || '-',
-    motif_detail:       v('motif_detail') || '-',
+    motif_detail:       (v('mineur') ? (isEn ? '[UNDER 18 — parental consent signed, parent stays in the room: ' : '[MOINS DE 18 ANS — consentement parental signé, parent présent dans la pièce : ') + v('parent_nom') + ' (' + v('parent_lien') + ') ' + v('parent_tel') + '] ' : '') + (v('motif_detail') || '-'),
     zones:              v('zones') || '-',
     zones_interdites:   v('zones_interdites') || '-',
     sante:              all('sante').join(', ') || '-',

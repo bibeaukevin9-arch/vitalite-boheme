@@ -10,7 +10,7 @@
   <!-- jsPDF -->
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <!-- Logique formulaire -->
-  <script defer src="fiche-script.js?v=20260908a"></script>
+  <script defer src="fiche-script.js?v=20260908b"></script>
 
   <style>
     :root {
@@ -461,6 +461,41 @@
         <label class="field-label" data-fr>Profession</label>
         <label class="field-label" data-en>Occupation</label>
         <input type="text" name="profession" id="profession" />
+      </div>
+
+      <!-- MOINS DE 18 ANS : consentement parental, parent présent dans la pièce -->
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid #e2d8cc;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <input type="checkbox" name="mineur" id="mineur" onchange="toggleMineur()" style="width:20px;height:20px;accent-color:var(--or);flex-shrink:0;cursor:pointer;" />
+          <span data-fr style="font-size:14px;color:var(--texte);"><strong>Le client a moins de 18 ans</strong></span>
+          <span data-en style="font-size:14px;color:var(--texte);"><strong>The client is under 18</strong></span>
+        </div>
+        <div id="mineur-champs" style="display:none;margin-top:14px;">
+          <p data-fr style="font-size:14px;color:var(--texte);line-height:1.8;margin:0 0 14px;">Pour un client de moins de 18 ans, un parent ou tuteur remplit et signe ce questionnaire, et <strong>reste dans la pièce pendant tout le soin</strong>.</p>
+          <p data-en style="font-size:14px;color:var(--texte);line-height:1.8;margin:0 0 14px;">For a client under 18, a parent or guardian fills out and signs this form, and <strong>stays in the room for the whole treatment</strong>.</p>
+          <div class="q-grid-2">
+            <div class="field-group">
+              <label class="field-label" data-fr>Nom du parent ou tuteur *</label>
+              <label class="field-label" data-en>Parent or guardian name *</label>
+              <input type="text" name="parent_nom" id="parent_nom" />
+            </div>
+            <div class="field-group">
+              <label class="field-label" data-fr>Lien avec le client *</label>
+              <label class="field-label" data-en>Relationship to the client *</label>
+              <input type="text" name="parent_lien" id="parent_lien" placeholder="mère, père, tuteur…" />
+            </div>
+          </div>
+          <div class="field-group" style="margin-top:16px;">
+            <label class="field-label" data-fr>Téléphone du parent ou tuteur *</label>
+            <label class="field-label" data-en>Parent or guardian phone *</label>
+            <input type="tel" name="parent_tel" id="parent_tel" />
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:12px;margin-top:14px;">
+            <input type="checkbox" name="parent_consent" id="parent_consent" style="width:20px;height:20px;accent-color:var(--or);flex-shrink:0;cursor:pointer;margin-top:2px;" />
+            <span data-fr style="font-size:14px;color:var(--texte);line-height:1.6;"><strong>J'autorise ce soin pour mon enfant, je signe ce questionnaire en son nom et je resterai dans la pièce pendant le soin.</strong></span>
+            <span data-en style="font-size:14px;color:var(--texte);line-height:1.6;"><strong>I authorize this treatment for my child, I sign this form on their behalf, and I will stay in the room during the treatment.</strong></span>
+          </div>
+        </div>
       </div>
     </div>
 
