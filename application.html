@@ -60,6 +60,22 @@
       border-radius: 30px; box-shadow: 0 6px 20px rgba(140,100,40,0.30); margin: 8px 0 6px; }
     .bouton:hover { filter: brightness(1.05); }
     .sous-bouton { font-size: 12.5px; color: var(--gris); }
+
+    /* Le compteur d'installations. Masque tant qu'il n'a rien a dire : un
+       chiffre absent vaut mieux qu'un chiffre invente ou qu'un zero. */
+    .compteur { display: none; margin-top: 14px; padding-top: 14px;
+      border-top: 1px solid rgba(201,169,110,0.35); }
+    .compteur.visible { display: block; }
+    .compteur .nombre { font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 34px; font-weight: 600; color: var(--brun-fonce); line-height: 1.1;
+      display: block; }
+    .compteur .quoi { font-size: 13px; color: var(--gris); }
+    /* La variante du haut : une ligne, pas un bloc — elle vit dans le renvoi. */
+    .compteur.en-ligne { border-top: 0; margin-top: 10px; padding-top: 10px;
+      border-top: 1px solid rgba(201,169,110,0.30); }
+    .compteur.en-ligne.visible { display: block; }
+    .compteur.en-ligne .nombre { font-size: 26px; display: inline; }
+    .compteur.en-ligne .quoi { font-size: 12.5px; }
     .chantier { border-left: 4px solid var(--or); background: #fdf7ec; padding: 16px 18px; border-radius: 0 12px 12px 0; margin-top: 4px; }
     .chantier p { font-size: 14.5px; }
     .etape { counter-increment: e; }
@@ -83,6 +99,11 @@
     <span data-fr><b>Le téléchargement est au bas de la page.</b><br>Ce qui précède explique l'application et son installation.</span>
     <span data-en><b>The download is at the bottom of the page.</b><br>What comes before explains the app and its installation.</span>
     <span class="fleche" aria-hidden="true">↓</span>
+    <span class="compteur en-ligne">
+      <span class="nombre">—</span>
+      <span class="quoi" data-fr>téléchargements à ce jour</span>
+      <span class="quoi" data-en>downloads to date</span>
+    </span>
   </a>
 
   <section>
@@ -194,8 +215,14 @@
     <a class="bouton" href="https://github.com/bibeaukevin9-arch/vitalite-boheme/releases/download/v0.59/Vitalite-Boheme.apk">
       <span data-fr>Télécharger l'application</span><span data-en>Download the app</span>
     </a>
-    <p class="sous-bouton" data-fr>Version 0.59 · 8.8 Mo · Android 8 et plus</p>
-    <p class="sous-bouton" data-en>Version 0.59 · 8.8 MB · Android 8 and up</p>
+    <p class="sous-bouton" data-fr>Version 0.59 · 8,8 Mo · Android 8 et versions ultérieures</p>
+    <p class="sous-bouton" data-en>Version 0.59 · 8.8 MB · Android 8 and later</p>
+
+    <div class="compteur">
+      <span class="nombre">—</span>
+      <span class="quoi" data-fr>téléchargements depuis le 9 septembre 2026</span>
+      <span class="quoi" data-en>downloads since September 9, 2026</span>
+    </div>
   </section>
 
   <p class="maj" data-fr>Version 0.59 — mise en ligne le 9 septembre 2026.</p>
@@ -213,6 +240,53 @@
     try { localStorage.setItem('vb-lang', en ? 'en' : 'fr'); } catch (e) {}
   }
   try { if (localStorage.getItem('vb-lang') === 'en') toggleLang(); } catch (e) {}
+
+  /* ⭐ Le compteur de téléchargements.
+     Il vient de l'API publique de GitHub, qui expose un `download_count` par
+     fichier de release. Aucun cookie, aucun identifiant, aucune donnée sur la
+     personne qui lit la page : c'est GitHub qui compte ses propres envois.
+
+     ⚠️ On additionne TOUTES les versions. Ne compter que la dernière ferait
+     repartir le total à zéro à chaque mise à jour.
+
+     ⚠️ L'API sans clé est limitée à 60 appels par heure et par adresse. Le
+     résultat est donc gardé 10 minutes dans le navigateur.
+
+     ⛔ Si l'appel échoue, le bloc reste masqué. Un chiffre absent vaut mieux
+     qu'un chiffre faux. */
+  (function () {
+    var CACHE = 'vb-dl', DUREE = 600000;
+    var blocs = document.querySelectorAll('.compteur');
+    if (!blocs.length) return;
+
+    function afficher(n) {
+      if (typeof n !== 'number' || n < 1) return;
+      var texte = n.toLocaleString('fr-CA');
+      blocs.forEach(function (b) {
+        var cible = b.querySelector('.nombre');
+        if (cible) cible.textContent = texte;
+        b.classList.add('visible');
+      });
+    }
+
+    try {
+      var garde = JSON.parse(localStorage.getItem(CACHE) || 'null');
+      if (garde && Date.now() - garde.t < DUREE) { afficher(garde.n); return; }
+    } catch (e) {}
+
+    fetch('https://api.github.com/repos/bibeaukevin9-arch/vitalite-boheme/releases')
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (versions) {
+        if (!versions || !versions.length) return;
+        var total = 0;
+        versions.forEach(function (v) {
+          (v.assets || []).forEach(function (a) { total += (a.download_count || 0); });
+        });
+        try { localStorage.setItem(CACHE, JSON.stringify({ n: total, t: Date.now() })); } catch (e) {}
+        afficher(total);
+      })
+      .catch(function () { /* silence : le bloc reste masqué */ });
+  })();
 </script>
 </body>
 </html>
