@@ -39,7 +39,22 @@
     .maj { font-size: 12px; color: var(--gris); text-align: center; }
 
     /* Le bloc de téléchargement — la seule chose vraiment mise en avant. */
-    .telecharger { text-align: center; background: linear-gradient(160deg, #fffaf2, #f7ecda); }
+    /* ⭐ Le renvoi vers le bas. Le bouton est volontairement en dernier : on
+       passe devant les etapes d'installation avant d'y arriver. Encore faut-il
+       le savoir en arrivant. */
+    .vers-le-bas { display: block; text-align: center; text-decoration: none;
+      background: rgba(255,255,255,0.88); border: 1.5px solid rgba(201,169,110,0.45);
+      border-radius: 14px; padding: 13px 18px; margin-bottom: 18px; color: var(--brun-fonce);
+      font-size: 14.5px; box-shadow: 0 3px 14px rgba(60,40,20,0.10); }
+    .vers-le-bas:hover { background: #fff; }
+    .vers-le-bas .fleche { display: block; font-size: 20px; line-height: 1; color: var(--or);
+      margin-top: 5px; animation: descendre 1.9s ease-in-out infinite; }
+    @keyframes descendre { 0%,100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+    @media (prefers-reduced-motion: reduce) { .vers-le-bas .fleche { animation: none; } }
+    .principe { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 21px; line-height: 1.45;
+      color: var(--brun-fonce); border-left: 3px solid var(--or); padding-left: 16px; margin: 4px 0 14px; }
+
+    .telecharger { scroll-margin-top: 20px; text-align: center; background: linear-gradient(160deg, #fffaf2, #f7ecda); }
     .bouton { display: inline-block; background: linear-gradient(160deg, var(--or-clair), var(--or));
       color: #2b1d0e; text-decoration: none; font-weight: bold; font-size: 17px; padding: 17px 38px;
       border-radius: 30px; box-shadow: 0 6px 20px rgba(140,100,40,0.30); margin: 8px 0 6px; }
@@ -57,88 +72,120 @@
 <header>
   <h1 data-fr>L'<em>application</em></h1>
   <h1 data-en>The <em>app</em></h1>
-  <p data-fr>Garder ses habitudes, bouger, respirer, se relire. Gratuite.</p>
-  <p data-en>Keep your habits, move, breathe, look back. Free.</p>
+  <p class="sous" data-fr>Bâtir des habitudes qui tiennent. Bouger, respirer, se relire.</p>
+  <p class="sous" data-en>Building habits that last. Move, breathe, look back.</p>
   <a class="retour" href="index.html"><span data-fr>← Retour au site</span><span data-en>← Back to website</span></a>
 </header>
 
 <main>
 
+  <a class="vers-le-bas" href="#telecharger">
+    <span data-fr><b>Le téléchargement est au bas de la page.</b><br>Ce qui précède explique l'application et son installation.</span>
+    <span data-en><b>The download is at the bottom of the page.</b><br>What comes before explains the app and its installation.</span>
+    <span class="fleche" aria-hidden="true">↓</span>
+  </a>
+
+  <section>
+    <h2 data-fr>Pourquoi elle existe</h2><h2 data-en>Why it exists</h2>
+    <p class="principe" data-fr>Nous sommes la somme de nos habitudes. Ce sont elles, bien plus que nos décisions, qui façonnent la personne que nous devenons.</p>
+    <p class="principe" data-en>We are the sum of our habits. Far more than our decisions, they shape the person we become.</p>
+    <p data-fr>C'est de cette conviction qu'est née l'application Vitalité Bohème. Pas d'un besoin de plus dans un marché déjà rempli, mais d'un constat simple : les outils existants exigent de la constance de gens qui viennent justement chercher de l'aide pour en développer.</p>
+    <p data-en>This conviction is where the Vitalité Bohème app began. Not from another need in a crowded market, but from a simple observation: existing tools demand consistency from people who are, precisely, seeking help to build it.</p>
+    <p data-fr>Notre intention est autre. Offrir un système qui accompagne la construction de soi : installer les habitudes qui te servent, desserrer celles qui te pèsent, et surtout tenir dans la durée — parce que c'est la durée, et rien d'autre, qui transforme un geste en identité.</p>
+    <p data-en>Our intent is different: to offer a system that supports the building of a person. Establishing the habits that serve you, loosening those that weigh on you, and above all lasting over time — because time, and nothing else, turns a gesture into an identity.</p>
+  </section>
+
+  <section>
+    <h2 data-fr>Comment elle est pensée</h2><h2 data-en>How it is designed</h2>
+    <p data-fr>Trois principes gouvernent l'application. Ils expliquent la plupart des choix qui la distinguent.</p>
+    <p data-en>Three principles govern the app. They explain most of the choices that set it apart.</p>
+    <ul data-fr>
+      <li><b>Une journée manquée n'efface rien.</b> La plupart des applications d'habitudes remettent le compteur à zéro dès le premier jour sauté — précisément le moment où l'on cesse de les ouvrir. Ici, une journée manquée ne casse rien : ce sont deux journées consécutives qui appellent l'attention. La recherche sur la formation des habitudes appuie cette approche : un oubli occasionnel ne compromet pas l'automatisation d'un comportement.</li>
+      <li><b>Le point de départ compte autant que le chemin.</b> Un court portrait situe où tu en es avant de mesurer quoi que ce soit. Il porte sur ce que tu es, jamais sur ce que tu consommes, et rien n'y est obligatoire.</li>
+      <li><b>Construire et retirer sont deux gestes distincts.</b> Installer une habitude ne se conduit pas comme en desserrer une autre. L'application les traite séparément, avec des mécaniques différentes.</li>
+    </ul>
+    <ul data-en>
+      <li><b>A missed day erases nothing.</b> Most habit apps reset the counter on the first skipped day — the exact moment people stop opening them. Here, a missed day breaks nothing: it takes two consecutive days to call for attention. Research on habit formation supports this: an occasional lapse does not compromise the automation of a behaviour.</li>
+      <li><b>The starting point matters as much as the path.</b> A short portrait places where you stand before measuring anything. It asks who you are, never what you consume, and nothing in it is required.</li>
+      <li><b>Building and letting go are two distinct acts.</b> Establishing a habit is not conducted like loosening another. The app treats them separately, with different mechanics.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2 data-fr>Ce qu'elle contient</h2><h2 data-en>What it contains</h2>
+    <ul data-fr>
+      <li><b>Le suivi des habitudes</b>, avec la règle des deux jours et un calendrier qui se remplit à mesure.</li>
+      <li><b>Un minuteur d'entraînement</b> et une bibliothèque d'exercices, avec le compte à voix haute.</li>
+      <li><b>Des exercices de respiration</b> guidés au son de bols.</li>
+      <li><b>Un carnet</b> pour consigner ce qui a marqué la journée, et le relire plus tard.</li>
+      <li><b>Sept jeux de logique et de mémoire</b>, courts, dont la difficulté s'ajuste au joueur.</li>
+      <li><b>Un portrait personnel</b> et une progression d'ensemble, visibles d'un coup d'œil.</li>
+    </ul>
+    <ul data-en>
+      <li><b>Habit tracking</b>, with the two-day rule and a calendar that fills in as you go.</li>
+      <li><b>A workout timer</b> and an exercise library, with spoken counting.</li>
+      <li><b>Breathing exercises</b> guided by singing bowls.</li>
+      <li><b>A journal</b> to record what marked the day, and read it back later.</li>
+      <li><b>Seven short logic and memory games</b>, whose difficulty adjusts to the player.</li>
+      <li><b>A personal portrait</b> and an overall progression, visible at a glance.</li>
+    </ul>
+    <p class="note" data-fr>L'application est un outil de soutien à la constance. Elle ne remplace personne et ne se substitue à aucun accompagnement.</p>
+    <p class="note" data-en>The app is a tool to support consistency. It replaces no one and substitutes for no form of guidance.</p>
+  </section>
+
   <section>
     <div class="chantier">
-      <h2 data-fr>Elle est en construction, et je le dis</h2>
-      <h2 data-en>It's a work in progress, and I say so</h2>
-      <p data-fr>Elle n'est pas finie. Elle change presque chaque semaine, et il reste des choses à corriger. Je préfère te le dire tout de suite plutôt que de te laisser le découvrir.</p>
-      <p data-en>It isn't finished. It changes almost every week, and things still need fixing. I'd rather tell you now than let you find out.</p>
-      <p data-fr><b>Tes retours comptent vraiment</b> : il y a un crayon dans presque tous les écrans de l'application. Un appui prend une photo de ce que tu regardes, tu entoures ce qui cloche, tu écris un mot, et tu me l'envoies. C'est comme ça qu'elle avance.</p>
-      <p data-en><b>Your feedback really counts</b>: there's a pencil on nearly every screen. One tap takes a picture of what you're looking at, you circle what's wrong, write a word, and send it to me. That's how it moves forward.</p>
+      <h2 data-fr>Une application en développement</h2>
+      <h2 data-en>An app under development</h2>
+      <p data-fr>L'application évolue de semaine en semaine. Nous préférons l'annoncer plutôt que de le laisser découvrir : des éléments restent à corriger et à perfectionner.</p>
+      <p data-en>The app evolves week by week. We prefer to say so rather than let you discover it: elements remain to be corrected and refined.</p>
+      <p data-fr><b>Tes observations orientent réellement son développement.</b> Un crayon est présent sur presque tous les écrans. Une pression capture l'écran affiché ; tu entoures ce qui ne va pas, tu ajoutes un mot, et tu l'envoies. C'est de cette façon que l'application progresse.</p>
+      <p data-en><b>Your observations genuinely shape its development.</b> A pencil sits on nearly every screen. One tap captures the current screen; you circle what is wrong, add a note, and send it. This is how the app moves forward.</p>
     </div>
   </section>
 
   <section>
-    <h2 data-fr>Ce qu'elle fait</h2><h2 data-en>What it does</h2>
-    <ul data-fr>
-      <li><b>Des habitudes qui pardonnent un jour.</b> La plupart des applications cassent ta série au premier jour manqué. Ici, manquer une journée ne casse rien — c'est deux jours de suite qui comptent.</li>
-      <li><b>Un minuteur d'entraînement</b> et des exercices, avec la voix et le compte.</li>
-      <li><b>Des exercices de respiration</b>, au son de bols.</li>
-      <li><b>Un carnet</b> pour écrire ce qui a pesé dans la journée, et le relire plus tard.</li>
-      <li><b>Des jeux de tête</b> courts, qui s'ajustent à mesure que tu deviens meilleur.</li>
-      <li><b>Un portrait de départ</b> : six questions sur toi, pas sur ce que tu consommes.</li>
-    </ul>
-    <ul data-en>
-      <li><b>Habits that forgive one day.</b> Most apps break your streak on the first missed day. Here, missing one day breaks nothing — two in a row is what counts.</li>
-      <li><b>A workout timer</b> and exercises, with voice and counting.</li>
-      <li><b>Breathing exercises</b>, with singing bowls.</li>
-      <li><b>A journal</b> to write what weighed on your day, and read it back later.</li>
-      <li><b>Short mind games</b> that adjust as you get better.</li>
-      <li><b>A starting portrait</b>: six questions about you, not about what you consume.</li>
-    </ul>
-    <p class="note" data-fr>C'est un outil pour tenir ce que tu as décidé de faire. Il ne remplace personne et il ne te dit pas quoi faire de ton corps.</p>
-    <p class="note" data-en>It's a tool to help you keep what you decided to do. It replaces no one, and it doesn't tell you what to do with your body.</p>
+    <h2 data-fr>Aucune donnée ne quitte l'appareil</h2><h2 data-en>No data leaves the device</h2>
+    <p data-fr>L'application ne transmet rien. Habitudes, carnet, réponses au portrait : tout demeure sur l'appareil. Aucun compte n'est requis, aucun serveur n'est utilisé, et Vitalité Bohème n'a accès à rien.</p>
+    <p data-en>The app transmits nothing. Habits, journal, portrait answers: everything remains on the device. No account is required, no server is involved, and Vitalité Bohème has access to nothing.</p>
+    <p data-fr><b>Deux exceptions, toutes deux à ton initiative.</b> La dictée vocale peut recourir au service de reconnaissance vocale de Google, auquel cas la voix quitte l'appareil le temps de la transcription : l'application le demande avant la première utilisation, et le refus est possible. Et lorsque tu transmets une observation par le crayon, c'est ta propre application de courriel qui l'envoie, avec ce que tu as écrit et rien d'autre.</p>
+    <p data-en><b>Two exceptions, both at your initiative.</b> Voice dictation may use Google's speech recognition service, in which case the voice leaves the device for the duration of the transcription: the app asks before the first use, and declining is possible. And when you send an observation through the pencil, it is your own email app that sends it, with what you wrote and nothing else.</p>
+    <p><a href="confidentialite.html"><span data-fr>Consulter la politique de confidentialité →</span><span data-en>Read the privacy policy →</span></a></p>
   </section>
 
   <section>
-    <h2 data-fr>Rien ne sort de ton téléphone</h2><h2 data-en>Nothing leaves your phone</h2>
-    <p data-fr>L'application n'envoie aucune donnée. Tes habitudes, ton carnet, tes réponses : tout reste sur ton appareil. Il n'y a pas de compte à créer, pas de serveur, rien à voir de mon côté.</p>
-    <p data-en>The app sends no data anywhere. Your habits, your journal, your answers: everything stays on your device. There's no account to create, no server, nothing for me to see.</p>
-    <p data-fr><b>Deux exceptions, et elles se choisissent :</b> la dictée vocale peut passer par Google pour transcrire ta voix — l'application te le demande avant, et tu peux refuser. Et quand tu m'envoies une note avec le crayon, c'est ton application de courriel qui l'envoie, avec ce que tu as écrit et rien d'autre.</p>
-    <p data-en><b>Two exceptions, and you choose them:</b> voice dictation can go through Google to transcribe your voice — the app asks first, and you can decline. And when you send me a note with the pencil, it's your own email app that sends it, with what you wrote and nothing else.</p>
-    <p><a href="confidentialite.html"><span data-fr>Lire la politique de confidentialité →</span><span data-en>Read the privacy policy →</span></a></p>
-  </section>
-
-  <section>
-    <h2 data-fr>Comment l'installer</h2><h2 data-en>How to install it</h2>
-    <p data-fr>Elle n'est pas encore sur Google Play. Android va donc te prévenir deux ou trois fois avant de l'installer — c'est normal, ça arrive à toutes les applications qui viennent d'un site.</p>
-    <p data-en>It isn't on Google Play yet. Android will warn you two or three times before installing — that's normal, it happens with any app that comes from a website.</p>
+    <h2 data-fr>Installation</h2><h2 data-en>Installation</h2>
+    <p data-fr>L'application n'est pas encore distribuée par Google Play. Android affichera donc deux ou trois avertissements avant l'installation : c'est la procédure normale pour toute application provenant d'un site web.</p>
+    <p data-en>The app is not yet distributed through Google Play. Android will therefore display two or three warnings before installing: this is the standard procedure for any app coming from a website.</p>
     <ol data-fr>
-      <li>Touche le bouton <b>Télécharger</b> ci-dessus, depuis ton téléphone Android.</li>
-      <li>Ton navigateur dira que <i>ce type de fichier peut endommager ton appareil</i>. Choisis <b>Télécharger quand même</b>.</li>
-      <li>Ouvre le fichier téléchargé. Android va demander d'autoriser ton navigateur à <b>installer des applications inconnues</b> — accepte, c'est une seule fois.</li>
-      <li>Un dernier écran peut dire <b>Application inconnue</b>. Choisis <b>Installer quand même</b>.</li>
-      <li>C'est fait. L'icône apparaît avec tes autres applications.</li>
+      <li>Depuis un téléphone Android, utilise le bouton de téléchargement au bas de cette page.</li>
+      <li>Le navigateur signalera que <i>ce type de fichier peut endommager ton appareil</i>. Choisis <b>Télécharger quand même</b>.</li>
+      <li>Ouvre le fichier téléchargé. Android demandera d'autoriser le navigateur à <b>installer des applications inconnues</b> : cette autorisation ne se donne qu'une fois.</li>
+      <li>Un dernier écran peut indiquer <b>Application inconnue</b>. Choisis <b>Installer quand même</b>.</li>
+      <li>L'installation est terminée. L'icône apparaît parmi tes applications.</li>
     </ol>
     <ol data-en>
-      <li>Tap the <b>Download</b> button above, from your Android phone.</li>
-      <li>Your browser will say <i>this type of file can harm your device</i>. Choose <b>Download anyway</b>.</li>
-      <li>Open the downloaded file. Android will ask you to allow your browser to <b>install unknown apps</b> — accept, it's a one-time thing.</li>
-      <li>A last screen may say <b>Unknown app</b>. Choose <b>Install anyway</b>.</li>
-      <li>Done. The icon appears with your other apps.</li>
+      <li>From an Android phone, use the download button at the bottom of this page.</li>
+      <li>The browser will warn that <i>this type of file can harm your device</i>. Choose <b>Download anyway</b>.</li>
+      <li>Open the downloaded file. Android will ask you to allow the browser to <b>install unknown apps</b>: this permission is granted only once.</li>
+      <li>A final screen may say <b>Unknown app</b>. Choose <b>Install anyway</b>.</li>
+      <li>Installation is complete. The icon appears among your apps.</li>
     </ol>
-    <p class="note" data-fr><b>Pour les mises à jour :</b> reviens sur cette page et retélécharge. La nouvelle version s'installe par-dessus l'ancienne — tu ne perds rien de ce que tu as noté.</p>
-    <p class="note" data-en><b>For updates:</b> come back to this page and download again. The new version installs over the old one — you lose nothing you've recorded.</p>
+    <p class="note" data-fr><b>Mises à jour :</b> reviens sur cette page et télécharge la version courante. Elle s'installe par-dessus la précédente, sans perte de données.</p>
+    <p class="note" data-en><b>Updates:</b> return to this page and download the current version. It installs over the previous one, with no loss of data.</p>
   </section>
 
   <section>
-    <h2 data-fr>iPhone ?</h2><h2 data-en>iPhone?</h2>
-    <p data-fr>Pas encore. Apple ne permet pas d'installer une application depuis un site au Canada — il faudrait passer par l'App Store, ce qui demande de la réécrire au complet. Ce n'est pas abandonné, c'est plus loin sur la route.</p>
-    <p data-en>Not yet. Apple doesn't allow installing an app from a website in Canada — it would have to go through the App Store, which means rewriting it entirely. It's not abandoned, just further down the road.</p>
+    <h2 data-fr>iPhone</h2><h2 data-en>iPhone</h2>
+    <p data-fr>L'application n'est pas encore disponible sur iPhone. Une version iOS demande un développement distinct et une distribution par l'App Store. Si la demande se manifeste, elle sera envisagée.</p>
+    <p data-en>The app is not yet available on iPhone. An iOS version requires separate development and distribution through the App Store. Should the demand arise, it will be considered.</p>
   </section>
 
-  <section class="telecharger">
+  <section class="telecharger" id="telecharger">
     <h2 data-fr>Télécharger</h2><h2 data-en>Download</h2>
-    <p data-fr>Pour Android. Gratuite, sans compte, sans publicité.</p>
-    <p data-en>For Android. Free, no account, no ads.</p>
-    <a class="bouton" href="Vitalite-Boheme.apk" download>
+    <p data-fr>Pour Android. Gratuite, sans compte et sans publicité.</p>
+    <p data-en>For Android. Free, no account, no advertising.</p>
+    <a class="bouton" href="https://github.com/bibeaukevin9-arch/vitalite-boheme/releases/download/v0.59/Vitalite-Boheme.apk">
       <span data-fr>Télécharger l'application</span><span data-en>Download the app</span>
     </a>
     <p class="sous-bouton" data-fr>Version 0.59 · 8.8 Mo · Android 8 et plus</p>
