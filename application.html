@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>L'application — Vitalité Bohème</title>
+  <meta name="description" content="L'application Vitalité Bohème : garder ses habitudes, bouger, respirer. Gratuite, sur Android. Rien ne sort de ton téléphone." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://vitaliteboheme.ca/application.html" />
+  <link rel="icon" href="images/favicon-vb5.png" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root { --or: #cfa96a; --or-clair: #e8c98a; --beige: #f5ede0; --brun: #8a6a50; --brun-fonce: #4a3220; --creme: #f2ebe2; --texte: #3a2e28; --gris: #7a6a58; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif; color: var(--texte); background: var(--beige); }
+    body::before { content: ''; position: fixed; inset: 0; background: url('images/fiche-bg.jpg') center center / cover; z-index: -1; }
+    h1, h2 { font-family: 'Cormorant Garamond', Georgia, serif; }
+    .lang-btn { position: fixed; top: 20px; left: 24px; z-index: 1100; background: rgba(30,22,14,0.82); color: #c8b89a; border: 1px solid rgba(201,169,110,0.35);
+      padding: 7px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; letter-spacing: 1px; font-family: Georgia, serif; display: flex; gap: 0; }
+    .lang-btn .lbl { padding: 0 6px; } .lang-btn .lbl.actif { color: var(--or); font-weight: bold; } .lang-btn .sep { color: rgba(201,169,110,0.4); }
+    [data-en] { display: none; } body.en [data-fr] { display: none; } body.en [data-en] { display: block; }
+    body.en span[data-en], body.en a[data-en], body.en b[data-en] { display: inline; }
+    body.en span[data-fr], body.en a[data-fr], body.en b[data-fr] { display: none; }
+    header { background: url('images/hero-bg.jpg') center / cover no-repeat; padding: 44px 24px 32px; text-align: center; position: relative; box-shadow: 0 8px 40px rgba(0,0,0,0.35); }
+    header::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,5,1,0.55), rgba(10,5,1,0.5)); }
+    header > * { position: relative; }
+    header h1 { font-size: 32px; color: var(--creme); font-weight: 600; text-shadow: 0 2px 12px rgba(0,0,0,0.8); }
+    header h1 em { color: var(--or-clair); }
+    header p { color: var(--creme); font-size: 14px; margin-top: 8px; text-shadow: 0 1px 6px rgba(0,0,0,0.8); }
+    header a.retour { display: inline-block; color: rgba(201,169,110,0.8); font-size: 12px; letter-spacing: 1px; text-decoration: none; margin-top: 14px; }
+    main { max-width: 720px; margin: 0 auto; padding: 34px 20px 80px; }
+    section { background: #fff; border-radius: 16px; padding: 24px; margin-bottom: 16px; border: 1.5px solid rgba(201,169,110,0.22); box-shadow: 0 4px 24px rgba(60,40,20,0.10); }
+    h2 { font-size: 22px; color: var(--brun-fonce); margin-bottom: 10px; font-weight: 600; }
+    p, li { font-size: 15px; line-height: 1.7; }
+    ul, ol { padding-left: 22px; margin: 8px 0; }
+    li { margin-bottom: 6px; }
+    p + p { margin-top: 8px; }
+    a { color: var(--brun-fonce); }
+    .maj { font-size: 12px; color: var(--gris); text-align: center; }
+
+    /* Le bloc de téléchargement — la seule chose vraiment mise en avant. */
+    .telecharger { text-align: center; background: linear-gradient(160deg, #fffaf2, #f7ecda); }
+    .bouton { display: inline-block; background: linear-gradient(160deg, var(--or-clair), var(--or));
+      color: #2b1d0e; text-decoration: none; font-weight: bold; font-size: 17px; padding: 17px 38px;
+      border-radius: 30px; box-shadow: 0 6px 20px rgba(140,100,40,0.30); margin: 8px 0 6px; }
+    .bouton:hover { filter: brightness(1.05); }
+    .sous-bouton { font-size: 12.5px; color: var(--gris); }
+    .chantier { border-left: 4px solid var(--or); background: #fdf7ec; padding: 16px 18px; border-radius: 0 12px 12px 0; margin-top: 4px; }
+    .chantier p { font-size: 14.5px; }
+    .etape { counter-increment: e; }
+    .note { font-size: 13.5px; color: var(--gris); margin-top: 10px; }
+  </style>
+</head>
+<body>
+<button class="lang-btn" onclick="toggleLang()"><span class="lbl actif" id="lbl-fr">FR</span><span class="sep">|</span><span class="lbl" id="lbl-en">EN</span></button>
+
+<header>
+  <h1 data-fr>L'<em>application</em></h1>
+  <h1 data-en>The <em>app</em></h1>
+  <p data-fr>Garder ses habitudes, bouger, respirer, se relire. Gratuite.</p>
+  <p data-en>Keep your habits, move, breathe, look back. Free.</p>
+  <a class="retour" href="index.html"><span data-fr>← Retour au site</span><span data-en>← Back to website</span></a>
+</header>
+
+<main>
+
+  <section class="telecharger">
+    <h2 data-fr>Télécharger</h2><h2 data-en>Download</h2>
+    <p data-fr>Pour Android. Gratuite, sans compte, sans publicité.</p>
+    <p data-en>For Android. Free, no account, no ads.</p>
+    <a class="bouton" href="Vitalite-Boheme.apk" download>
+      <span data-fr>Télécharger l'application</span><span data-en>Download the app</span>
+    </a>
+    <p class="sous-bouton" data-fr>Version 0.58 · 8,8 Mo · Android 8 et plus</p>
+    <p class="sous-bouton" data-en>Version 0.58 · 8.8 MB · Android 8 and up</p>
+  </section>
+
+  <section>
+    <div class="chantier">
+      <h2 data-fr>Elle est en construction, et je le dis</h2>
+      <h2 data-en>It's a work in progress, and I say so</h2>
+      <p data-fr>Elle n'est pas finie. Elle change presque chaque semaine, et il reste des choses à corriger. Je préfère te le dire tout de suite plutôt que de te laisser le découvrir.</p>
+      <p data-en>It isn't finished. It changes almost every week, and things still need fixing. I'd rather tell you now than let you find out.</p>
+      <p data-fr><b>C'est aussi pour ça qu'elle est gratuite</b>, et que tes retours comptent vraiment : il y a un crayon dans presque tous les écrans de l'application. Un appui prend une photo de ce que tu regardes, tu entoures ce qui cloche, tu écris un mot, et tu me l'envoies. C'est comme ça qu'elle avance.</p>
+      <p data-en><b>That's also why it's free</b>, and why your feedback really counts: there's a pencil on nearly every screen. One tap takes a picture of what you're looking at, you circle what's wrong, write a word, and send it to me. That's how it moves forward.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2 data-fr>Ce qu'elle fait</h2><h2 data-en>What it does</h2>
+    <ul data-fr>
+      <li><b>Des habitudes qui pardonnent un jour.</b> La plupart des applications cassent ta série au premier jour manqué. Ici, manquer une journée ne casse rien — c'est deux jours de suite qui comptent.</li>
+      <li><b>Un minuteur d'entraînement</b> et des exercices, avec la voix et le compte.</li>
+      <li><b>Des exercices de respiration</b>, au son de bols.</li>
+      <li><b>Un carnet</b> pour écrire ce qui a pesé dans la journée, et le relire plus tard.</li>
+      <li><b>Des jeux de tête</b> courts, qui s'ajustent à mesure que tu deviens meilleur.</li>
+      <li><b>Un portrait de départ</b> : six questions sur toi, pas sur ce que tu consommes.</li>
+    </ul>
+    <ul data-en>
+      <li><b>Habits that forgive one day.</b> Most apps break your streak on the first missed day. Here, missing one day breaks nothing — two in a row is what counts.</li>
+      <li><b>A workout timer</b> and exercises, with voice and counting.</li>
+      <li><b>Breathing exercises</b>, with singing bowls.</li>
+      <li><b>A journal</b> to write what weighed on your day, and read it back later.</li>
+      <li><b>Short mind games</b> that adjust as you get better.</li>
+      <li><b>A starting portrait</b>: six questions about you, not about what you consume.</li>
+    </ul>
+    <p class="note" data-fr>Ce n'est pas un traitement, ni un avis de santé, ni un remplacement d'un professionnel. C'est un outil pour garder ce que tu fais déjà.</p>
+    <p class="note" data-en>This is not a treatment, not health advice, and not a replacement for a professional. It's a tool to help you keep what you already do.</p>
+  </section>
+
+  <section>
+    <h2 data-fr>Rien ne sort de ton téléphone</h2><h2 data-en>Nothing leaves your phone</h2>
+    <p data-fr>L'application n'envoie aucune donnée. Tes habitudes, ton carnet, tes réponses : tout reste sur ton appareil. Il n'y a pas de compte à créer, pas de serveur, rien à voir de mon côté.</p>
+    <p data-en>The app sends no data anywhere. Your habits, your journal, your answers: everything stays on your device. There's no account to create, no server, nothing for me to see.</p>
+    <p data-fr><b>Deux exceptions, et elles se choisissent :</b> la dictée vocale peut passer par Google pour transcrire ta voix — l'application te le demande avant, et tu peux refuser. Et quand tu m'envoies une note avec le crayon, c'est ton application de courriel qui l'envoie, avec ce que tu as écrit et rien d'autre.</p>
+    <p data-en><b>Two exceptions, and you choose them:</b> voice dictation can go through Google to transcribe your voice — the app asks first, and you can decline. And when you send me a note with the pencil, it's your own email app that sends it, with what you wrote and nothing else.</p>
+    <p><a href="confidentialite.html"><span data-fr>Lire la politique de confidentialité →</span><span data-en>Read the privacy policy →</span></a></p>
+  </section>
+
+  <section>
+    <h2 data-fr>Comment l'installer</h2><h2 data-en>How to install it</h2>
+    <p data-fr>Elle n'est pas encore sur Google Play. Android va donc te prévenir deux ou trois fois avant de l'installer — c'est normal, ça arrive à toutes les applications qui viennent d'un site.</p>
+    <p data-en>It isn't on Google Play yet. Android will warn you two or three times before installing — that's normal, it happens with any app that comes from a website.</p>
+    <ol data-fr>
+      <li>Touche le bouton <b>Télécharger</b> ci-dessus, depuis ton téléphone Android.</li>
+      <li>Ton navigateur dira que <i>ce type de fichier peut endommager ton appareil</i>. Choisis <b>Télécharger quand même</b>.</li>
+      <li>Ouvre le fichier téléchargé. Android va demander d'autoriser ton navigateur à <b>installer des applications inconnues</b> — accepte, c'est une seule fois.</li>
+      <li>Un dernier écran peut dire <b>Application inconnue</b>. Choisis <b>Installer quand même</b>.</li>
+      <li>C'est fait. L'icône apparaît avec tes autres applications.</li>
+    </ol>
+    <ol data-en>
+      <li>Tap the <b>Download</b> button above, from your Android phone.</li>
+      <li>Your browser will say <i>this type of file can harm your device</i>. Choose <b>Download anyway</b>.</li>
+      <li>Open the downloaded file. Android will ask you to allow your browser to <b>install unknown apps</b> — accept, it's a one-time thing.</li>
+      <li>A last screen may say <b>Unknown app</b>. Choose <b>Install anyway</b>.</li>
+      <li>Done. The icon appears with your other apps.</li>
+    </ol>
+    <p class="note" data-fr><b>Pour les mises à jour :</b> reviens sur cette page et retélécharge. La nouvelle version s'installe par-dessus l'ancienne — tu ne perds rien de ce que tu as noté.</p>
+    <p class="note" data-en><b>For updates:</b> come back to this page and download again. The new version installs over the old one — you lose nothing you've recorded.</p>
+  </section>
+
+  <section>
+    <h2 data-fr>iPhone ?</h2><h2 data-en>iPhone?</h2>
+    <p data-fr>Pas encore. Apple ne permet pas d'installer une application depuis un site au Canada — il faudrait passer par l'App Store, ce qui demande de la réécrire au complet. Ce n'est pas abandonné, c'est plus loin sur la route.</p>
+    <p data-en>Not yet. Apple doesn't allow installing an app from a website in Canada — it would have to go through the App Store, which means rewriting it entirely. It's not abandoned, just further down the road.</p>
+  </section>
+
+  <p class="maj" data-fr>Version 0.58 — mise en ligne le 9 septembre 2026.</p>
+  <p class="maj" data-en>Version 0.58 — published September 9, 2026.</p>
+
+</main>
+
+<script>
+  function toggleLang() {
+    document.body.classList.toggle('en');
+    var en = document.body.classList.contains('en');
+    document.getElementById('lbl-fr').classList.toggle('actif', !en);
+    document.getElementById('lbl-en').classList.toggle('actif', en);
+    document.documentElement.lang = en ? 'en' : 'fr';
+    try { localStorage.setItem('vb-lang', en ? 'en' : 'fr'); } catch (e) {}
+  }
+  try { if (localStorage.getItem('vb-lang') === 'en') toggleLang(); } catch (e) {}
+</script>
+</body>
+</html>
