@@ -38,10 +38,10 @@ function setDateAujourdhui() {
   });
 })();
 
-// ─── EMAILJS CONFIG ────────────────────────────────────────────
-var EMAILJS_PUBLIC_KEY  = 'nDDa_zp8R1h9YR_Df';
-var EMAILJS_SERVICE_ID  = 'service_w78vr2g';
-var EMAILJS_TEMPLATE_ID = 'template_iumkg2s';
+// ─── EmailJS retiré le 2026-09-10 ───────────────────────────────
+// Le questionnaire part maintenant au programme Google de Kevin (action=questionnaire).
+// Un tiers américain de moins qui transporte des données de santé, et plus de plafond
+// à 50 Ko qui faisait échouer un envoi sans que personne le sache.
 // Banque de clients : quand le questionnaire part, on signale l'identite au programme de reservation
 // (prenom, nom, courriel, telephone, langue). Jamais une reponse de sante. Si ca echoue, rien ne change.
 var BANQUE_URL = 'https://script.google.com/macros/s/AKfycby217WbbU_K_cAUy9L1H96Yseh376VTAyT8eYxd2dCNl8Gw6pMmQEO8pi2P0rud6FLG/exec';
@@ -53,7 +53,6 @@ function signalerBanque(identite) {
       .catch(function(e) { console.warn('banque clients :', e); });
   } catch (e) { console.warn('banque clients :', e); }
 }
-if (typeof emailjs !== 'undefined') emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
 // ─── LANGUE ────────────────────────────────────────────────────
 var currentLang = 'fr';
@@ -425,7 +424,7 @@ function effacerSignature() { ctx.clearRect(0, 0, canvas.width, canvas.height); 
 // ─── Signature compressee, pour le courriel de la clinique ─────────────────
 // Le PDF du client garde la signature PNG pleine qualite. Pour le courriel, on
 // la redessine plus petite, sur fond blanc, et on la compresse en JPEG :
-// les variables EmailJS sont plafonnees a 50 Ko et le PNG brut en pese ~28.
+// on garde la signature legere : elle voyage avec le reste du questionnaire.
 // Le fond blanc est obligatoire — le JPEG ne gere pas la transparence, et sans
 // lui le trace fonce se retrouverait sur du noir, donc invisible.
 function signatureCompressee() {
@@ -698,7 +697,7 @@ function soumettreFormulaire(e) {
   var now = new Date();
   doc.setFont('helvetica', 'italic'); doc.setFontSize(8); doc.setTextColor(150, 140, 130);
   ensure(20);
-  doc.text(T.gen + ' ' + now.toLocaleDateString(isEn ? 'en-CA' : 'fr-CA') + ' - bibeaukevin9@gmail.com - 438-368-3282', M, pageH - 28);
+  doc.text(T.gen + ' ' + now.toLocaleDateString(isEn ? 'en-CA' : 'fr-CA') + ' - KevinBibeau@vitaliteboheme.ca - 438-368-3282', M, pageH - 28);
 
   // ─── Calcul de l'âge depuis la date de naissance ──────────────
   var ageStr = '';
@@ -726,15 +725,13 @@ function soumettreFormulaire(e) {
     .replace(/__+/g, '_')
     + '.pdf';
 
-  // ─── PDF : copie client seulement, JAMAIS dans le courriel ────────────────
-  // ⚠ NE PAS remettre le PDF en base64 dans les variables EmailJS.
-  // EmailJS refuse toute requete dont les variables depassent 50 Ko
-  // (reponse HTTP 413 « Variables size limit »). Un questionnaire signe pese
-  // ~430 Ko en base64, soit 8 a 9 fois la limite : le 28 juillet 2026, ajouter
-  // pdf_data a bloque 100 % des envois, dans tous les navigateurs.
-  // Le courriel transporte deja tout le contenu du questionnaire en texte
-  // (incluant les contre-indications). La personne garde sa copie PDF via le
-  // bouton de telechargement affiche apres l'envoi.
+  // ─── PDF : la copie du client ET la piece jointe du dossier ───────────────
+  // Historique : jusqu'au 2026-09-10, le PDF ne partait JAMAIS. EmailJS refusait
+  // toute requete au-dessus de 50 Ko (HTTP 413) et un questionnaire signe pese
+  // ~430 Ko en base64 — le 28 juillet 2026, l'ajouter avait bloque 100 % des envois.
+  // Depuis qu'on passe par le programme Google, ce plafond n'existe plus : le PDF
+  // est joint au courriel de Kevin, et la personne garde sa copie par le bouton
+  // de telechargement.
   //
   // Le telechargement vient APRES l'envoi, volontairement : dans les
   // navigateurs integres (Facebook, Messenger, Instagram), doc.save() peut
@@ -742,7 +739,7 @@ function soumettreFormulaire(e) {
   window.__vbPdfDoc = doc;
   window.__vbPdfNom = nomFichier;
 
-  // EmailJS
+  // Envoi
   var btn = document.getElementById('btn-submit');
   btn.disabled = true;
   btn.innerHTML = '<span>⏳ Envoi en cours…</span>';
@@ -753,6 +750,18 @@ function soumettreFormulaire(e) {
     client_tel:         v('telephone') || '-',
     client_email:       v('email') || '-',
     email:              v('email') || '',
+    // Le sexe, la date de naissance et l'adresse sont exiges nommement par l'article 9.1.1
+    // du code de deontologie du RMPQ. Ils etaient dans le PDF — que le client garde — mais
+    // pas dans ce que Kevin recoit. Son dossier etait donc incomplet. Corrige le 2026-09-10.
+    client_sexe:        v('sexe') || '-',
+    client_ddn:         v('ddn') || '-',
+    client_adresse:     v('adresse') || '-',
+    client_profession:  v('profession') || '-',
+    // Les allergies remontent deja en tete des contre-indications, mais elles doivent
+    // aussi figurer telles quelles au dossier.
+    allergies:          v('allergies') || '-',
+    urgence:            (v('urgence_nom') || '-') + (v('urgence_lien') ? ' (' + v('urgence_lien') + ')' : '') + (v('urgence_tel') ? ' · ' + v('urgence_tel') : ''),
+    parent:             v('mineur') ? ((v('parent_nom') || '-') + (v('parent_lien') ? ' (' + v('parent_lien') + ')' : '') + (v('parent_tel') ? ' · ' + v('parent_tel') : '')) : '',
     motif:              all('motif').join(', ') || '-',
     motif_detail:       (v('mineur') ? (isEn ? '[UNDER 18 — parental consent signed, parent stays in the room: ' : '[MOINS DE 18 ANS — consentement parental signé, parent présent dans la pièce : ') + v('parent_nom') + ' (' + v('parent_lien') + ') ' + v('parent_tel') + '] ' : '') + (v('motif_detail') || '-'),
     zones:              v('zones') || '-',
@@ -772,7 +781,7 @@ function soumettreFormulaire(e) {
     signature_image:    signatureCompressee()
   };
 
-  // ─── Garde-fou : ne jamais depasser la limite de 50 Ko d'EmailJS ──────────
+  // ─── Garde-fou : un champ libre demesure ne doit pas gonfler l'envoi ──────
   // Filet de securite au cas ou quelqu'un colle un texte enorme dans un champ
   // libre. On tronque plutot que de laisser l'envoi echouer.
   (function limiterTaille() {
@@ -796,7 +805,7 @@ function soumettreFormulaire(e) {
         templateParams[k] = isEn ? '[Too long — ask the client]' : '[Trop long — a demander au client]';
       });
     }
-    console.warn('Variables tronquees pour respecter la limite EmailJS (50 Ko).');
+    console.warn('Champ libre tronque : il depassait 2 000 caracteres.');
   })();
 
   // Affiche le bouton « Télécharger ma copie PDF ». Le téléchargement est
@@ -845,7 +854,7 @@ function soumettreFormulaire(e) {
       : "<strong>Votre questionnaire n'a pas pu etre envoye.</strong><br>"
         + 'Telechargez votre copie PDF avec le bouton ci-dessous et faites-la nous parvenir — '
         + 'ou appelez-nous simplement, on le remplira ensemble.<br>')
-      + '<a href="mailto:bibeaukevin9@gmail.com" style="color:#7b241c;font-weight:600;">bibeaukevin9@gmail.com</a>'
+      + '<a href="mailto:KevinBibeau@vitaliteboheme.ca" style="color:#7b241c;font-weight:600;">KevinBibeau@vitaliteboheme.ca</a>'
       + ' &nbsp;·&nbsp; '
       + '<a href="tel:+14383683282" style="color:#7b241c;font-weight:600;">438-368-3282</a>'
       + '<br><span style="font-size:12px;opacity:.75;">Code technique : ' + (statut || '?') + ' ' + (detail || '') + '</span>';
@@ -874,7 +883,7 @@ function soumettreFormulaire(e) {
   function onError(err) {
     var statut = (err && err.status) || 0;
     var detail = (err && (err.text || err.message)) || '';
-    console.error('EmailJS error:', statut, detail, err);
+    console.error('Envoi du questionnaire — echec :', statut, detail, err);
     btn.disabled = false;
     btn.innerHTML = LIBELLE_BOUTON;
     preparerTelechargement();
@@ -884,20 +893,41 @@ function soumettreFormulaire(e) {
   // Une seule nouvelle tentative en cas de coupure reseau ou d'erreur
   // temporaire du serveur. Les erreurs de configuration (400, 413, 422) ne
   // sont pas rejouees : elles echoueraient exactement pareil.
+  // ⭐ Depuis le 2026-09-10, le questionnaire ne passe PLUS par EmailJS.
+  // Il part directement au programme de reservation, dans le compte Google de Kevin.
+  // Pourquoi : EmailJS est un tiers americain sans entente ecrite, et il transportait
+  // tout le contenu de sante — conditions, medicaments, allergies, signature. Un
+  // fournisseur de moins qui touche a ces donnees, et plus de plafond a 50 Ko qui
+  // faisait echouer un envoi sans prevenir personne.
   function envoyer(essai) {
-    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
-      .then(onSuccess, function(err) {
-        var statut = (err && err.status) || 0;
-        var temporaire = (statut === 0 || statut === 408 || statut === 429 || statut >= 500);
-        if (essai < 2 && temporaire) {
-          setTimeout(function() { envoyer(essai + 1); }, 1500);
-          return;
-        }
+    // ⭐ Le PDF signé part MAINTENANT avec le questionnaire. Avant le 2026-09-10 c'était
+    // impossible : EmailJS refusait toute requête au-dessus de 50 Ko et le PDF en pèse ~430.
+    // Kevin ne recevait donc qu'un résumé en texte, jamais la pièce signée — alors que
+    // c'est elle, le dossier, au sens de l'article 9.1.1 du code du RMPQ.
+    // ⚠️ Il est ajouté ICI, hors de templateParams : le garde-fou qui tronque à 2 000
+    // caractères passe sur templateParams et couperait le PDF en deux.
+    var pdf64 = '';
+    try { if (window.__vbPdfDoc) pdf64 = window.__vbPdfDoc.output('datauristring'); } catch (ePdf) { console.warn('PDF non joint :', ePdf); }
+
+    fetch(BANQUE_URL, {
+      method: 'POST', redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(Object.assign({ action: 'questionnaire', site_web: '', pdf_base64: pdf64, pdf_nom: window.__vbPdfNom || 'questionnaire.pdf' }, templateParams))
+    })
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d && d.ok) { onSuccess(); return; }
+        // Refus du programme : ce n'est pas une coupure reseau, rejouer ne changerait rien.
+        onError({ status: 400, text: (d && d.erreur) || 'refus du programme' });
+      })
+      .catch(function(err) {
+        // Coupure reseau ou serveur indisponible : une seule reprise.
+        if (essai < 2) { setTimeout(function() { envoyer(essai + 1); }, 1500); return; }
         onError(err);
       });
   }
 
-  if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== 'VOTRE_CLE_PUBLIQUE') {
+  if (BANQUE_URL) {
     envoyer(1);
   } else {
     onSuccess();
