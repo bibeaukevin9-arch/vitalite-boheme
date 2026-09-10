@@ -475,11 +475,17 @@ function soumettreFormulaire(e) {
   }
 
   // Champs obligatoires texte
+  // Sexe et adresse sont exigés nommément par l'article 9.1.1 du code de déontologie du RMPQ ;
+  // les allergies sont la contre-indication qui peut se déclencher pendant la séance elle-même.
+  // Les trois manquaient jusqu'au 2026-09-10.
   var champsTxt = [
     { n: 'nom',            fr: 'Nom',               en: 'Last name' },
     { n: 'prenom',         fr: 'Prénom',            en: 'First name' },
+    { n: 'sexe',           fr: 'Sexe',              en: 'Sex' },
     { n: 'ddn',            fr: 'Date de naissance', en: 'Date of birth' },
+    { n: 'adresse',        fr: 'Adresse',           en: 'Address' },
     { n: 'telephone',      fr: 'Téléphone',         en: 'Phone' },
+    { n: 'allergies',      fr: 'Allergies (écris « aucune » s\'il n\'y en a pas)', en: 'Allergies (write “none” if there are none)' },
     { n: 'date_signature', fr: 'Date de signature', en: 'Signature date' }
   ];
   champsTxt.forEach(function(c) {
@@ -577,6 +583,12 @@ function soumettreFormulaire(e) {
       return rule.kw.some(function(kw) { return s.toLowerCase().includes(kw.toLowerCase()); });
     })) { CI.push(rule.label); }
   });
+  // Les allergies ne sont pas une case cochee : elles montent en tete des contre-indications,
+  // parce que c'est la seule qui peut se declencher pendant la seance, huile a la main.
+  var allergiesTxt = v('allergies');
+  if (allergiesTxt && !/^(aucune?|non|none|no|n\/a|-)$/i.test(allergiesTxt.trim())) {
+    CI.unshift('ALLERGIES — ' + allergiesTxt + ' : verifier l\'huile et les produits avant la seance');
+  }
   var contre_indications_str = CI.length > 0
     ? CI.map(function(c) { return '* ' + c; }).join('\n')
     : (isEn ? 'None detected' : 'Aucune detectee');
@@ -588,9 +600,9 @@ function soumettreFormulaire(e) {
     s4: 'Pain & sensitive areas', s5: 'Health history', s6: 'Medication & treatments',
     s7: 'Consent & policies', s8: 'Signature',
     nom: 'Last name:', prenom: 'First name:', ddn: 'Date of birth:', tel: 'Phone:',
-    email: 'Email:', adr: 'Address:', prof: 'Occupation:', mineur: 'Under 18:', parent: 'Parent/guardian (stays in the room):', un: 'Name:', ul: 'Relationship:', ut: 'Phone:',
+    email: 'Email:', sexe: 'Sex:', adr: 'Address:', prof: 'Occupation:', mineur: 'Under 18:', parent: 'Parent/guardian (stays in the room):', un: 'Name:', ul: 'Relationship:', ut: 'Phone:',
     motif: 'Reason:', motifd: 'Details:', zones: 'Selected areas:', none: 'None',
-    sante: 'Conditions:', santea: 'Other:', santed: 'Details:',
+    allerg: 'Allergies:', sante: 'Conditions:', santea: 'Other:', santed: 'Details:',
     med: 'Medication:', medd: 'Which:', autre: 'Other treatment:',
     consok: 'Consent:', yes: 'Yes', no: 'No',
     date: 'Date:', sig: 'Signature:', gen: 'Generated on'
@@ -600,9 +612,9 @@ function soumettreFormulaire(e) {
     s4: 'Douleurs et zones sensibles', s5: 'Historique de sante', s6: 'Medication et traitements',
     s7: 'Consentement et politiques', s8: 'Signature',
     nom: 'Nom :', prenom: 'Prenom :', ddn: 'Date de naissance :', tel: 'Telephone :',
-    email: 'Courriel :', adr: 'Adresse :', prof: 'Profession :', mineur: 'Moins de 18 ans :', parent: 'Parent/tuteur (reste dans la piece) :', un: 'Nom :', ul: 'Lien :', ut: 'Telephone :',
+    email: 'Courriel :', sexe: 'Sexe :', adr: 'Adresse :', prof: 'Profession :', mineur: 'Moins de 18 ans :', parent: 'Parent/tuteur (reste dans la piece) :', un: 'Nom :', ul: 'Lien :', ut: 'Telephone :',
     motif: 'Motif :', motifd: 'Precisions :', zones: 'Zones :', none: 'Aucune',
-    sante: 'Conditions :', santea: 'Autre :', santed: 'Precisions :',
+    allerg: 'Allergies :', sante: 'Conditions :', santea: 'Autre :', santed: 'Precisions :',
     med: 'Medicaments :', medd: 'Lesquels :', autre: 'Autre traitement :',
     consok: 'Consentement :', yes: 'Oui', no: 'Non',
     date: 'Date :', sig: 'Signature :', gen: 'Genere le'
@@ -643,7 +655,7 @@ function soumettreFormulaire(e) {
   }
 
   heading(T.s1);
-  field(T.nom, v('nom')); field(T.prenom, v('prenom')); field(T.ddn, v('ddn'));
+  field(T.nom, v('nom')); field(T.prenom, v('prenom')); field(T.sexe, v('sexe')); field(T.ddn, v('ddn'));
   field(T.tel, v('telephone')); field(T.email, v('email')); field(T.adr, v('adresse')); field(T.prof, v('profession'));
   if (v('mineur')) { field(T.mineur, T.yes); field(T.parent, v('parent_nom') + ' (' + v('parent_lien') + ') ' + v('parent_tel')); }
 
@@ -660,6 +672,9 @@ function soumettreFormulaire(e) {
   if (interdites) field(isEn ? 'Areas to avoid:' : 'Zones a eviter :', interdites);
 
   yy += 6; heading(T.s5);
+  // Les allergies passent AVANT la liste des conditions : c'est la ligne que Kevin doit voir
+  // en premier, huile a la main.
+  field(T.allerg, v('allergies') || T.none);
   field(T.sante, all('sante').join(', ') || T.none);
   field(T.santea, v('sante_autre')); field(T.santed, v('sante_detail'));
 

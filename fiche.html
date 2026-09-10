@@ -10,13 +10,16 @@
   <!-- jsPDF -->
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <!-- Logique formulaire -->
-  <script defer src="fiche-script.js?v=20260908b"></script>
+  <script defer src="fiche-script.js?v=20260910a"></script>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
   <style>
     :root {
       --noir: #1c1208;
       --noir-doux: #261a0e;
-      --or: #cfa96a;
+      --or: #c9a227;
+      --or-doux: #cfa96a;
       --or-clair: #e8c98a;
       --beige: #f5ede0;
       --beige-doux: #ede0cc;
@@ -117,33 +120,35 @@
 
     /* SECTIONS FORMULAIRE */
     .q-section {
-      background: #ffffff; border-radius: 16px;
-      padding: 32px 36px; margin-bottom: 24px;
-      border: 1.5px solid rgba(201,169,110,0.20);
+      background: #fbf7f0; border-radius: 4px;
+      padding: 30px 28px; margin-bottom: 24px;
+      border: 1px solid rgba(201,162,39,0.45);
       box-shadow:
-        0 4px 24px rgba(60,40,20,0.10),
-        0 1px 4px rgba(60,40,20,0.06),
-        inset 0 1px 0 rgba(255,255,255,0.9);
+        inset 0 0 0 4px #fbf7f0,
+        inset 0 0 0 5px rgba(201,162,39,0.25),
+        0 10px 30px rgba(60,40,20,0.12);
     }
     .q-section h3 {
-      font-size: 17px; color: var(--brun-fonce);
-      margin-bottom: 20px; padding-bottom: 10px;
-      border-bottom: 1px solid #e8ddd0;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 26px; font-weight: 400; color: #14100d;
+      margin-bottom: 18px; padding-bottom: 12px;
+      border-bottom: 1px solid rgba(201,162,39,0.30);
     }
     .q-form input, .q-form textarea, .q-form select {
-      width: 100%; padding: 12px 16px; border: 1.5px solid #d8cfc4;
-      border-radius: 8px; font-size: 15px; font-family: Georgia, serif;
-      background: #fdfaf6; color: var(--texte); transition: border 0.2s;
+      width: 100%; padding: 11px 12px; border: 1.5px solid rgba(201,162,39,0.40);
+      border-radius: 2px; font-size: 15px; font-family: Georgia, serif;
+      background: #fff; color: var(--texte); transition: border 0.2s;
     }
     .q-form input::placeholder, .q-form textarea::placeholder { color: #b0a090; }
     .q-form input:focus, .q-form textarea:focus, .q-form select:focus {
       outline: none; border-color: var(--or); background: #fff;
-      box-shadow: 0 0 0 3px rgba(201,169,110,0.12);
+      box-shadow: 0 0 0 3px rgba(201,162,39,0.20);
     }
     .q-form textarea { height: 90px; resize: vertical; }
     .q-form label.field-label {
-      font-size: 13px; color: var(--brun); margin-bottom: 6px;
-      display: block; font-weight: bold; letter-spacing: 0.3px;
+      font-size: 11px; color: var(--gris); margin-bottom: 5px;
+      display: block; font-weight: normal; letter-spacing: 0.6px;
+      text-transform: uppercase; font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
     }
     .q-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
     .q-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
@@ -452,10 +457,25 @@
           <input type="email" name="email" id="email" autocomplete="email" />
         </div>
       </div>
-      <div class="field-group" style="margin-top:16px;">
-        <label class="field-label" data-fr>Adresse</label>
-        <label class="field-label" data-en>Address</label>
-        <input type="text" name="adresse" />
+      <!-- Sexe et adresse : exigés nommément par l'article 9.1.1 du code de déontologie du RMPQ,
+           au même titre que le nom et la date de naissance. Ils manquaient jusqu'au 2026-09-10. -->
+      <div class="q-grid-3" style="margin-top:16px;">
+        <div class="field-group">
+          <label class="field-label" data-fr>Sexe *</label>
+          <label class="field-label" data-en>Sex *</label>
+          <select name="sexe" id="sexe">
+            <option value="" data-fr-txt="—" data-en-txt="—">—</option>
+            <option value="Féminin" data-fr-txt="Féminin" data-en-txt="Female">Féminin</option>
+            <option value="Masculin" data-fr-txt="Masculin" data-en-txt="Male">Masculin</option>
+            <option value="Autre" data-fr-txt="Autre" data-en-txt="Other">Autre</option>
+            <option value="Préfère ne pas répondre" data-fr-txt="Préfère ne pas répondre" data-en-txt="Prefer not to say">Préfère ne pas répondre</option>
+          </select>
+        </div>
+        <div class="field-group" style="grid-column:span 2;">
+          <label class="field-label" data-fr>Adresse *</label>
+          <label class="field-label" data-en>Address *</label>
+          <input type="text" name="adresse" id="adresse" />
+        </div>
       </div>
       <div class="field-group" style="margin-top:16px;">
         <label class="field-label" data-fr>Profession</label>
@@ -670,6 +690,18 @@
         <label class="checkbox-item"><input type="checkbox" name="sante" value="Hernie discale"/><span data-fr>Hernie discale / sciatalgie</span><span data-en>Disc herniation / sciatica</span></label>
         <label class="checkbox-item"><input type="checkbox" name="sante" value="Ostéoporose"/><span data-fr>Ostéoporose</span><span data-en>Osteoporosis</span></label>
         <label class="checkbox-item"><input type="checkbox" name="sante" value="Grossesse"/><span data-fr>Grossesse</span><span data-en>Pregnancy</span></label>
+      </div>
+      <!-- ALLERGIES — oubli corrigé le 2026-09-10. Un massage se donne avec des huiles : l'amande
+           douce est une noix, et les huiles essentielles, la cire et le latex réagissent aussi.
+           C'est la seule contre-indication qui peut se déclencher pendant la séance elle-même. -->
+      <div class="field-group" style="margin-top:16px;">
+        <label class="field-label" data-fr>Allergies ou sensibilités — huiles, noix, parfums, latex, crèmes *</label>
+        <label class="field-label" data-en>Allergies or sensitivities — oils, nuts, fragrances, latex, creams *</label>
+        <input type="text" name="allergies" id="allergies" placeholder="Aucune" />
+        <p style="margin:6px 0 0;font-size:12px;color:#7a6a58;line-height:1.5">
+          <span data-fr>Écris « aucune » s'il n'y en a pas. Précise si tu réagis à une huile ou à un parfum en particulier.</span>
+          <span data-en>Write “none” if there are none. Say so if you react to a specific oil or fragrance.</span>
+        </p>
       </div>
       <div class="field-group" style="margin-top:16px;">
         <label class="field-label" data-fr>Autre condition médicale :</label>

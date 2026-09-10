@@ -170,6 +170,37 @@
     .infolettre { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; line-height: 1.5; margin: 6px 0 10px; cursor: pointer; color: var(--gris); }
     .infolettre input { width: 18px; height: 18px; accent-color: var(--brun-fonce); flex: none; margin-top: 2px; }
     .aide { font-size: 11px; color: var(--gris); margin-top: 4px; line-height: 1.4; }
+    /* Encart de retour après un déplacement (?deplace=1) : même matière que les cartes. */
+    .encart { display: flex; gap: 12px; align-items: flex-start; background: #fbf7f0; border: 1px solid rgba(201,162,39,.55);
+      border-radius: 2px; box-shadow: inset 0 0 0 3px #fbf7f0, inset 0 0 0 4px rgba(201,162,39,.22); padding: 15px 18px; margin: 0 0 18px; }
+    .encart .marque { color: var(--or); font-size: 17px; line-height: 1.3; flex: none; }
+    .encart .dit { flex: 1 1 auto; min-width: 0; font-size: 13.5px; line-height: 1.6; color: var(--texte); }
+    /* ⚠️ Ne jamais poser `display` sur un élément qui porte data-fr / data-en : la règle
+       `[data-en] { display:none }` est moins spécifique et se fait écraser — les deux
+       langues s'affichent alors l'une sous l'autre. Le titre est donc un enfant. */
+    .encart .t { display: block; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 20px; font-weight: 400; color: var(--noir); margin-bottom: 3px; }
+    /* Les 30 minutes gagnées par parrainage, et le champ de code replié */
+    .cadeau { display: flex; gap: 11px; align-items: flex-start; border: 1px solid rgba(201,162,39,.55); background: #fff;
+      border-radius: 2px; padding: 14px 16px; margin-top: 14px; }
+    .cadeau .marque { color: var(--or); font-size: 16px; line-height: 1.35; flex: none; }
+    .cadeau .corps { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 9px; }
+    .cadeau .dit { font-size: 13.5px; line-height: 1.65; color: var(--texte); margin: 0; }
+    .cadeau .t { display: block; color: var(--brun-fonce); font-weight: 600; }
+    .cadeau .choix { display: flex; gap: 9px; align-items: flex-start; font-size: 13.5px; line-height: 1.5; color: var(--brun-fonce); cursor: pointer; }
+    .cadeau .choix input { width: 18px; height: 18px; accent-color: var(--brun-fonce); flex: none; margin-top: 1px; }
+    .cadeau.gele .choix { opacity: .45; cursor: default; }
+    .cadeau .bloque { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--terre); }
+    /* Bloc « qui reçoit le soin » — un par personne dont Kevin n'a pas encore le nom */
+    .benef { border: 1px solid rgba(201,162,39,.35); border-radius: 2px; padding: 14px 16px; margin-top: 14px; background: rgba(255,255,255,.55); }
+    .benef .qui { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 18px; color: var(--noir); margin-bottom: 2px; }
+    .benef .quoi { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--or); margin-bottom: 12px; }
+    .benef .champs { gap: 10px; }
+    .zone-code { display: flex; flex-direction: column; gap: 5px; margin-top: 14px; }
+    .pli { display: inline-flex; align-items: center; gap: 7px; align-self: flex-start; background: none; border: none;
+      border-bottom: 1px solid rgba(201,162,39,.55); padding: 0 0 3px; cursor: pointer; font: inherit; font-size: 13px; color: var(--brun-fonce); }
+    .pli:hover { color: var(--or); border-bottom-color: var(--or); }
+    .pli svg { transition: transform .18s; }
+    .pli.ouvert svg { transform: rotate(180deg); }
 
     /* ─── réglages propres à la page finale ─── */
     /* En-tête : la même pierre de fond que le reste du site, voilée, avec le filet or */
@@ -203,6 +234,13 @@
 </header>
 
 <main class="r-body">
+  <div class="encart" id="encart-deplace" hidden>
+    <span class="marque">✦</span>
+    <div class="dit">
+      <span data-fr><strong class="t">Ton rendez-vous a été annulé.</strong>Ta plage est libérée. Choisis ton nouveau moment ci-dessous — Kevin le confirme comme d'habitude.</span>
+      <span data-en><strong class="t">Your appointment has been cancelled.</strong>Your slot is released. Pick your new time below — Kevin confirms it as usual.</span>
+    </div>
+  </div>
   <div class="progress"><i id="prog"></i></div>
   <div class="pas" id="pas">
     <span class="actif" data-pas="1"><span data-fr>Soin</span><span data-en>Treatment</span></span>
@@ -231,7 +269,7 @@
     <p class="sous" data-fr>Les jours affichés ont au moins une place libre. Rien n'est réservable à moins de 24 h : pour demain, un appel est plus simple.</p>
     <p class="sous" data-en>Days shown have at least one free slot. Nothing can be booked less than 24 hours ahead: for tomorrow, a call is easier.</p>
     <div class="sugg" id="sugg" hidden>
-      <div class="t"><span data-fr>✦ Les meilleurs moments</span><span data-en>✦ Best moments</span><b data-fr>collés à un soin déjà prévu : la journée se remplit, la tienne comme la sienne.</b><b data-en>right next to a treatment already planned: the day fills up, yours as well as his.</b></div>
+      <div class="t" id="sugg-titre"></div>
       <div class="liste" id="sugg-liste"></div>
     </div>
     <div class="semaine-nav">
@@ -273,7 +311,7 @@
         <div class="champ"><label for="nom"><span data-fr>Nom</span><span data-en>Last name</span></label><input id="nom" name="nom" required autocomplete="family-name"></div>
         <div class="champ"><label for="courriel"><span data-fr>Courriel</span><span data-en>Email</span></label><input id="courriel" name="courriel" type="email" required autocomplete="email" inputmode="email"></div>
         <div class="champ"><label for="tel"><span data-fr>Téléphone</span><span data-en>Phone</span></label><input id="tel" name="tel" type="tel" required autocomplete="tel" inputmode="tel" placeholder="819 000-0000"></div>
-        <div class="champ">
+        <div class="champ large">
           <label for="pourqui"><span data-fr>Le soin est pour</span><span data-en>The treatment is for</span></label>
           <select id="pourqui" name="pourqui">
             <option value="moi" data-fr-txt="Moi" data-en-txt="Me">Moi</option>
@@ -282,10 +320,41 @@
           </select>
           <div class="mineur" id="mineur"><span data-fr>Pour un mineur, un parent ou tuteur signe le questionnaire et reste dans la pièce pendant le soin.</span><span data-en>For a minor, a parent or guardian signs the form and stays in the room during the treatment.</span></div>
         </div>
-        <div class="champ"><label for="promo"><span data-fr>Code promo (facultatif)</span><span data-en>Promo code (optional)</span></label><input id="promo" name="promo" autocomplete="off" autocapitalize="characters">
-          <div class="aide"><span data-fr>Un seul code par réservation. BOHEME90 pour une première visite en 90 min · le numéro de téléphone de la personne qui t'a parlé de nous · PARRAIN si tu as gagné un 90 min · ou le code de la promo du moment.</span><span data-en>One code per booking. BOHEME90 for a first 90 min visit · the phone number of the person who told you about us · PARRAIN if you earned a 90 min · or the current promo code.</span></div></div>
         <div class="champ large"><label for="note"><span data-fr>Un mot pour Kevin (facultatif)</span><span data-en>A word for Kevin (optional)</span></label><textarea id="note" name="note" maxlength="500"></textarea></div>
         <div class="piege" aria-hidden="true"><label>Site web<input name="site_web" tabindex="-1" autocomplete="off"></label></div>
+      </div>
+
+      <!-- Qui reçoit le soin. Sans ça, Kevin ouvrait sa porte à un nom qu'il n'avait pas, et
+           ne pouvait envoyer le questionnaire de santé à personne. Voir article 9.1.1 du RMPQ. -->
+      <div id="beneficiaires"></div>
+
+      <div class="cadeau" id="cadeau" hidden>
+        <span class="marque">✦</span>
+        <div class="corps">
+          <p class="dit">
+            <span data-fr><strong class="t">Tu as 30 minutes qui t'attendent.</strong>Quelqu'un est venu grâce à toi. Elles s'ajoutent à un 90 min — rien à taper.</span>
+            <span data-en><strong class="t">You have 30 minutes waiting for you.</strong>Someone came thanks to you. They are added to a 90 min — nothing to type.</span>
+          </p>
+          <label class="choix"><input type="checkbox" id="cadeau-oui" checked>
+            <span><span data-fr>Je les prends pour ce rendez-vous</span><span data-en>I use them for this appointment</span></span>
+          </label>
+          <p class="bloque" id="cadeau-bloque" hidden>
+            <span data-fr>Un code est écrit plus bas : c'est l'un ou l'autre, jamais les deux. Tes 30 minutes restent à toi pour une prochaine fois.</span>
+            <span data-en>A code is written below: it is one or the other, never both. Your 30 minutes stay yours for another time.</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="zone-code">
+        <button type="button" class="pli" id="pli" aria-expanded="false" aria-controls="champ-promo">
+          <svg id="pli-chev" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 L6 7.5 L9 4.5"></path></svg>
+          <span data-fr>J'ai un code</span><span data-en>I have a code</span>
+        </button>
+        <div class="champ large" id="champ-promo" hidden>
+          <label for="promo"><span data-fr>Code promo</span><span data-en>Promo code</span></label>
+          <input id="promo" name="promo" autocomplete="off" autocapitalize="characters" placeholder="819 000-0000">
+          <div class="aide"><span data-fr>Un seul code par réservation. Le numéro de téléphone de la personne qui t'a parlé de nous en est un — écris-le comme dans l'exemple.</span><span data-en>One code per booking. The phone number of whoever told you about us counts as one — write it as shown in the example.</span></div>
+        </div>
       </div>
       <div class="recap" id="recap"></div>
       <div class="politique">
@@ -418,6 +487,8 @@ function allerPas(n) {
   $('c-jour').hidden = n < 2; $('c-heure').hidden = n < 3; $('c-toi').hidden = n < 4; $('c-fin').hidden = true;
   var cible = { 2: 'c-jour', 3: 'c-heure', 4: 'c-toi' }[n];
   if (cible) setTimeout(function(){ $(cible).scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+  // Le soin a pu changer depuis la dernière visite à l'étape IV : on redemande.
+  if (n === 4 && typeof chercherCadeau === 'function') { rendreBeneficiaires(); chercherCadeau(); }
 }
 
 /* ─── 2. JOURS ─── */
@@ -444,6 +515,10 @@ function rendreSuggestions() {
   var out = [], cles = Object.keys(etat.colles).sort();
   for (var i = 0; i < cles.length && out.length < 3; i++) { var hs = etat.colles[cles[i]]; for (var k = 0; k < hs.length && out.length < 3; k++) out.push([cles[i], hs[k]]); }
   $('sugg').hidden = !out.length;
+  // Le titre s'accorde au nombre de plages proposées : une seule, c'est « le meilleur moment ».
+  $('sugg-titre').textContent = out.length > 1
+    ? T('✦ Les meilleurs moments pour moi', '✦ Best times for me')
+    : T('✦ Le meilleur moment pour moi', '✦ Best time for me');
   $('sugg-liste').innerHTML = out.map(function (o) { return '<button type="button" data-k="' + o[0] + '" data-h="' + o[1] + '">' + libJourCourt(o[0]) + '<b>' + libHeure(o[1]) + '</b></button>'; }).join('');
   $('sugg-liste').querySelectorAll('button').forEach(function (b) { b.addEventListener('click', function () { etat.jour = b.getAttribute('data-k'); etat.heure = b.getAttribute('data-h'); rendreJours(); rendreHeures(); rendreRecap(); allerPas(4); }); });
 }
@@ -545,8 +620,110 @@ function rendreRecap() {
     (n > 1 ? '<br>' + T('L\'une après l\'autre, ' + REGLES.tamponGroupeMin + ' min entre chaque.', 'One after the other, ' + REGLES.tamponGroupeMin + ' min between each.') : '') +
     '<br>' + T('Total : ', 'Total: ') + '<b>' + prixTotal() + ' $</b> + tx · ' + T('Waterville, adresse envoyée après confirmation.', 'Waterville, address sent after confirmation.');
 }
-function rendreTout() { rendreSoins(); rendrePersonnes(); if (Object.keys(etat.dispo).length) rendreJours(); if (etat.jour) rendreHeures(); if (etat.heure) rendreRecap(); }
-$('pourqui').addEventListener('change', function(){ $('mineur').classList.toggle('visible', this.value === 'mineur'); });
+function rendreTout() { rendreSoins(); rendrePersonnes(); rendreBeneficiaires(); if (Object.keys(etat.dispo).length) { rendreSuggestions(); rendreJours(); } if (etat.jour) rendreHeures(); if (etat.heure) rendreRecap(); }
+/* ─── QUI REÇOIT LE SOIN ───
+   Avant le 2026-09-10, Kevin recevait « Pour : une autre personne » et rien d'autre : aucun nom,
+   donc personne à qui envoyer le questionnaire de santé. Et une réservation à deux ne portait
+   qu'un seul jeu de coordonnées — le deuxième massage arrivait anonyme.
+   Son minimum, en ses mots : prénom, nom, téléphone. Le courriel reste facultatif ; sans lui,
+   le questionnaire part à la personne qui réserve, qui le fait suivre. */
+function rendreBeneficiaires() {
+  var n = etat.personnes.length;
+  var pourAutrui = $('pourqui').value !== 'moi';
+  var boite = $('beneficiaires'), html = '';
+  // Ce qui est déjà tapé est repris : la bascule de langue re-dessine tout, et personne
+  // n'accepte de retaper le nom de sa blonde parce qu'il a cliqué sur « EN ».
+  var garde = {};
+  [].forEach.call(boite.querySelectorAll('.benef'), function(b) {
+    garde[b.getAttribute('data-i')] = { prenom: b.querySelector('.b-prenom').value, nom: b.querySelector('.b-nom').value,
+      tel: b.querySelector('.b-tel').value, courriel: b.querySelector('.b-courriel').value };
+  });
+  for (var i = 0; i < n; i++) {
+    if (i === 0 && !pourAutrui) continue; // la première personne, c'est celle qui réserve
+    var s = etat.personnes[i];
+    var soin = s ? (s.min + ' min · ' + T(s.fr, s.en)) : '';
+    var titre = (n > 1)
+      ? T('Personne ' + (i + 1), 'Person ' + (i + 1))
+      : T('La personne qui reçoit le soin', 'The person receiving the treatment');
+    html += '<div class="benef" data-i="' + i + '">' +
+      '<div class="qui">' + titre + '</div><div class="quoi">' + soin + '</div>' +
+      '<div class="champs">' +
+        '<div class="champ"><label>' + T('Prénom', 'First name') + '</label><input class="b-prenom" autocomplete="off"></div>' +
+        '<div class="champ"><label>' + T('Nom', 'Last name') + '</label><input class="b-nom" autocomplete="off"></div>' +
+        '<div class="champ"><label>' + T('Téléphone', 'Phone') + '</label><input class="b-tel" type="tel" inputmode="tel" placeholder="819 000-0000" autocomplete="off"></div>' +
+        '<div class="champ"><label>' + T('Courriel (facultatif)', 'Email (optional)') + '</label><input class="b-courriel" type="email" inputmode="email" autocomplete="off"></div>' +
+      '</div>' +
+      '<div class="aide">' + T('Son questionnaire de santé part à ce courriel. Sans courriel, il part au tien.',
+                               'Their health form goes to this address. Without one, it goes to yours.') + '</div>' +
+    '</div>';
+  }
+  boite.innerHTML = html;
+  [].forEach.call(boite.querySelectorAll('.benef'), function(b) {
+    var v = garde[b.getAttribute('data-i')]; if (!v) return;
+    b.querySelector('.b-prenom').value = v.prenom; b.querySelector('.b-nom').value = v.nom;
+    b.querySelector('.b-tel').value = v.tel; b.querySelector('.b-courriel').value = v.courriel;
+  });
+}
+function beneficiaires() {
+  return [].map.call($('beneficiaires').querySelectorAll('.benef'), function(b) {
+    return { rang: +b.getAttribute('data-i') + 1,
+      prenom: b.querySelector('.b-prenom').value.trim(), nom: b.querySelector('.b-nom').value.trim(),
+      tel: b.querySelector('.b-tel').value.trim(), courriel: b.querySelector('.b-courriel').value.trim() };
+  });
+}
+$('pourqui').addEventListener('change', function(){
+  $('mineur').classList.toggle('visible', this.value === 'mineur');
+  rendreBeneficiaires();
+});
+
+/* ─── LE CHAMP DE CODE, REPLIÉ ───
+   Une case « code promo » ouverte fait douter celui qui n'en a pas : il se croit en train de
+   payer trop cher, et une partie de ces gens-là quittent pour aller chercher un code ailleurs.
+   Repliée derrière un lien, elle reste à un clic pour ceux qui en ont un. */
+$('pli').addEventListener('click', function() {
+  var ferme = $('champ-promo').hidden;
+  $('champ-promo').hidden = !ferme;
+  this.classList.toggle('ouvert', ferme);
+  this.setAttribute('aria-expanded', ferme ? 'true' : 'false');
+  if (ferme) $('promo').focus();
+});
+
+/* ─── LES 30 MINUTES GAGNÉES PAR PARRAINAGE ───
+   ⛔ Un code OU les 30 minutes, jamais les deux (règle de Kevin, 2026-09-10). Ici c'est
+   seulement l'affichage qui le dit ; la règle qui compte est dans validerPromo(), côté
+   programme — un formulaire se contourne, pas le serveur. */
+function majCumul() {
+  var codeEcrit = !!$('promo').value.trim();
+  $('cadeau').classList.toggle('gele', codeEcrit);
+  $('cadeau-bloque').hidden = !codeEcrit;
+  $('cadeau-oui').disabled = codeEcrit;
+  $('cadeau-oui').checked = !codeEcrit;
+}
+$('promo').addEventListener('input', majCumul);
+
+/* Le programme est le seul à savoir si des 30 minutes attendent quelqu'un. On le lui demande
+   dès que le courriel et le téléphone sont remplis — en POST, jamais dans l'adresse de la page :
+   un courriel n'a pas sa place dans une URL. Le programme exige que les DEUX correspondent à la
+   même fiche, sinon il répond 0 — sans ça, on pourrait deviner qui est client en tâtonnant. */
+var cadeauDejaDemande = '';
+function chercherCadeau() {
+  var c = $('courriel').value.trim().toLowerCase(), t = $('tel').value.replace(/\D/g, '');
+  var a90 = etat.personnes.some(function(s) { return s.id === 'suedois90'; });
+  if (!a90 || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(c) || t.length < 10 || !SCRIPT_URL) {
+    // Le cache est vidé ici : sinon, passer d'un 90 min à un 60 puis revenir au 90 laisserait
+    // le bloc caché pour de bon — la clé serait inchangée et la demande jamais refaite.
+    cadeauDejaDemande = ''; $('cadeau').hidden = true; majCumul(); return;
+  }
+  var cle = c + '|' + t + '|90';
+  if (cle === cadeauDejaDemande) return;
+  cadeauDejaDemande = cle;
+  fetch(SCRIPT_URL, { method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'cadeau', courriel: c, tel: t }) })
+    .then(function(r) { return r.json(); })
+    .then(function(d) { $('cadeau').hidden = !(d && d.minutes > 0); majCumul(); })
+    .catch(function() { $('cadeau').hidden = true; });
+}
+['courriel', 'tel'].forEach(function(id) { $(id).addEventListener('blur', chercherCadeau); });
 $('btn-retour').addEventListener('click', function(){ allerPas(3); });
 
 $('form').addEventListener('submit', function(e) {
@@ -556,13 +733,31 @@ $('form').addEventListener('submit', function(e) {
   if (manque.length) { err.hidden = false; err.textContent = T('Il manque : prénom, nom, courriel et téléphone sont nécessaires.', 'Missing: first name, last name, email and phone are required.'); $(manque[0]).focus(); return; }
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test($('courriel').value.trim())) { err.hidden = false; err.textContent = T('Le courriel ne semble pas complet.', 'The email address looks incomplete.'); $('courriel').focus(); return; }
   if ($('tel').value.replace(/\D/g, '').length < 10) { err.hidden = false; err.textContent = T('Le téléphone doit avoir 10 chiffres.', 'The phone number needs 10 digits.'); $('tel').focus(); return; }
+  var benefs = beneficiaires();
+  for (var bi = 0; bi < benefs.length; bi++) {
+    var b = benefs[bi];
+    if (!b.prenom || !b.nom || b.tel.replace(/\D/g, '').length < 10) {
+      err.hidden = false;
+      // On nomme le rang dès qu'il y a plusieurs soins, même s'il ne manque qu'un bloc :
+      // « Personne 2 » est ce qui est écrit à l'écran, l'erreur doit dire la même chose.
+      err.textContent = etat.personnes.length > 1
+        ? T('Personne ' + b.rang + ' : prénom, nom et téléphone sont nécessaires.', 'Person ' + b.rang + ': first name, last name and phone are required.')
+        : T('Il manque le prénom, le nom et le téléphone de la personne qui reçoit le soin.', 'The first name, last name and phone of the person receiving the treatment are missing.');
+      var bloc = $('beneficiaires').querySelectorAll('.benef')[bi];
+      if (bloc) bloc.querySelector(!b.prenom ? '.b-prenom' : (!b.nom ? '.b-nom' : '.b-tel')).focus();
+      return;
+    }
+  }
   if (!$('consent').checked) { err.hidden = false; err.textContent = T('Coche la case pour confirmer que tu as lu la politique.', 'Tick the box to confirm you have read the policy.'); return; }
   var demande = {
     action: 'demande', lang: currentLang, jour: etat.jour, heure: etat.heure,
     soins: etat.personnes.map(function(s){ return s.id; }),
     prenom: $('prenom').value.trim(), nom: $('nom').value.trim(), courriel: $('courriel').value.trim(), tel: $('tel').value.trim(),
     pourqui: $('pourqui').value, promo: $('promo').value.trim().toUpperCase(), note: $('note').value.trim(), site_web: f.site_web.value,
-    infolettre: $('infolettre').checked
+    infolettre: $('infolettre').checked,
+    // Décoché, ou pas de 30 minutes du tout : le programme n'y touche pas.
+    cadeau: !$('cadeau').hidden && $('cadeau-oui').checked,
+    beneficiaires: benefs
   };
   f.hidden = true; $('attente-envoi').hidden = false;
   var fini = function(data) {
@@ -582,6 +777,7 @@ $('form').addEventListener('submit', function(e) {
       else if (code === 'parrain_inconnu') { err.innerHTML = T('Ce numéro ne correspond à aucun client de Vitalité Bohème. Vérifie-le avec la personne, ou retire-le.', 'This number does not match any Vitalité Bohème client. Check it with the person, or remove it.'); $('promo').focus(); }
       else if (code === 'promo_inconnu') { err.innerHTML = T('Ce code n\'existe pas. Vérifie l\'orthographe, ou retire-le.', 'This code does not exist. Check the spelling, or remove it.'); $('promo').focus(); }
       else if (code === 'promo_soi') { err.innerHTML = T('C\'est ton propre numéro ou ton propre code : ça sert à la personne que tu amènes. Pour ton 90 min gagné, tape PARRAIN.', 'That is your own number or code: it is for the person you bring. For your earned 90 min, type PARRAIN.'); $('promo').focus(); }
+      else if (code === 'beneficiaires') { err.innerHTML = T('Il manque le nom ou le téléphone d\'une des personnes qui reçoivent un soin.', 'The name or phone of one of the people receiving a treatment is missing.'); }
       else if (code === 'promo_une_seule') { err.innerHTML = T('Un seul code par réservation. Garde celui qui te va le mieux.', 'One code per booking. Keep the one that suits you best.'); $('promo').focus(); }
       else if (code === 'promo_perime') { err.innerHTML = T('Ce code n\'est pas valide à cette date. Retire-le, et le rendez-vous passe.', 'This code is not valid on this date. Remove it and the booking goes through.'); $('promo').focus(); }
       else if (code === 'promo_epuise') { err.innerHTML = T('Ce code a atteint son nombre d\'utilisations. Retire-le, et le rendez-vous passe.', 'This code has reached its number of uses. Remove it and the booking goes through.'); $('promo').focus(); }
@@ -612,8 +808,12 @@ function finOk(h, duree) { var p = h.split(':'); return (+p[0] * 60 + +p[1] + du
 /* ─── DÉPART ─── */
 (function init() {
   $('demo').hidden = !!SCRIPT_URL;
+  var url = new URLSearchParams(location.search);
+  // Le programme de réservation renvoie ici après un déplacement : la plage est déjà libérée,
+  // et l'encart est la seule chose qui le dit à la personne arrivée par ce chemin.
+  $('encart-deplace').hidden = url.get('deplace') !== '1';
   var saved = ''; try { saved = localStorage.getItem('vb-lang') || ''; } catch(e) {}
-  applyLang(saved === 'en' ? 'en' : 'fr');
+  applyLang(url.get('lang') === 'en' ? 'en' : (saved === 'en' ? 'en' : 'fr'));
 })();
 </script>
 </body>
