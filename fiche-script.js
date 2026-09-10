@@ -38,13 +38,19 @@ function setDateAujourdhui() {
   });
 })();
 
-// ─── EmailJS retiré le 2026-09-10 ───────────────────────────────
-// Le questionnaire part maintenant au programme Google de Kevin (action=questionnaire).
-// Un tiers américain de moins qui transporte des données de santé, et plus de plafond
-// à 50 Ko qui faisait échouer un envoi sans que personne le sache.
+// ─── EMAILJS CONFIG ────────────────────────────────────────────
+// ⚠️ EmailJS reste en service TANT QUE Code.gs n'est pas redéployé. Le 2026-09-10,
+// basculer le site vers action=questionnaire avant de déployer le programme a cassé
+// le questionnaire en production : le site est ouvert au public, les envois tombaient
+// dans le vide. Ne PAS rebasculer sans avoir déployé le programme d'abord.
+var EMAILJS_PUBLIC_KEY  = 'nDDa_zp8R1h9YR_Df';
+var EMAILJS_SERVICE_ID  = 'service_w78vr2g';
+var EMAILJS_TEMPLATE_ID = 'template_iumkg2s';
 // Banque de clients : quand le questionnaire part, on signale l'identite au programme de reservation
 // (prenom, nom, courriel, telephone, langue). Jamais une reponse de sante. Si ca echoue, rien ne change.
 var BANQUE_URL = 'https://script.google.com/macros/s/AKfycby217WbbU_K_cAUy9L1H96Yseh376VTAyT8eYxd2dCNl8Gw6pMmQEO8pi2P0rud6FLG/exec';
+if (typeof emailjs !== 'undefined') emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
 function signalerBanque(identite) {
   try {
     if (!BANQUE_URL || !window.fetch) return;
@@ -586,7 +592,13 @@ function soumettreFormulaire(e) {
   // parce que c'est la seule qui peut se declencher pendant la seance, huile a la main.
   var allergiesTxt = v('allergies');
   if (allergiesTxt && !/^(aucune?|non|none|no|n\/a|-)$/i.test(allergiesTxt.trim())) {
-    CI.unshift('ALLERGIES — ' + allergiesTxt + ' : verifier l\'huile et les produits avant la seance');
+    // ⚠️ Les ingredients du gel vivent ICI, dans ce que KEVIN lit — jamais dans la question
+    // posee au client. Kevin, 2026-09-10 : « ne mets pas la charge sur mes clients ».
+    // C'est lui qui recoupe; le client dit seulement ce a quoi il reagit.
+    CI.unshift('ALLERGIES DECLAREES — ' + allergiesTxt
+      + '\n    Gel Pur Spa : carthame, pepins de raisin, tournesol, beurre de karite,'
+      + '\n    beurre de mangue, vitamine E. Le karite vient d\'une noix; la mangue est de'
+      + '\n    la meme famille que la noix de cajou et la pistache. A recouper avant la seance.');
   }
   var contre_indications_str = CI.length > 0
     ? CI.map(function(c) { return '* ' + c; }).join('\n')
@@ -900,34 +912,19 @@ function soumettreFormulaire(e) {
   // fournisseur de moins qui touche a ces donnees, et plus de plafond a 50 Ko qui
   // faisait echouer un envoi sans prevenir personne.
   function envoyer(essai) {
-    // ⭐ Le PDF signé part MAINTENANT avec le questionnaire. Avant le 2026-09-10 c'était
-    // impossible : EmailJS refusait toute requête au-dessus de 50 Ko et le PDF en pèse ~430.
-    // Kevin ne recevait donc qu'un résumé en texte, jamais la pièce signée — alors que
-    // c'est elle, le dossier, au sens de l'article 9.1.1 du code du RMPQ.
-    // ⚠️ Il est ajouté ICI, hors de templateParams : le garde-fou qui tronque à 2 000
-    // caractères passe sur templateParams et couperait le PDF en deux.
-    var pdf64 = '';
-    try { if (window.__vbPdfDoc) pdf64 = window.__vbPdfDoc.output('datauristring'); } catch (ePdf) { console.warn('PDF non joint :', ePdf); }
-
-    fetch(BANQUE_URL, {
-      method: 'POST', redirect: 'follow',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(Object.assign({ action: 'questionnaire', site_web: '', pdf_base64: pdf64, pdf_nom: window.__vbPdfNom || 'questionnaire.pdf' }, templateParams))
-    })
-      .then(function(r) { return r.json(); })
-      .then(function(d) {
-        if (d && d.ok) { onSuccess(); return; }
-        // Refus du programme : ce n'est pas une coupure reseau, rejouer ne changerait rien.
-        onError({ status: 400, text: (d && d.erreur) || 'refus du programme' });
-      })
-      .catch(function(err) {
-        // Coupure reseau ou serveur indisponible : une seule reprise.
-        if (essai < 2) { setTimeout(function() { envoyer(essai + 1); }, 1500); return; }
+    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+      .then(onSuccess, function(err) {
+        var statut = (err && err.status) || 0;
+        var temporaire = (statut === 0 || statut === 408 || statut === 429 || statut >= 500);
+        if (essai < 2 && temporaire) {
+          setTimeout(function() { envoyer(essai + 1); }, 1500);
+          return;
+        }
         onError(err);
       });
   }
 
-  if (BANQUE_URL) {
+  if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== 'VOTRE_CLE_PUBLIQUE') {
     envoyer(1);
   } else {
     onSuccess();
