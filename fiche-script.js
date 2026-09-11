@@ -744,7 +744,7 @@ function soumettreFormulaire(e) {
   yy += 6; heading(T.s4);
   field(T.zones, v('zones') || T.none);
   var interdites = v('zones_interdites');
-  if (interdites) field(isEn ? 'Areas to avoid:' : 'Zones a eviter :', interdites);
+  if (interdites) field(isEn ? 'Areas to avoid:' : 'Zones à éviter :', interdites);
 
   yy += 6; heading(T.s5);
   // Les allergies passent AVANT la liste des conditions : c'est la ligne que Kevin doit voir
