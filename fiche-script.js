@@ -77,8 +77,23 @@ function applyLang(lang) {
   var lblFr = document.getElementById('lbl-fr'); if (lblFr) lblFr.classList.toggle('actif', !isEn);
   var lblEn = document.getElementById('lbl-en'); if (lblEn) lblEn.classList.toggle('actif', isEn);
   document.documentElement.lang = isEn ? 'en' : 'fr';
+  // Les options d'un <select> ne peuvent pas etre doublees en data-fr / data-en : masquer
+  // une <option> ne marche pas partout. Elles portent donc leur traduction sur elles-memes.
+  // Sans ces deux lignes, le menu Sexe restait en francais sur toute la version anglaise.
+  document.querySelectorAll('option[data-en-txt]').forEach(function(o) {
+    var t = o.getAttribute(isEn ? 'data-en-txt' : 'data-fr-txt');
+    if (t) o.textContent = t;
+  });
   try { localStorage.setItem('vb-lang', lang); } catch(e) {}
   if (typeof renderZoneTags === 'function' && Array.isArray(zonesDouleur)) renderZoneTags();
+  // Les infobulles des collants ⊘ sont ecrites a la main a la pose : on les repasse
+  // dans la nouvelle langue, sinon elles restent dans celle du moment ou on a clique.
+  try {
+    document.querySelectorAll('.zone-interdit-sticker').forEach(function(s) {
+      var z = s.dataset.zone || '';
+      s.title = (isEn ? translateZoneInterditEN(z) + ' — click to remove' : z + ' — cliquer pour retirer');
+    });
+  } catch (e) {}
 }
 
 function toggleLang() { applyLang(currentLang === 'fr' ? 'en' : 'fr'); }
@@ -354,7 +369,7 @@ function placerSticker(e) {
   sticker.style.top  = yPct.toFixed(2) + '%';
   sticker.dataset.zone = zoneName;
   sticker.innerHTML = makeStickerSVG();
-  sticker.title = (currentLang === 'en' ? translateZoneInterditEN(zoneName) : zoneName) + ' — cliquer pour retirer';
+  sticker.title = (currentLang === 'en' ? translateZoneInterditEN(zoneName) + ' — click to remove' : zoneName + ' — cliquer pour retirer');
   sticker.addEventListener('click', function(ev) {
     ev.stopPropagation();
     if (stickerMode) {
@@ -366,6 +381,21 @@ function placerSticker(e) {
   wrap.appendChild(sticker);
   stickers.push(sticker);
   updateStickerInput();
+}
+
+/**
+ * Remet le corps a neuf : marques de douleur et collants ⊘ effaces.
+ * ⚠️ form.reset() ne touche pas a ces deux-la — ce sont des elements du DOM, pas des
+ * champs. Sans cet appel, une personne qui remplissait le questionnaire apres une autre
+ * sur la meme tablette voyait les zones de la precedente, et les renvoyait a son nom.
+ */
+function reinitialiserCorps() {
+  try {
+    zonesDouleur.slice().forEach(function(btn) { if (btn && btn.classList) btn.classList.remove('actif'); });
+    zonesDouleur.length = 0;
+    renderZoneTags();
+  } catch (e) { console.warn('zones de douleur :', e); }
+  try { clearStickers(); } catch (e) { console.warn('collants :', e); }
 }
 
 function clearStickers() {
@@ -772,7 +802,10 @@ function soumettreFormulaire(e) {
     urgence:            (v('urgence_nom') || '-') + (v('urgence_lien') ? ' (' + v('urgence_lien') + ')' : '') + (v('urgence_tel') ? ' · ' + v('urgence_tel') : ''),
     parent:             v('mineur') ? ((v('parent_nom') || '-') + (v('parent_lien') ? ' (' + v('parent_lien') + ')' : '') + (v('parent_tel') ? ' · ' + v('parent_tel') : '')) : '',
     motif:              all('motif').join(', ') || '-',
-    motif_detail:       (v('mineur') ? (isEn ? '[UNDER 18 — parental consent signed, parent stays in the room: ' : '[MOINS DE 18 ANS — consentement parental signé, parent présent dans la pièce : ') + v('parent_nom') + ' (' + v('parent_lien') + ') ' + v('parent_tel') + '] ' : '') + (v('motif_detail') || '-'),
+    // ⚠️ Les coordonnees du parent sont deja dans le champ `parent` ci-dessus. Ici on ne
+    // garde que la mention, pas le detail : sinon nom, lien et telephone arrivaient deux
+    // fois dans le meme courriel.
+    motif_detail:       (v('mineur') ? (isEn ? '[UNDER 18 — parental consent signed, parent stays in the room] ' : '[MOINS DE 18 ANS — consentement parental signé, parent présent dans la pièce] ') : '') + (v('motif_detail') || '-'),
     zones:              v('zones') || '-',
     zones_interdites:   v('zones_interdites') || '-',
     sante:              all('sante').join(', ') || '-',
@@ -873,9 +906,9 @@ function soumettreFormulaire(e) {
       ? '<strong>Your form could not be sent.</strong><br>'
         + 'Download your PDF copy with the button below and send it to us — '
         + 'or simply call us, we will complete it together.<br>'
-      : "<strong>Votre questionnaire n'a pas pu etre envoye.</strong><br>"
-        + 'Telechargez votre copie PDF avec le bouton ci-dessous et faites-la nous parvenir — '
-        + 'ou appelez-nous simplement, on le remplira ensemble.<br>')
+      : "<strong>Ton questionnaire n'a pas pu être envoyé.</strong><br>"
+        + 'Télécharge ta copie PDF avec le bouton ci-dessous et fais-la-nous parvenir — '
+        + 'ou appelle-nous simplement, on le remplira ensemble.<br>')
       + '<a href="mailto:KevinBibeau@vitaliteboheme.ca" style="color:#7b241c;font-weight:600;">KevinBibeau@vitaliteboheme.ca</a>'
       + ' &nbsp;·&nbsp; '
       + '<a href="tel:+14383683282" style="color:#7b241c;font-weight:600;">438-368-3282</a>'
@@ -897,6 +930,11 @@ function soumettreFormulaire(e) {
     // eventuel 2e questionnaire.
     try { effacerSignature(); } catch (eSig) {}
     try { setDateAujourdhui(); } catch (eDate) {}
+    // Les marques sur le corps ne sont pas des champs : form.reset() les laisse en place.
+    try { reinitialiserCorps(); } catch (eCorps) {}
+    // Le PDF de la personne precedente ne doit pas rester disponible au telechargement
+    // pour la suivante. On le laisse le temps que le bouton serve, puis il part.
+    setTimeout(function() { try { delete window.__vbPdfDoc; } catch (e) { window.__vbPdfDoc = null; } }, 300000);
     btn.disabled = false;
     btn.innerHTML = LIBELLE_BOUTON;
     preparerTelechargement();

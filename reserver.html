@@ -460,8 +460,11 @@ function allerPas(n) {
   $('c-jour').hidden = n < 2; $('c-heure').hidden = n < 3; $('c-toi').hidden = n < 4; $('c-fin').hidden = true;
   var cible = { 2: 'c-jour', 3: 'c-heure', 4: 'c-toi' }[n];
   if (cible) setTimeout(function(){ $(cible).scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
-  // Le soin a pu changer depuis la dernière visite à l'étape IV : on redemande.
-  if (n === 4 && typeof chercherCadeau === 'function') { rendreBeneficiaires(); chercherCadeau(); }
+  // Le soin a pu changer depuis la dernière visite à l'étape IV : on refait les blocs
+  // « qui reçoit le soin ». ⚠️ Cet appel était accroché à `typeof chercherCadeau ===
+  // 'function'` — en retirant les 30 minutes automatiques le 2026-09-10, la condition est
+  // devenue fausse et les bénéficiaires ne se seraient plus affichés du tout.
+  if (n === 4) rendreBeneficiaires();
 }
 
 /* ─── 2. JOURS ─── */
@@ -722,6 +725,14 @@ $('form').addEventListener('submit', function(e) {
       else if (code === 'promo_epuise') { err.innerHTML = T('Ce code a atteint son nombre d\'utilisations. Retire-le, et le rendez-vous passe.', 'This code has reached its number of uses. Remove it and the booking goes through.'); $('promo').focus(); }
       else if (code === 'promo_soin_liste') { err.innerHTML = T('Ce code ne s\'applique pas au soin choisi. Change de soin, ou retire le code.', 'This code does not apply to the chosen treatment. Change the treatment, or remove the code.'); }
       else if (code === 'deja_en_attente') { err.innerHTML = T('Une demande est déjà en attente avec ce courriel ou ce téléphone. Kevin y répond sous 24 h. Pour en ajouter une autre, appelle-le.', 'A request is already pending with this email or phone. Kevin answers within 24 hours. To add another, call him.'); }
+      // ⚠️ Ces codes-là ne se règlent PAS en réessayant : réessayer donnerait exactement
+      // la même réponse. On dit donc quoi faire, pas « réessaie ».
+      else if (code === 'trop_tot') { err.innerHTML = T('Ce moment est trop proche pour une réservation en ligne. Choisis une autre heure, ou appelle Kevin au <a href="tel:+14383683282">' + TEL + '</a>.', 'This time is too soon to book online. Pick another time, or call Kevin at <a href="tel:+14383683282">' + TEL + '</a>.'); etat.heure = null; chargerDispo(); allerPas(2); }
+      else if (code === 'trop_loin') { err.innerHTML = T('Ce moment est trop loin dans le temps. Choisis une date plus proche.', 'This time is too far ahead. Pick a closer date.'); etat.heure = null; allerPas(2); }
+      else if (code === 'hors_fenetre' || code === 'occupe') { err.innerHTML = T('Cette heure n\'est plus offerte. La liste vient d\'être remise à jour.', 'This time is no longer available. The list has just been refreshed.'); etat.heure = null; chargerDispo(); allerPas(2); }
+      else if (code === 'date') { err.innerHTML = T('La date ou l\'heure n\'a pas été comprise. Reprends le choix du moment.', 'The date or time was not understood. Pick the moment again.'); etat.heure = null; allerPas(2); }
+      else if (code === 'champs') { err.innerHTML = T('Il manque le prénom, le nom, le courriel ou le téléphone.', 'First name, last name, email or phone is missing.'); $('prenom').focus(); }
+      else if (code === 'soin' || code === 'trop_long') { err.innerHTML = T('Le choix de soin n\'a pas été accepté. Reprends-le au début.', 'The treatment choice was not accepted. Start that step again.'); allerPas(1); }
       else { err.innerHTML = T('L\'envoi n\'a pas fonctionné. Réessaie, ou appelle Kevin au <a href="tel:+14383683282">' + TEL + '</a>.', 'Sending did not work. Try again, or call Kevin at <a href="tel:+14383683282">' + TEL + '</a>.'); }
     }
   };
