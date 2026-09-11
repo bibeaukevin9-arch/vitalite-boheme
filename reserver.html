@@ -217,6 +217,33 @@
     .demo { position: sticky; top: 0; z-index: 900; background: #3a2e28; color: var(--creme); text-align: center; font-size: 12px; letter-spacing: .5px; padding: 8px 12px; }
     footer { text-align: center; font-size: 12px; color: var(--gris); padding: 26px 20px 40px; position: relative; z-index: 1; }
     footer a { color: var(--brun-fonce); }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       TÉLÉPHONE — en dernier, exprès
+       ⚠️ Une media query plus haut dans la feuille se faisait écraser par les
+       règles de l'habillage « Pierre et or » ajoutées après elle : `.carte`
+       gardait ses 28 px de marge et chaque case de jour tombait à 32 px de
+       large. Sur un écran de 375 px, le doigt visait 32 px pour choisir son
+       jour — c'est la toute première chose qu'on touche sur cette page.
+       Mesuré le 2026-09-11 : 375 − 40 (page) − 56 (carte) = 277 px pour sept
+       jours. Ici on rend 28 px à la page et 28 à la carte : 319 px, donc des
+       cases de 42 px. La norme tactile est 44.
+       ⛔ Ce bloc doit rester le DERNIER du <style>. Rien ne se met après.
+       ═══════════════════════════════════════════════════════════════════ */
+    @media (max-width: 560px) {
+      .r-body { padding-left: 14px; padding-right: 14px; }
+      .carte { padding-left: 14px; padding-right: 14px; }
+      .jours { gap: 4px; }
+      .jour { padding: 12px 1px 10px; }
+      .mois-grille, .entete-jours { gap: 3px; }
+      /* Le pli faisait 18 px de haut : on lui donne de quoi être touché
+         sans changer sa taille de texte. */
+      .pli { padding: 9px 0 9px; }
+      /* Le sélecteur de langue faisait 28 px. */
+      .lang-btn { padding: 10px 16px; }
+      /* Le lien de retour faisait 16 px, il se touche mal en bas de page. */
+      .retour-lien { display: inline-block; padding: 10px 4px; }
+    }
   </style>
 </head>
 <body>
