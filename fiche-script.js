@@ -659,10 +659,34 @@ function soumettreFormulaire(e) {
     // ⚠️ Les ingredients du gel vivent ICI, dans ce que KEVIN lit — jamais dans la question
     // posee au client. Kevin, 2026-09-10 : « ne mets pas la charge sur mes clients ».
     // C'est lui qui recoupe; le client dit seulement ce a quoi il reagit.
+    //
+    // ⭐ 2026-09-11, demande de Kevin : la liste des ingredients ne sort QUE si l'allergie
+    // declaree peut les toucher. Une allergie a la penicilline n'a rien a voir avec le gel,
+    // et la liste devenait du bruit qu'on finit par ne plus lire.
+    // ⚠️ La liste ci-dessous est volontairement LARGE et joue la prudence : un mot de
+    // famille (« noix », « fruits a coque », « huile », « alimentaire ») suffit a la faire
+    // sortir, parce que le cout d'un affichage de trop est nul, et celui d'un oubli ne l'est
+    // pas. Elle ne remplace pas le jugement : une formulation qu'elle ne connait pas passera
+    // sans declencher le rappel, et c'est Kevin qui recoupe.
+    var MOTS_GEL = [
+      // les ingredients eux-memes
+      'carthame', 'safflower', 'raisin', 'pepin', 'pépin', 'grape', 'tournesol', 'sunflower',
+      'karite', 'karité', 'shea', 'mangue', 'mango', 'vitamine e', 'vitamin e', 'tocopherol',
+      // les familles auxquelles ils appartiennent
+      'noix', 'noisette', 'amande', 'almond', 'cajou', 'cashew', 'pistache', 'pistachio',
+      'arachide', 'cacahu', 'peanut', 'coque', 'nut', 'anacard', 'sesame', 'sésame',
+      // les formulations vagues, qui appellent justement une verification
+      'huile', 'oil', 'creme', 'crème', 'cream', 'lotion', 'gel', 'graine', 'seed',
+      'alimentaire', 'food', 'plusieurs', 'nombreuses', 'multiple', 'fruit'
+    ];
+    var a = allergiesTxt.toLowerCase();
+    var toucheLeGel = MOTS_GEL.some(function(mot) { return a.indexOf(mot) >= 0; });
     CI.unshift('ALLERGIES DÉCLARÉES — ' + allergiesTxt
-      + '\n    Gel Pur Spa : carthame, pépins de raisin, tournesol, beurre de karité,'
-      + '\n    beurre de mangue, vitamine E. Le karité vient d\'une noix; la mangue est de'
-      + '\n    la même famille que la noix de cajou et la pistache. À recouper avant la séance.');
+      + (toucheLeGel
+        ? '\n    Gel Pur Spa : carthame, pépins de raisin, tournesol, beurre de karité,'
+          + '\n    beurre de mangue, vitamine E. Le karité vient d\'une noix; la mangue est de'
+          + '\n    la même famille que la noix de cajou et la pistache. À recouper avant la séance.'
+        : ''));
   }
   var contre_indications_str = CI.length > 0
     ? CI.map(function(c) { return '* ' + c; }).join('\n')
