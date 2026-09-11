@@ -38,18 +38,15 @@ function setDateAujourdhui() {
   });
 })();
 
-// ─── EMAILJS CONFIG ────────────────────────────────────────────
-// ⚠️ EmailJS reste en service TANT QUE Code.gs n'est pas redéployé. Le 2026-09-10,
-// basculer le site vers action=questionnaire avant de déployer le programme a cassé
-// le questionnaire en production : le site est ouvert au public, les envois tombaient
-// dans le vide. Ne PAS rebasculer sans avoir déployé le programme d'abord.
-var EMAILJS_PUBLIC_KEY  = 'nDDa_zp8R1h9YR_Df';
-var EMAILJS_SERVICE_ID  = 'service_w78vr2g';
-var EMAILJS_TEMPLATE_ID = 'template_iumkg2s';
-// Banque de clients : quand le questionnaire part, on signale l'identite au programme de reservation
-// (prenom, nom, courriel, telephone, langue). Jamais une reponse de sante. Si ca echoue, rien ne change.
+// ─── PROGRAMME DE RESERVATION ──────────────────────────────────
+// ⛔ EmailJS a ete retire le 2026-09-10 a 22 h 45, apres le deploiement de la
+// version 10 du programme. Le questionnaire part maintenant ici, avec son PDF signe.
+// ⚠️ REGLE D'ORDRE, apprise a la dure le meme jour : ce fichier et le programme Google
+// sont deux deploiements separes. Le site se pousse en une minute, le programme demande
+// une authentification Google. Si un jour ce fichier attend une nouveaute du programme,
+// DEPLOYER LE PROGRAMME D'ABORD — l'inverse casse le questionnaire en production, en
+// silence, pendant que le site est ouvert au public.
 var BANQUE_URL = 'https://script.google.com/macros/s/AKfycby217WbbU_K_cAUy9L1H96Yseh376VTAyT8eYxd2dCNl8Gw6pMmQEO8pi2P0rud6FLG/exec';
-if (typeof emailjs !== 'undefined') emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
 function signalerBanque(identite) {
   try {
@@ -820,6 +817,19 @@ function soumettreFormulaire(e) {
     console.warn('Champ libre tronque : il depassait 2 000 caracteres.');
   })();
 
+  // ─── Le PDF signe part avec le questionnaire ─────────────────────────────
+  // C'est la piece du dossier au sens de l'article 9.1.1 du code de deontologie
+  // du RMPQ. Avant le 2026-09-10 il restait chez le client : EmailJS refusait
+  // tout envoi au-dessus de 50 Ko et le PDF en pese environ 430. Le programme
+  // Google, lui, n'a pas ce plafond. La limite de 45 Ko ci-dessus s'applique aux
+  // champs texte seulement — le PDF s'ajoute apres, exprès.
+  try {
+    if (window.__vbPdfDoc) {
+      templateParams.pdf_base64 = window.__vbPdfDoc.output('datauristring');
+      templateParams.pdf_nom = nomFichier;
+    }
+  } catch (ePdf) { console.warn('PDF non joint :', ePdf); }
+
   // Affiche le bouton « Télécharger ma copie PDF ». Le téléchargement est
   // déclenché par un vrai clic : c'est ce qui passe le mieux dans les
   // navigateurs intégrés. Et si ça échoue quand même, l'envoi est déjà fait.
@@ -875,8 +885,9 @@ function soumettreFormulaire(e) {
   }
 
   function onSuccess() {
-    // Identite capturee AVANT form.reset(), puis envoyee a la banque de clients sans bloquer.
-    try { signalerBanque({ prenom: v('prenom'), nom: v('nom'), courriel: v('email'), tel: v('telephone'), lang: (typeof currentLang !== 'undefined' && currentLang === 'en') ? 'en' : 'fr' }); } catch (eB) {}
+    // ⛔ Plus d'appel a signalerBanque ici. Le programme inscrit lui-meme le client
+    // dans la banque quand il recoit le questionnaire (questionnaireRecu -> ficheRecue).
+    // Le faire des deux cotes creait deux entrees pour la meme personne.
     var echec = document.getElementById('echec-msg');
     if (echec) echec.style.display = 'none';
     document.getElementById('succes-msg').style.display = 'block';
@@ -902,32 +913,47 @@ function soumettreFormulaire(e) {
     afficherEchec(statut, detail);
   }
 
-  // Une seule nouvelle tentative en cas de coupure reseau ou d'erreur
-  // temporaire du serveur. Les erreurs de configuration (400, 413, 422) ne
-  // sont pas rejouees : elles echoueraient exactement pareil.
-  // ⭐ Depuis le 2026-09-10, le questionnaire ne passe PLUS par EmailJS.
+  // ⭐ Depuis le 2026-09-10 (22 h 45), le questionnaire ne passe PLUS par EmailJS.
   // Il part directement au programme de reservation, dans le compte Google de Kevin.
   // Pourquoi : EmailJS est un tiers americain sans entente ecrite, et il transportait
   // tout le contenu de sante — conditions, medicaments, allergies, signature. Un
   // fournisseur de moins qui touche a ces donnees, et plus de plafond a 50 Ko qui
   // faisait echouer un envoi sans prevenir personne.
+  // Une seule nouvelle tentative, et seulement si le reseau a coupe : un refus du
+  // programme echouerait exactement pareil au deuxieme essai.
   function envoyer(essai) {
-    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
-      .then(onSuccess, function(err) {
-        var statut = (err && err.status) || 0;
-        var temporaire = (statut === 0 || statut === 408 || statut === 429 || statut >= 500);
-        if (essai < 2 && temporaire) {
-          setTimeout(function() { envoyer(essai + 1); }, 1500);
-          return;
-        }
-        onError(err);
+    var paquet = {};
+    for (var k in templateParams) if (Object.prototype.hasOwnProperty.call(templateParams, k)) paquet[k] = templateParams[k];
+    paquet.action = 'questionnaire';
+    paquet.site_web = '';   // case piege : vide chez un vrai client
+
+    fetch(BANQUE_URL, {
+      method: 'POST',
+      redirect: 'follow',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(paquet)
+    })
+      .then(function(r) { return r.json().catch(function() { return { ok: false, erreur: 'reponse_illisible', status: r.status }; }); })
+      .then(function(rep) {
+        if (rep && rep.ok) { onSuccess(); return; }
+        // Le programme a repondu, mais il a refuse. Rejouer ne changerait rien.
+        onError({ status: (rep && rep.status) || 200, text: (rep && rep.erreur) || 'refus' });
+      })
+      .catch(function(err) {
+        // Coupure reseau ou serveur indisponible : une seule nouvelle tentative.
+        if (essai < 2) { setTimeout(function() { envoyer(essai + 1); }, 1500); return; }
+        onError({ status: 0, text: (err && err.message) || 'reseau' });
       });
   }
 
-  if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== 'VOTRE_CLE_PUBLIQUE') {
+  // ⛔ Plus de faux succes. Avant le 2026-09-10, si la librairie d'envoi ne se
+  // chargeait pas, la page affichait « envoye » sans que rien ne parte — le client
+  // repartait tranquille et Kevin ne recevait jamais son questionnaire.
+  // Maintenant il n'y a qu'un seul chemin, et il dit la verite.
+  if (window.fetch && BANQUE_URL) {
     envoyer(1);
   } else {
-    onSuccess();
+    onError({ status: 0, text: 'navigateur trop ancien' });
   }
 }
 

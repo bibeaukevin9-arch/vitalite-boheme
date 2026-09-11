@@ -179,17 +179,7 @@
        `[data-en] { display:none }` est moins spécifique et se fait écraser — les deux
        langues s'affichent alors l'une sous l'autre. Le titre est donc un enfant. */
     .encart .t { display: block; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 20px; font-weight: 400; color: var(--noir); margin-bottom: 3px; }
-    /* Les 30 minutes gagnées par parrainage, et le champ de code replié */
-    .cadeau { display: flex; gap: 11px; align-items: flex-start; border: 1px solid rgba(201,162,39,.55); background: #fff;
-      border-radius: 2px; padding: 14px 16px; margin-top: 14px; }
-    .cadeau .marque { color: var(--or); font-size: 16px; line-height: 1.35; flex: none; }
-    .cadeau .corps { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 9px; }
-    .cadeau .dit { font-size: 13.5px; line-height: 1.65; color: var(--texte); margin: 0; }
-    .cadeau .t { display: block; color: var(--brun-fonce); font-weight: 600; }
-    .cadeau .choix { display: flex; gap: 9px; align-items: flex-start; font-size: 13.5px; line-height: 1.5; color: var(--brun-fonce); cursor: pointer; }
-    .cadeau .choix input { width: 18px; height: 18px; accent-color: var(--brun-fonce); flex: none; margin-top: 1px; }
-    .cadeau.gele .choix { opacity: .45; cursor: default; }
-    .cadeau .bloque { margin: 0; font-size: 12.5px; line-height: 1.55; color: var(--terre); }
+    /* Le champ de code replié */
     /* Bloc « qui reçoit le soin » — un par personne dont Kevin n'a pas encore le nom */
     .benef { border: 1px solid rgba(201,162,39,.35); border-radius: 2px; padding: 14px 16px; margin-top: 14px; background: rgba(255,255,255,.55); }
     .benef .qui { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 18px; color: var(--noir); margin-bottom: 2px; }
@@ -327,23 +317,6 @@
       <!-- Qui reçoit le soin. Sans ça, Kevin ouvrait sa porte à un nom qu'il n'avait pas, et
            ne pouvait envoyer le questionnaire de santé à personne. Voir article 9.1.1 du RMPQ. -->
       <div id="beneficiaires"></div>
-
-      <div class="cadeau" id="cadeau" hidden>
-        <span class="marque">✦</span>
-        <div class="corps">
-          <p class="dit">
-            <span data-fr><strong class="t">Tu as 30 minutes qui t'attendent.</strong>Quelqu'un est venu grâce à toi. Elles s'ajoutent à un 90 min — rien à taper.</span>
-            <span data-en><strong class="t">You have 30 minutes waiting for you.</strong>Someone came thanks to you. They are added to a 90 min — nothing to type.</span>
-          </p>
-          <label class="choix"><input type="checkbox" id="cadeau-oui" checked>
-            <span><span data-fr>Je les prends pour ce rendez-vous</span><span data-en>I use them for this appointment</span></span>
-          </label>
-          <p class="bloque" id="cadeau-bloque" hidden>
-            <span data-fr>Un code est écrit plus bas : c'est l'un ou l'autre, jamais les deux. Tes 30 minutes restent à toi pour une prochaine fois.</span>
-            <span data-en>A code is written below: it is one or the other, never both. Your 30 minutes stay yours for another time.</span>
-          </p>
-        </div>
-      </div>
 
       <div class="zone-code">
         <button type="button" class="pli" id="pli" aria-expanded="false" aria-controls="champ-promo">
@@ -688,42 +661,10 @@ $('pli').addEventListener('click', function() {
   if (ferme) $('promo').focus();
 });
 
-/* ─── LES 30 MINUTES GAGNÉES PAR PARRAINAGE ───
-   ⛔ Un code OU les 30 minutes, jamais les deux (règle de Kevin, 2026-09-10). Ici c'est
-   seulement l'affichage qui le dit ; la règle qui compte est dans validerPromo(), côté
-   programme — un formulaire se contourne, pas le serveur. */
-function majCumul() {
-  var codeEcrit = !!$('promo').value.trim();
-  $('cadeau').classList.toggle('gele', codeEcrit);
-  $('cadeau-bloque').hidden = !codeEcrit;
-  $('cadeau-oui').disabled = codeEcrit;
-  $('cadeau-oui').checked = !codeEcrit;
-}
-$('promo').addEventListener('input', majCumul);
+/* ⛔ Les 30 minutes automatiques ont été retirées le 2026-09-10 (décision de Kevin).
+   La récompense du parrain est UNE seule chose et elle se réclame avec le code PARRAIN :
+   un 90 min au prix du 60. Rien ne s'applique dans le dos du client. */
 
-/* Le programme est le seul à savoir si des 30 minutes attendent quelqu'un. On le lui demande
-   dès que le courriel et le téléphone sont remplis — en POST, jamais dans l'adresse de la page :
-   un courriel n'a pas sa place dans une URL. Le programme exige que les DEUX correspondent à la
-   même fiche, sinon il répond 0 — sans ça, on pourrait deviner qui est client en tâtonnant. */
-var cadeauDejaDemande = '';
-function chercherCadeau() {
-  var c = $('courriel').value.trim().toLowerCase(), t = $('tel').value.replace(/\D/g, '');
-  var a90 = etat.personnes.some(function(s) { return s.id === 'suedois90'; });
-  if (!a90 || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(c) || t.length < 10 || !SCRIPT_URL) {
-    // Le cache est vidé ici : sinon, passer d'un 90 min à un 60 puis revenir au 90 laisserait
-    // le bloc caché pour de bon — la clé serait inchangée et la demande jamais refaite.
-    cadeauDejaDemande = ''; $('cadeau').hidden = true; majCumul(); return;
-  }
-  var cle = c + '|' + t + '|90';
-  if (cle === cadeauDejaDemande) return;
-  cadeauDejaDemande = cle;
-  fetch(SCRIPT_URL, { method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ action: 'cadeau', courriel: c, tel: t }) })
-    .then(function(r) { return r.json(); })
-    .then(function(d) { $('cadeau').hidden = !(d && d.minutes > 0); majCumul(); })
-    .catch(function() { $('cadeau').hidden = true; });
-}
-['courriel', 'tel'].forEach(function(id) { $(id).addEventListener('blur', chercherCadeau); });
 $('btn-retour').addEventListener('click', function(){ allerPas(3); });
 
 $('form').addEventListener('submit', function(e) {
@@ -755,8 +696,6 @@ $('form').addEventListener('submit', function(e) {
     prenom: $('prenom').value.trim(), nom: $('nom').value.trim(), courriel: $('courriel').value.trim(), tel: $('tel').value.trim(),
     pourqui: $('pourqui').value, promo: $('promo').value.trim().toUpperCase(), note: $('note').value.trim(), site_web: f.site_web.value,
     infolettre: $('infolettre').checked,
-    // Décoché, ou pas de 30 minutes du tout : le programme n'y touche pas.
-    cadeau: !$('cadeau').hidden && $('cadeau-oui').checked,
     beneficiaires: benefs
   };
   f.hidden = true; $('attente-envoi').hidden = false;

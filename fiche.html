@@ -6,11 +6,11 @@
   <title>Questionnaire de santé — Vitalité Bohème</title>
 
   <!-- EmailJS — en service tant que Code.gs n'est pas redéployé (voir fiche-script.js) -->
-  <script defer src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
   <!-- jsPDF -->
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <!-- Logique formulaire -->
-  <script defer src="fiche-script.js?v=20260910d"></script>
+  <script defer src="fiche-script.js?v=20260910e"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
@@ -742,10 +742,16 @@
       <div style="background:#fdfaf6;border:1px solid #e2d8cc;border-left:4px solid var(--or);border-radius:10px;padding:24px 28px;position:relative;">
         <div style="position:absolute;top:16px;right:20px;font-size:22px;opacity:0.15;">📜</div>
         <p data-fr style="font-size:14px;color:var(--texte);line-height:2.1;margin:0 0 20px;">
-          Je m'engage à me présenter avec une <strong>hygiène corporelle de base</strong> et à reporter mon rendez-vous en cas de symptômes contagieux. Je confirme ne pas être sous l'effet d'alcool ou de drogues. Je comprends que la massothérapie est un <strong>service de soin professionnel et thérapeutique</strong>. J'accepte la <strong>politique d'annulation</strong> : des frais de <strong>50 $</strong> s'appliquent pour toute annulation de moins de 24 heures. Je déclare que les informations fournies sont exactes et je reconnais que la massothérapie <strong>ne remplace pas un avis médical</strong>. <strong>Je m'engage à signaler toute condition cutanée</strong> (mycose, verrues, plaies ouvertes, infection) avant la séance afin d'assurer la sécurité de tous.
+          Je m'engage à me présenter avec une <strong>hygiène corporelle de base</strong> et à reporter mon rendez-vous en cas de symptômes contagieux. Je confirme ne pas être sous l'effet d'alcool ou de drogues. Je comprends que la massothérapie est un <strong>service de soin professionnel et thérapeutique</strong>. J'accepte la <strong>politique d'annulation</strong> : pour une annulation de moins de 24 heures ou une absence, des frais pouvant aller <strong>jusqu'à 50 $</strong> par plage réservée peuvent être réclamés, selon la perte subie. Je déclare que les informations fournies sont exactes et je reconnais que la massothérapie <strong>ne remplace pas un avis médical</strong>. <strong>Je m'engage à signaler toute condition cutanée</strong> (mycose, verrues, plaies ouvertes, infection) avant la séance afin d'assurer la sécurité de tous.
         </p>
         <p data-en style="font-size:14px;color:var(--texte);line-height:2.1;margin:0 0 20px;">
-          I commit to attending with <strong>basic personal hygiene</strong> and to rescheduling if I have contagious symptoms. I confirm I will not be under the influence of alcohol or drugs. I understand that massage therapy is a <strong>professional and therapeutic service</strong>. I accept the <strong>cancellation policy</strong>: a fee of <strong>$50</strong> applies for any cancellation under 24 hours. I declare that all information provided is accurate and acknowledge that massage therapy <strong>does not replace medical advice</strong>. <strong>I agree to report any skin condition</strong> (fungal infection, warts, open wounds, infection) before my session to ensure the safety of all.
+          I commit to attending with <strong>basic personal hygiene</strong> and to rescheduling if I have contagious symptoms. I confirm I will not be under the influence of alcohol or drugs. I understand that massage therapy is a <strong>professional and therapeutic service</strong>. I accept the <strong>cancellation policy</strong>: for a cancellation under 24 hours or a no-show, fees of <strong>up to $50</strong> per booked slot may be claimed, based on the loss incurred. I declare that all information provided is accurate and acknowledge that massage therapy <strong>does not replace medical advice</strong>. <strong>I agree to report any skin condition</strong> (fungal infection, warts, open wounds, infection) before my session to ensure the safety of all.
+        </p>
+        <p data-fr style="font-size:13px;color:var(--gris);line-height:1.9;margin:0 0 18px;padding-top:16px;border-top:1px solid #e2d8cc;">
+          Tes renseignements de santé servent uniquement à adapter ton soin. Ils sont conservés 5 ans, comme l'exige le code de déontologie, et ne sont ni vendus ni utilisés pour autre chose. Le détail — ce qui est recueilli, où ça va, comment le faire corriger ou supprimer — est dans la <a href="confidentialite.html" target="_blank" rel="noopener" style="color:#7b241c;font-weight:600;">politique de confidentialité</a>.
+        </p>
+        <p data-en style="font-size:13px;color:var(--gris);line-height:1.9;margin:0 0 18px;padding-top:16px;border-top:1px solid #e2d8cc;">
+          Your health information is used solely to adapt your treatment. It is kept for 5 years, as the code of ethics requires, and is never sold or used for anything else. The details — what is collected, where it goes, how to have it corrected or deleted — are in the <a href="confidentialite.html" target="_blank" rel="noopener" style="color:#7b241c;font-weight:600;">privacy policy</a>.
         </p>
         <div style="display:flex;align-items:center;gap:12px;padding-top:16px;border-top:1px solid #e2d8cc;">
           <input type="checkbox" name="consentement_global" id="consentement_global" style="width:20px;height:20px;accent-color:var(--or);flex-shrink:0;cursor:pointer;" />
