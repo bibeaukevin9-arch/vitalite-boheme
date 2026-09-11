@@ -140,6 +140,10 @@
     .heure { background: transparent; border: 1px solid rgba(201,162,39,.35); border-radius: 2px; font-weight: 400; font-size: 21px; }
     .heure.choisi { background: var(--noir); color: var(--or); border-color: var(--noir); }
     .champ input, .champ select, .champ textarea { border-radius: 2px; border-color: rgba(201,162,39,.4); background: #fff; }
+    /* ⚠️ Le halo du champ actif était resté en brun (rgba(207,169,106,.2)), seul vestige de
+       l'habillage d'avant « Pierre et or » — il s'allumait sur CHAQUE champ de la page.
+       Repeint en or le 2026-09-11. */
+    .champ input:focus, .champ select:focus, .champ textarea:focus { border-color: var(--or); box-shadow: 0 0 0 3px rgba(201,162,39,.22); }
     .recap { background: var(--noir); color: var(--creme); border-radius: 2px; } .recap b { color: var(--or); }
     .btn { background: var(--noir); color: var(--or); border: 1px solid var(--or); border-radius: 2px; text-transform: uppercase; letter-spacing: 3px; font-family: 'Cormorant Garamond', serif; font-size: 17px; font-weight: 600; }
     .btn.secondaire { background: transparent; color: var(--noir); border-color: rgba(201,162,39,.5); }
@@ -186,9 +190,17 @@
     .benef .quoi { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--or); margin-bottom: 12px; }
     .benef .champs { gap: 10px; }
     .zone-code { display: flex; flex-direction: column; gap: 5px; margin-top: 14px; }
+    /* ⚠️ Le pli EST l'étiquette du champ. Il porte donc la même robe que toutes les autres
+       étiquettes de la page — or, capitales, interlettrage — et pas le brun foncé d'avant, qui
+       était la seule chose de cette couleur sur tout l'écran. Corrigé le 2026-09-11. */
     .pli { display: inline-flex; align-items: center; gap: 7px; align-self: flex-start; background: none; border: none;
-      border-bottom: 1px solid rgba(201,162,39,.55); padding: 0 0 3px; cursor: pointer; font: inherit; font-size: 13px; color: var(--brun-fonce); }
-    .pli:hover { color: var(--or); border-bottom-color: var(--or); }
+      border-bottom: 1px solid rgba(201,162,39,.55); padding: 0 0 3px; cursor: pointer; font: inherit;
+      font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--or); }
+    .pli:hover { color: var(--or-clair); border-bottom-color: var(--or-clair); }
+    /* L'étiquette « Code promo » reste pour les lecteurs d'écran, mais ne se voit plus :
+       le pli la dit déjà, et deux titres pour une seule case, c'est un de trop. */
+    .zone-code .champ > label { position: absolute; width: 1px; height: 1px; overflow: hidden;
+      clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
     .pli svg { transition: transform .18s; }
     .pli.ouvert svg { transform: rotate(180deg); }
 
@@ -326,7 +338,7 @@
         <div class="champ large" id="champ-promo" hidden>
           <label for="promo"><span data-fr>Code promo</span><span data-en>Promo code</span></label>
           <input id="promo" name="promo" autocomplete="off" autocapitalize="characters" placeholder="819 000-0000">
-          <div class="aide"><span data-fr>Un seul code par réservation. Le numéro de téléphone de la personne qui t'a parlé de nous en est un — écris-le comme dans l'exemple.</span><span data-en>One code per booking. The phone number of whoever told you about us counts as one — write it as shown in the example.</span></div>
+          <div class="aide"><span data-fr>Un seul code. Le numéro de la personne qui t'a parlé de nous en est un.</span><span data-en>One code only. The number of whoever told you about us counts as one.</span></div>
         </div>
       </div>
       <div class="recap" id="recap"></div>
