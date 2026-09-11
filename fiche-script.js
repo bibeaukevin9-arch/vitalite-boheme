@@ -526,6 +526,39 @@ function soumettreFormulaire(e) {
     if (!ok) erreurs.push(isEn ? c.en : c.fr);
   });
 
+  // ─── Les deux dates doivent être de vraies dates ───────────────
+  // ⚠️ Jusqu'au 2026-09-11, la validation regardait seulement si le champ était vide.
+  // Un dossier est arrivé signé « 2209-00-02 » : le formatage force bien AAAA-MM-JJ,
+  // mais rien ne vérifiait que les chiffres formaient une date qui existe. La date de
+  // naissance est exigée nommément par l'article 9.1.1 du RMPQ : fausse, elle ne vaut rien.
+  function dateReelle(txt) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((txt || '').trim());
+    if (!m) return null;
+    var a = +m[1], mo = +m[2], j = +m[3];
+    if (mo < 1 || mo > 12 || j < 1 || j > 31) return null;
+    var d = new Date(a, mo - 1, j);
+    if (d.getFullYear() !== a || d.getMonth() !== mo - 1 || d.getDate() !== j) return null;
+    return d;
+  }
+  var demain = new Date(); demain.setHours(0, 0, 0, 0); demain.setDate(demain.getDate() + 1);
+
+  if (v('ddn')) {
+    var dNaiss = dateReelle(v('ddn'));
+    var ddnOk = !!dNaiss && dNaiss < demain && dNaiss.getFullYear() >= 1900;
+    marqueFin('ddn', ddnOk);
+    if (!ddnOk) erreurs.push(isEn
+      ? 'Date of birth — enter a real date (YYYY-MM-DD)'
+      : 'Date de naissance — indiquez une date réelle (AAAA-MM-JJ)');
+  }
+  if (v('date_signature')) {
+    var dSig = dateReelle(v('date_signature'));
+    var sigDateOk = !!dSig && dSig < demain;
+    marqueFin('date_signature', sigDateOk);
+    if (!sigDateOk) erreurs.push(isEn
+      ? 'Signature date — enter a real date (YYYY-MM-DD), not in the future'
+      : 'Date de signature — indiquez une date réelle (AAAA-MM-JJ), pas dans le futur');
+  }
+
   // Email (obligatoire pour envoi)
   var emailOk = v('email') !== '' && v('email').indexOf('@') > 0;
   marqueFin('email', emailOk);
@@ -540,7 +573,7 @@ function soumettreFormulaire(e) {
     if (labelConsent) labelConsent.style.background = consentOk ? '' : '#fff0f0';
     if (!consentOk && !premierChamp) premierChamp = consentEl;
   }
-  if (!consentOk) erreurs.push(isEn ? '✅ Consent checkbox (mandatory)' : '✅ Case «J\'accepte» (obligatoire)');
+  if (!consentOk) erreurs.push(isEn ? '✅ Consent checkbox (mandatory)' : '✅ Case « J\'accepte » (obligatoire)');
 
   // Moins de 18 ans : parent ou tuteur identifié, consentement parental coché
   var mineur = !!fd.get('mineur');
@@ -600,15 +633,19 @@ function soumettreFormulaire(e) {
   var santeChecked = all('sante');
   var CI = [];
   var ciRules = [
-    { kw: ['Cancer'],               label: 'Cancer (actuel ou passe) — consulter le medecin traitant avant la seance; eviter les zones tumorales' },
-    { kw: ['Problemes cardiaques', 'Problèmes cardiaques'], label: 'Problemes cardiaques — pression legere uniquement; eviter decubitus ventral prolonge' },
-    { kw: ['Chirurgie recente', 'Chirurgie récente'], label: 'Chirurgie recente (< 2 ans) — eviter la zone operee' },
-    { kw: ['Osteoporose', 'Ostéoporose'], label: 'Osteoporose — pressions tres legeres; pas de manoeuvres articulaires forcees' },
-    { kw: ['Grossesse'],            label: 'Grossesse — techniques adaptees requises; eviter certains points reflexes' },
-    { kw: ['Hernie discale', 'sciatalgie'], label: 'Hernie discale / sciatalgie — eviter tractions et pressions directes sur la zone' },
-    { kw: ['Hypertension'],         label: 'Hypertension / hypotension — surveiller le positionnement; eviter forte pression cervicale' },
-    { kw: ['Diabete', 'Diabète'],   label: 'Diabete — surveiller la sensibilite des extremites; eviter chaleur intense' },
-    { kw: ['Problemes neurologiques', 'Problèmes neurologiques'], label: 'Problemes neurologiques — adapter la technique selon la condition specifique' },
+    // ⚠️ Les `kw` servent à reconnaître les cases cochées : ne PAS y toucher, les deux
+    // graphies (avec et sans accent) sont là exprès. Les `label`, eux, sont lus par Kevin
+    // dans le courriel et par le client dans le PDF : ils s'écrivent en bon français.
+    // Vérifié le 2026-09-11 sur un PDF réel : jsPDF rend é, è, à et — sans problème.
+    { kw: ['Cancer'],               label: 'Cancer (actuel ou passé) — consulter le médecin traitant avant la séance; éviter les zones tumorales' },
+    { kw: ['Problemes cardiaques', 'Problèmes cardiaques'], label: 'Problèmes cardiaques — pression légère uniquement; éviter le décubitus ventral prolongé' },
+    { kw: ['Chirurgie recente', 'Chirurgie récente'], label: 'Chirurgie récente (moins de 2 ans) — éviter la zone opérée' },
+    { kw: ['Osteoporose', 'Ostéoporose'], label: 'Ostéoporose — pressions très légères; pas de manœuvres articulaires forcées' },
+    { kw: ['Grossesse'],            label: 'Grossesse — techniques adaptées requises; éviter certains points réflexes' },
+    { kw: ['Hernie discale', 'sciatalgie'], label: 'Hernie discale / sciatalgie — éviter tractions et pressions directes sur la zone' },
+    { kw: ['Hypertension'],         label: 'Hypertension / hypotension — surveiller le positionnement; éviter forte pression cervicale' },
+    { kw: ['Diabete', 'Diabète'],   label: 'Diabète — surveiller la sensibilité des extrémités; éviter la chaleur intense' },
+    { kw: ['Problemes neurologiques', 'Problèmes neurologiques'], label: 'Problèmes neurologiques — adapter la technique selon la condition spécifique' },
   ];
   ciRules.forEach(function(rule) {
     if (santeChecked.some(function(s) {
@@ -622,18 +659,18 @@ function soumettreFormulaire(e) {
     // ⚠️ Les ingredients du gel vivent ICI, dans ce que KEVIN lit — jamais dans la question
     // posee au client. Kevin, 2026-09-10 : « ne mets pas la charge sur mes clients ».
     // C'est lui qui recoupe; le client dit seulement ce a quoi il reagit.
-    CI.unshift('ALLERGIES DECLAREES — ' + allergiesTxt
-      + '\n    Gel Pur Spa : carthame, pepins de raisin, tournesol, beurre de karite,'
-      + '\n    beurre de mangue, vitamine E. Le karite vient d\'une noix; la mangue est de'
-      + '\n    la meme famille que la noix de cajou et la pistache. A recouper avant la seance.');
+    CI.unshift('ALLERGIES DÉCLARÉES — ' + allergiesTxt
+      + '\n    Gel Pur Spa : carthame, pépins de raisin, tournesol, beurre de karité,'
+      + '\n    beurre de mangue, vitamine E. Le karité vient d\'une noix; la mangue est de'
+      + '\n    la même famille que la noix de cajou et la pistache. À recouper avant la séance.');
   }
   var contre_indications_str = CI.length > 0
     ? CI.map(function(c) { return '* ' + c; }).join('\n')
-    : (isEn ? 'None detected' : 'Aucune detectee');
+    : (isEn ? 'None detected' : 'Aucune détectée');
   // ──────────────────────────────────────────────────────────────
 
   var T = isEn ? {
-    title: 'Health Intake Form', sub: 'Vitalite Boheme - Massage Therapy',
+    title: 'Health Intake Form', sub: 'Vitalité Bohème - Massage Therapy',
     s1: 'Personal information', s2: 'Emergency contact', s3: 'Reason for visit',
     s4: 'Pain & sensitive areas', s5: 'Health history', s6: 'Medication & treatments',
     s7: 'Consent & policies', s8: 'Signature',
@@ -645,17 +682,17 @@ function soumettreFormulaire(e) {
     consok: 'Consent:', yes: 'Yes', no: 'No',
     date: 'Date:', sig: 'Signature:', gen: 'Generated on'
   } : {
-    title: 'Questionnaire de sante', sub: 'Vitalite Boheme - Massotherapie',
+    title: 'Questionnaire de santé', sub: 'Vitalité Bohème - Massothérapie',
     s1: 'Informations personnelles', s2: "Contact d'urgence", s3: 'Motif de consultation',
-    s4: 'Douleurs et zones sensibles', s5: 'Historique de sante', s6: 'Medication et traitements',
+    s4: 'Douleurs et zones sensibles', s5: 'Historique de santé', s6: 'Médication et traitements',
     s7: 'Consentement et politiques', s8: 'Signature',
-    nom: 'Nom :', prenom: 'Prenom :', ddn: 'Date de naissance :', tel: 'Telephone :',
-    email: 'Courriel :', sexe: 'Sexe :', adr: 'Adresse :', prof: 'Profession :', mineur: 'Moins de 18 ans :', parent: 'Parent/tuteur (reste dans la piece) :', un: 'Nom :', ul: 'Lien :', ut: 'Telephone :',
-    motif: 'Motif :', motifd: 'Precisions :', zones: 'Zones :', none: 'Aucune',
-    allerg: 'Allergies :', sante: 'Conditions :', santea: 'Autre :', santed: 'Precisions :',
-    med: 'Medicaments :', medd: 'Lesquels :', autre: 'Autre traitement :',
+    nom: 'Nom :', prenom: 'Prénom :', ddn: 'Date de naissance :', tel: 'Téléphone :',
+    email: 'Courriel :', sexe: 'Sexe :', adr: 'Adresse :', prof: 'Profession :', mineur: 'Moins de 18 ans :', parent: 'Parent/tuteur (reste dans la pièce) :', un: 'Nom :', ul: 'Lien :', ut: 'Téléphone :',
+    motif: 'Motif :', motifd: 'Précisions :', zones: 'Zones :', none: 'Aucune',
+    allerg: 'Allergies :', sante: 'Conditions :', santea: 'Autre :', santed: 'Précisions :',
+    med: 'Médicaments :', medd: 'Lesquels :', autre: 'Autre traitement :',
     consok: 'Consentement :', yes: 'Oui', no: 'Non',
-    date: 'Date :', sig: 'Signature :', gen: 'Genere le'
+    date: 'Date :', sig: 'Signature :', gen: 'Généré le'
   };
 
   // PDF
@@ -722,7 +759,7 @@ function soumettreFormulaire(e) {
 
   yy += 6; heading(T.s7);
   var consentOk = fd.get('consentement_global') ? '[X]' : '[ ]';
-  field(consentOk, isEn ? 'All conditions read, understood and accepted' : 'Toutes les conditions lues, comprises et acceptees');
+  field(consentOk, isEn ? 'All conditions read, understood and accepted' : 'Toutes les conditions lues, comprises et acceptées');
 
   yy += 6; heading(T.s8);
   var sig = v('signature');
@@ -844,7 +881,7 @@ function soumettreFormulaire(e) {
     // 3. Dernier recours.
     if (taille() > LIMITE) {
       ['motif_detail', 'sante_detail', 'medicaments_detail', 'autre_traitement'].forEach(function(k) {
-        templateParams[k] = isEn ? '[Too long — ask the client]' : '[Trop long — a demander au client]';
+        templateParams[k] = isEn ? '[Too long — ask the client]' : '[Trop long — à demander au client]';
       });
     }
     console.warn('Champ libre tronque : il depassait 2 000 caracteres.');
@@ -880,7 +917,7 @@ function soumettreFormulaire(e) {
         } catch (e2) {
           alert(isEn
             ? 'Download is not available in this browser. Your form was sent successfully.'
-            : "Le telechargement n'est pas disponible dans ce navigateur. Votre questionnaire a bien ete envoye.");
+            : "Le téléchargement n'est pas disponible dans ce navigateur. Votre questionnaire a bien été envoyé.");
         }
       }
     };
