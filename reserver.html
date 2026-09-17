@@ -239,14 +239,37 @@
     .durees { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); }
     /* Les zones sont plus larges que les durées : elles portent leur nom ET leurs bornes, parce
        qu'on réserve le bloc en entier — il faut voir de quand à quand avant de cocher. */
-    .zones { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-    .zone { background: transparent; border: 1px solid rgba(201,162,39,.35); border-radius: 2px;
-      padding: 12px 10px; cursor: pointer; font: inherit; color: var(--texte); text-align: center;
-      transition: all .15s; display: flex; flex-direction: column; gap: 3px; }
-    .zone .zn { font-size: 15px; }
-    .zone .zh { font-size: 11px; color: var(--gris); letter-spacing: .5px; font-variant-numeric: tabular-nums; }
-    .zone.choisi { background: var(--noir); border-color: var(--noir); color: var(--or); }
-    .zone.choisi .zh { color: var(--or-doux); }
+    /* ─── La grille de l'horaire ─── */
+    .grille-nav { display: flex; align-items: center; gap: 12px; margin: 0 0 10px; }
+    .grille-nav button { background: transparent; border: 1px solid rgba(201,162,39,.35); border-radius: 2px;
+      width: 36px; height: 36px; cursor: pointer; font-size: 18px; color: var(--or); line-height: 1; }
+    .grille-nav button:disabled { opacity: .3; cursor: default; }
+    .gr-titre { flex: 1; text-align: center; font-size: 12px; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--gris); }
+    .grille-ami { display: flex; flex-direction: column; gap: 4px; }
+    .gr-entete, .gr-ligne { display: grid; grid-template-columns: 78px 1fr 1fr 1fr; gap: 4px; align-items: stretch; }
+    .gr-entete > span { font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+      color: var(--gris); text-align: center; padding-bottom: 2px; }
+    .gr-jour { font-size: 12px; color: var(--texte); display: flex; flex-direction: column;
+      justify-content: center; line-height: 1.25; }
+    .gr-jour b { font-size: 14px; font-variant-numeric: tabular-nums; }
+    /* 46 px, pas 42 : mesuré sur un 375, sous la norme tactile de 44. */
+    .gr-case { border: 1px solid rgba(201,162,39,.25); border-radius: 2px; background: transparent;
+      min-height: 46px; cursor: pointer; font: inherit; color: var(--texte); padding: 0;
+      transition: all .12s; }
+    .gr-case.libre:hover { border-color: var(--or); }
+    .gr-case.mou { background: repeating-linear-gradient(135deg, transparent, transparent 4px,
+      rgba(201,162,39,.16) 4px, rgba(201,162,39,.16) 8px); border-color: rgba(201,162,39,.3); }
+    .gr-case.dur { background: rgba(58,46,40,.14); border-color: transparent; cursor: default; }
+    .gr-case.passe { background: transparent; border-color: transparent; cursor: default; opacity: .25; }
+    .gr-case.choisi { background: var(--noir); border-color: var(--noir); box-shadow: 0 0 0 2px rgba(201,162,39,.35) inset; }
+    .legende-ami { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 12px; font-size: 11px; color: var(--gris); }
+    .legende-ami span { display: inline-flex; align-items: center; gap: 5px; }
+    .pastille { width: 13px; height: 13px; border-radius: 2px; display: inline-block; flex: none;
+      border: 1px solid rgba(201,162,39,.35); }
+    .pastille.mou { background: repeating-linear-gradient(135deg, transparent, transparent 3px,
+      rgba(201,162,39,.35) 3px, rgba(201,162,39,.35) 6px); }
+    .pastille.dur { background: rgba(58,46,40,.2); border-color: transparent; }
     /* Le champ de code vit hors des cartes, pour rester atteignable quel que soit l'écran
        affiché. Il s'aligne sur elles et garde le même retrait latéral. */
     /* Le bandeau du code : hors des cartes, au-dessus de tout, et ouvert.
@@ -364,12 +387,25 @@
     <p class="sous" data-fr>Pas un massage : un moment. Prends un bout de journée, ou dis-moi combien de temps.</p>
     <p class="sous" data-en>Not a massage: a moment. Take a part of the day, or tell me how long.</p>
 
-    <!-- ⭐ LES ZONES. Une zone se prend EN ENTIER, du début à la fin — ce n'est ni un filtre ni
-         une heure de départ. Plusieurs zones se cumulent, et les trois font la journée.
-         ⛔ Deux versions « à partir de » ont été codées et refusées avant celle-ci. -->
-    <p class="etiq-ami" data-fr>Quel bout de journée</p>
-    <p class="etiq-ami" data-en>Which part of the day</p>
-    <div class="zones" id="zones-ami"></div>
+    <!-- ⭐ L'HORAIRE EN PREMIER (Kevin, 2026-09-17, côté amis seulement).
+         La grille EST le sélecteur : on voit ce qui est libre et on clique dessus. Trois états —
+         libre, occupé mais malléable (un quart au spa, qu'un ami peut chevaucher), occupé pour de
+         bon. ⛔ Aucun titre d'événement ne sort du serveur : on voit QUAND Kevin est pris, jamais
+         par qui ni pourquoi. -->
+    <p class="etiq-ami" data-fr>L'horaire de Kevin</p>
+    <p class="etiq-ami" data-en>Kevin's schedule</p>
+    <div class="grille-nav">
+      <button type="button" id="gr-prec" aria-label="Avant">‹</button>
+      <div class="gr-titre" id="gr-titre"></div>
+      <button type="button" id="gr-suiv" aria-label="Après">›</button>
+    </div>
+    <div class="grille-ami" id="grille-ami"></div>
+    <div id="gr-attente" class="attente" hidden><span class="pt"></span><span class="pt"></span><span class="pt"></span></div>
+    <div class="legende-ami">
+      <span><i class="pastille libre"></i><span data-fr>Libre</span><span data-en>Free</span></span>
+      <span><i class="pastille mou"></i><span data-fr>Pris, mais je peux m'arranger</span><span data-en>Taken, but I can work it out</span></span>
+      <span><i class="pastille dur"></i><span data-fr>Pas possible</span><span data-en>Not possible</span></span>
+    </div>
     <p class="aide-ami" id="aide-zones"></p>
 
     <div id="bloc-duree">
@@ -539,7 +575,7 @@ function T(fr, en) { return currentLang === 'en' ? en : fr; }
 
 /* ─── ÉTAT ─── */
 var etat = { personnes: [], jour: null, heure: null, dispo: {}, ouverts: [], colles: {}, semaine: 0, chargement: false, vueMois: false, mois: 0,
-  ami: false, dureeAmi: null, zonesAmi: [] };
+  ami: false, dureeAmi: null, zonesAmi: [], grille: [], grOffset: 0 };
 var $ = function(id) { return document.getElementById(id); };
 
 function dureeTotale() {
@@ -568,7 +604,8 @@ var AMI = {
     { id: 'apresmidi', de: '12 h',   a: '17 h', fr: 'Après-midi', en: 'Afternoon' },
     { id: 'soiree',    de: '17 h',   a: '23 h', fr: 'Soirée',     en: 'Evening' }
   ],
-  horizonJours: 120
+  horizonJours: 120,
+  grillePas: 14        // 14 jours d'un coup, et on avance avec les fleches
 };
 function empreinteDe(t) {
   if (!window.crypto || !crypto.subtle) return Promise.resolve('');
@@ -623,7 +660,8 @@ function basculerAmi(actif) {
   if (retourJour) retourJour.innerHTML = actif
     ? '<span data-fr>← Changer de durée</span><span data-en>← Change duration</span>'
     : '<span data-fr>← Changer de soin</span><span data-en>← Change treatment</span>';
-  if (actif) { rendreZonesAmi(); rendreDureesAmi(); }
+  etat.grille = []; etat.grOffset = 0;
+  if (actif) { rendreDureesAmi(); majAideZones(); chargerGrille(); }
   applyLang(currentLang);   // les libellés qu'on vient d'injecter portent data-fr / data-en
   allerPas(1);
   $('c-ami').hidden = !actif;
@@ -646,28 +684,86 @@ function choisirDureeAmi(min) {
   etat.jour = null; etat.heure = null; etat.dispo = {};
   // Au-delà de 24 h, c'est l'heure de départ du dernier jour qu'il faut demander.
   $('bloc-fin-ami').hidden = min < 1440;
-  rendreZonesAmi(); rendreDureesAmi(); majTotalAmi();
+  etat.jour = null;
+  rendreGrille(); rendreDureesAmi(); majTotalAmi();
   allerPas(2); chargerDispo();
 }
-/**
- * Les zones : des cases à cocher, pas un filtre. Cocher « soirée » réserve toute la soirée ;
- * cocher après-midi ET soirée réserve les deux d'un bloc ; les trois font la journée.
- * Choisir une zone efface la durée, et choisir une durée efface les zones — les deux modes ne se
- * mélangent jamais.
- */
-function rendreZonesAmi() {
-  $('zones-ami').innerHTML = AMI.zones.map(function(z) {
-    var pris = etat.zonesAmi.indexOf(z.id) >= 0;
-    return '<button type="button" class="zone' + (pris ? ' choisi' : '') + '" data-z="' + z.id + '">' +
-      '<span class="zn">' + T(z.fr, z.en) + '</span><span class="zh">' + z.de + ' – ' + z.a + '</span></button>';
+/* ═══ LA GRILLE DE L'HORAIRE ═══
+   Elle EST le sélecteur : on voit et on clique. Une case porte un jour et une zone.
+   Cliquer plusieurs cases du même jour cumule les zones — trois font la journée.
+   ⛔ Changer de jour remet la sélection à zéro : une réservation ne couvre qu'un seul jour. */
+function chargerGrille() {
+  if (!etat.ami) return;
+  $('gr-attente').hidden = false;
+  var de = new Date(); de.setDate(de.getDate() + etat.grOffset);
+  var cle = de.getFullYear() + '-' + String(de.getMonth() + 1).padStart(2, '0') + '-' + String(de.getDate()).padStart(2, '0');
+  var fini = function(d) {
+    $('gr-attente').hidden = true;
+    if (!d || !d.ok) { $('grille-ami').innerHTML = '<div class="vide">' + T('L\'horaire ne se charge pas. Réessaie dans une minute.', 'The schedule is not loading. Try again in a minute.') + '</div>'; return; }
+    etat.grille = d.jours || [];
+    rendreGrille();
+  };
+  if (!SCRIPT_URL) { setTimeout(function(){ fini({ ok: true, jours: [] }); }, 300); return; }
+  fetch(SCRIPT_URL + '?action=grille_ami&de=' + cle + '&n=' + AMI.grillePas + '&code=' + encodeURIComponent(AMI.saisi) + '&_=' + Date.now(),
+        { method: 'GET', redirect: 'follow' })
+    .then(function(r){ return r.json(); }).then(fini)
+    .catch(function(){ fini(null); });
+}
+function rendreGrille() {
+  var j = etat.grille || [];
+  if (!j.length) { $('grille-ami').innerHTML = ''; $('gr-titre').textContent = ''; return; }
+  var prem = j[0].d.split('-').map(Number), der = j[j.length - 1].d.split('-').map(Number);
+  var d1 = new Date(prem[0], prem[1] - 1, prem[2]), d2 = new Date(der[0], der[1] - 1, der[2]);
+  var opt = { day: 'numeric', month: 'long' }, loc = currentLang === 'en' ? 'en-CA' : 'fr-CA';
+  $('gr-titre').textContent = d1.toLocaleDateString(loc, opt) + ' – ' + d2.toLocaleDateString(loc, opt);
+  $('gr-prec').disabled = etat.grOffset <= 0;
+  $('gr-suiv').disabled = etat.grOffset + AMI.grillePas >= AMI.horizonJours;
+
+  var html = '<div class="gr-entete"><span></span>' +
+    AMI.zones.map(function(z){ return '<span>' + T(z.fr, z.en) + '<br>' + z.de + '–' + z.a + '</span>'; }).join('') + '</div>';
+  html += j.map(function(l) {
+    var p = l.d.split('-').map(Number), dd = new Date(p[0], p[1] - 1, p[2]);
+    var jour = dd.toLocaleDateString(loc, { weekday: 'short' }) + '<br><b>' + dd.getDate() + '</b>';
+    var cases = AMI.zones.map(function(z) {
+      var e = (l.z && l.z[z.id]) || 'dur';
+      var pris = etat.jour === l.d && etat.zonesAmi.indexOf(z.id) >= 0;
+      var cliquable = (e === 'libre' || e === 'mou');
+      return '<button type="button" class="gr-case ' + e + (pris ? ' choisi' : '') + '"' +
+        (cliquable ? ' data-j="' + l.d + '" data-z="' + z.id + '"' : ' disabled') +
+        ' aria-label="' + T(z.fr, z.en) + ' ' + dd.getDate() + ' : ' + libEtat(e) + '"></button>';
+    }).join('');
+    return '<div class="gr-ligne"><div class="gr-jour">' + jour + '</div>' + cases + '</div>';
   }).join('');
-  $('zones-ami').querySelectorAll('.zone').forEach(function(b) {
-    b.addEventListener('click', function() { basculerZone(b.getAttribute('data-z')); });
+  $('grille-ami').innerHTML = html;
+  $('grille-ami').querySelectorAll('.gr-case[data-j]').forEach(function(b) {
+    b.addEventListener('click', function() { toucherCase(b.getAttribute('data-j'), b.getAttribute('data-z')); });
   });
+  majAideZones();
+}
+function libEtat(e) {
+  return { libre: T('libre', 'free'), mou: T('pris, mais arrangeable', 'taken but workable'),
+           dur: T('pas possible', 'not possible'), passe: T('passé', 'past') }[e] || e;
+}
+/** Une case touchée : le jour se fixe, la zone se coche. Changer de jour repart à zéro. */
+function toucherCase(jour, zone) {
+  if (etat.jour !== jour) { etat.jour = jour; etat.zonesAmi = []; }
+  var i = etat.zonesAmi.indexOf(zone);
+  if (i >= 0) etat.zonesAmi.splice(i, 1); else etat.zonesAmi.push(zone);
+  etat.dureeAmi = null;                       // les deux modes s'excluent
+  $('bloc-fin-ami').hidden = true;
+  if (!etat.zonesAmi.length) { etat.jour = null; etat.heure = null; }
+  rendreGrille(); rendreDureesAmi(); majTotalAmi();
+  if (etat.zonesAmi.length) {
+    var o = AMI.zones.filter(function(z){ return etat.zonesAmi.indexOf(z.id) >= 0; });
+    etat.heure = o[0].de.replace(' h 30', ':30').replace(' h', ':00');
+    rendreRecap(); allerPas(4);
+  } else { allerPas(1); }
+}
+function majAideZones() {
   var n = etat.zonesAmi.length, aide = $('aide-zones');
   if (!n) {
-    aide.textContent = T('Une zone se prend au complet. Tu peux en cocher plusieurs.',
-                         'A zone is taken in full. You can tick more than one.');
+    aide.textContent = T('Touche un bout de journée dans la grille. Il se prend au complet, et tu peux en prendre plusieurs le même jour.',
+                         'Tap a part of a day in the grid. It is taken in full, and you can take more than one on the same day.');
   } else {
     var ordonnees = AMI.zones.filter(function(z){ return etat.zonesAmi.indexOf(z.id) >= 0; });
     var quoi = n === 3 ? T('Toute la journée', 'The whole day')
@@ -681,17 +777,6 @@ function zonesContigues() {
   var rangs = AMI.zones.map(function(z, i){ return etat.zonesAmi.indexOf(z.id) >= 0 ? i : -1; })
                        .filter(function(i){ return i >= 0; });
   return rangs.length < 2 || (rangs[rangs.length - 1] - rangs[0] + 1) === rangs.length;
-}
-function basculerZone(id) {
-  var i = etat.zonesAmi.indexOf(id);
-  if (i >= 0) etat.zonesAmi.splice(i, 1); else etat.zonesAmi.push(id);
-  // Les deux modes s'excluent : une zone efface la durée.
-  etat.dureeAmi = null;
-  $('bloc-fin-ami').hidden = true;
-  etat.jour = null; etat.heure = null; etat.dispo = {};
-  rendreZonesAmi(); rendreDureesAmi(); majTotalAmi();
-  if (etat.zonesAmi.length) { allerPas(2); chargerDispo(); }
-  else { $('jours').innerHTML = ''; allerPas(1); }
 }
 function majTotalAmi() {
   if (etat.zonesAmi.length) {
@@ -925,7 +1010,7 @@ function rendreRecap() {
     '<br>' + T('Total : ', 'Total: ') + '<b>' + prixTotal() + ' $</b> + tx · ' + T('Waterville, adresse envoyée après confirmation.', 'Waterville, address sent after confirmation.');
 }
 function rendreTout() {
-  if (etat.ami) { rendreZonesAmi(); rendreDureesAmi(); }
+  if (etat.ami) { rendreGrille(); rendreDureesAmi(); }
   else { rendreSoins(); rendrePersonnes(); rendreBeneficiaires(); }
   if (Object.keys(etat.dispo).length) { rendreSuggestions(); rendreJours(); } if (etat.jour) rendreHeures(); if (etat.heure) rendreRecap();
 }
@@ -1028,6 +1113,14 @@ function quitterAmi(viderLeChamp) {
   basculerAmi(false);
 }
 $('btn-quitter-ami').addEventListener('click', function() { quitterAmi(true); });
+$('gr-prec').addEventListener('click', function() {
+  etat.grOffset = Math.max(0, etat.grOffset - AMI.grillePas);
+  chargerGrille();
+});
+$('gr-suiv').addEventListener('click', function() {
+  etat.grOffset = Math.min(AMI.horizonJours - AMI.grillePas, etat.grOffset + AMI.grillePas);
+  chargerGrille();
+});
 $('btn-plus-long').addEventListener('click', function() {
   $('durees-longues').hidden = false;
   this.hidden = true;
