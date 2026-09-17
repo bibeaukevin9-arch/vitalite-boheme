@@ -225,7 +225,7 @@
        gardait ses 28 px de marge et chaque case de jour tombait à 32 px de
        large. Sur un écran de 375 px, le doigt visait 32 px pour choisir son
        jour — c'est la toute première chose qu'on touche sur cette page.
-    /* ─── Parcours ami (2026-09-17) ───────────────────────────────────
+    /* ─── Réservation de temps (2026-09-17) ───────────────────────────
        Aucune couleur neuve, aucune forme neuve : les durées et les bouts de journée
        empruntent la robe des boutons d'heure, déjà définie plus haut. Ce bloc ne pose
        que les étiquettes de section et la grille, pour que l'écran garde exactement
@@ -238,6 +238,9 @@
     .periodes { grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); }
     /* 12 px de haut plutôt que 10 : mesuré à 41 px sur un 375, sous la norme tactile de 44. */
     .periodes .heure { font-size: 15px; font-family: inherit; letter-spacing: .3px; padding: 12px 6px; }
+    /* Le champ de code vit hors des cartes, pour rester atteignable quel que soit l'écran
+       affiché. Il s'aligne sur elles et garde le même retrait latéral. */
+    .zone-code.hors-carte { margin: -6px 0 22px; padding: 0 26px; }
     #bloc-fin-ami .champ { max-width: 180px; }
     #bloc-fin-ami input { font: inherit; font-size: 16px; padding: 10px 12px;
       border: 1px solid rgba(201,162,39,.35); border-radius: 2px; background: transparent; color: var(--texte); }
@@ -308,31 +311,31 @@
     <div class="personnes" id="personnes"></div>
     <button type="button" class="lien-bouton" id="btn-ajouter" hidden><span data-fr>+ Ajouter une personne</span><span data-en>+ Add a person</span></button>
     <p class="total" id="total"></p>
-
-    <!-- Le code des amis. ⚠️ Il lui faut sa propre porte, ICI et pas à l'étape IV : c'est lui qui
-         décide de tout le reste, et un ami ne doit pas choisir un soin avant de l'avoir tapé.
-         Le pli du bas (« J'ai un code ») reste intact pour les codes promo — et reste replié,
-         pour la raison écrite plus bas : une case ouverte fait douter celui qui n'a pas de code. -->
-    <div class="zone-code" id="zone-code-ami">
-      <button type="button" class="pli" id="pli-ami" aria-expanded="false" aria-controls="champ-ami">
-        <svg id="pli-ami-chev" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 L6 7.5 L9 4.5"></path></svg>
-        <span data-fr>Kevin t'a donné un code ?</span><span data-en>Kevin gave you a code?</span>
-      </button>
-      <div class="champ large" id="champ-ami" hidden>
-        <label for="code-ami"><span data-fr>Ton code</span><span data-en>Your code</span></label>
-        <input id="code-ami" autocomplete="off" autocapitalize="characters" placeholder="AMI000">
-        <div class="aide" id="aide-code-ami"><span data-fr>Celui qu'il t'a dit de vive voix.</span><span data-en>The one he told you in person.</span></div>
-      </div>
-    </div>
   </section>
 
-  <!-- ─────────────────────────────────────────────────────────────────────────
-       LE PARCOURS AMI. Il remplace le choix du soin, il ne s'y ajoute pas.
-       Kevin, 2026-09-16 : « quand le code ami apparaît, les soins ne font plus partie du jeu,
-       ce n'est pas un massage, c'est du temps de connexion ». Donc aucun prix nulle part,
-       aucun questionnaire de santé, et la durée se compte en heures ou en jours.
-       La durée et le bout de journée vivent sur le MÊME écran (demande du 2026-09-17).
-       ───────────────────────────────────────────────────────────────────────── -->
+  <!-- ─── LE CHAMP DE CODE, REPLIÉ ───
+       Déplacé de l'étape IV à ici le 2026-09-17, à la demande de Kevin. Trois raisons :
+       un code peut décider de tout le reste, il ne peut donc plus être demandé en dernier ;
+       il n'y a qu'UNE seule porte pour tous les codes ; et il vit HORS des cartes, sinon il
+       disparaîtrait avec la carte des soins dès qu'un code fait basculer la page — plus moyen
+       alors de corriger une faute de frappe.
+       ⛔ Le libellé reste « J'ai un code », neutre, et ne dit rien de ce qu'un code peut ouvrir.
+       ⛔ Et il reste REPLIÉ : une case de code ouverte fait douter celui qui n'en a pas — il se
+       croit en train de payer trop cher, et une partie de ces gens-là quittent la page. -->
+  <div class="zone-code hors-carte">
+    <button type="button" class="pli" id="pli" aria-expanded="false" aria-controls="champ-promo">
+      <svg id="pli-chev" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 L6 7.5 L9 4.5"></path></svg>
+      <span data-fr>J'ai un code</span><span data-en>I have a code</span>
+    </button>
+    <div class="champ large" id="champ-promo" hidden>
+      <label for="promo"><span data-fr>Code promo</span><span data-en>Promo code</span></label>
+      <input id="promo" name="promo" autocomplete="off" autocapitalize="characters" placeholder="819 000-0000">
+      <div class="aide"><span data-fr>Un seul code. Le numéro de la personne qui t'a parlé de nous en est un.</span><span data-en>One code only. The number of whoever told you about us counts as one.</span></div>
+    </div>
+  </div>
+
+  <!-- Écran de réservation de temps. Il remplace le choix du soin, il ne s'y ajoute pas.
+       La durée et le bout de journée vivent sur le même écran. -->
   <section class="carte" id="c-ami" hidden>
     <button type="button" class="retour-etape" id="btn-quitter-ami"><span data-fr>← Revenir aux soins</span><span data-en>← Back to treatments</span></button>
     <h2 data-num="I" data-fr>Du temps ensemble</h2>
@@ -431,26 +434,16 @@
            ne pouvait envoyer le questionnaire de santé à personne. Voir article 9.1.1 du RMPQ. -->
       <div id="beneficiaires"></div>
 
-      <!-- La boîte « on fait quoi », en mode ami seulement. ⛔ Une boîte à ÉCRIRE, jamais des
-           cases à cocher (Kevin, 2026-09-17). Ce qu'ils écrivent arrive tel quel dans son
-           courriel et dans l'événement — dans leurs mots, pas dans les nôtres. -->
+      <!-- ⛔ Une boîte à ÉCRIRE, jamais des cases à cocher. Ce qui est écrit arrive tel quel,
+           dans les mots de la personne. -->
       <div class="champ large" id="bloc-envie" hidden>
         <label for="envie"><span data-fr>On fait quoi ? (facultatif)</span><span data-en>What are we doing? (optional)</span></label>
         <textarea id="envie" name="envie" rows="3" maxlength="500"></textarea>
         <div class="aide"><span data-fr>Écris ce qui te tente. Kevin le lit avant de répondre.</span><span data-en>Write what you feel like. Kevin reads it before answering.</span></div>
       </div>
 
-      <div class="zone-code">
-        <button type="button" class="pli" id="pli" aria-expanded="false" aria-controls="champ-promo">
-          <svg id="pli-chev" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 L6 7.5 L9 4.5"></path></svg>
-          <span data-fr>J'ai un code</span><span data-en>I have a code</span>
-        </button>
-        <div class="champ large" id="champ-promo" hidden>
-          <label for="promo"><span data-fr>Code promo</span><span data-en>Promo code</span></label>
-          <input id="promo" name="promo" autocomplete="off" autocapitalize="characters" placeholder="819 000-0000">
-          <div class="aide"><span data-fr>Un seul code. Le numéro de la personne qui t'a parlé de nous en est un.</span><span data-en>One code only. The number of whoever told you about us counts as one.</span></div>
-        </div>
-      </div>
+      <!-- Le champ de code a déménagé à l'étape I le 2026-09-17 : un code peut décider de tout
+           le reste, il ne peut donc plus être demandé en dernier. -->
       <div class="recap" id="recap"></div>
       <div class="politique">
         <span data-fr>Un préavis de 24 h est demandé pour annuler ou déplacer. À moins de 24 h ou en cas d'absence, des frais pouvant aller jusqu'à 50 $ par plage peuvent être réclamés, selon la perte subie. Tes coordonnées servent à ce rendez-vous et à ton dossier client, rien d'autre : <a href="confidentialite.html" target="_blank" rel="noopener">politique de confidentialité</a>.</span>
@@ -534,19 +527,16 @@ function dureeTotale() {
 function prixTotal() { return etat.personnes.reduce(function(a, s){ return a + s.prix; }, 0); }
 function soinParId(id) { return SOINS.filter(function(s){ return s.id === id; })[0]; }
 
-/* ═══════════════════════════════════════════════════════════════════
-   PARCOURS AMI
-   ═══════════════════════════════════════════════════════════════════
-   Le code fait disparaître les soins et le prix. Kevin, 2026-09-16 : « quand le code ami
-   apparaît, les soins ne font plus partie du jeu, ce n'est pas un massage, c'est du temps
-   de connexion ». À partir de là, deux choses seulement : combien de temps, et quand — sur
-   le même écran (demande du 2026-09-17).
-   ⛔ Le code n'est PAS vérifié ici : le serveur seul décide. Le formulaire bascule sur la
-      forme du code, et une erreur de frappe revient du serveur comme n'importe quelle autre.  */
+/* ─── Réservation de temps ───
+   ⛔ Cette page est publique : son code source se lit d'un clic droit. Le code d'accès n'y est
+   donc écrit NULLE PART — seule son empreinte SHA-256 l'est, et une empreinte ne se remonte pas.
+   Le serveur, lui, reçoit ce que la personne a tapé et reste seul juge.
+   Ne jamais réintroduire le code en clair ici, ni dans un commentaire. */
 var AMI = {
-  code: 'AMI284',
-  dureesCourtes: [60, 120, 180, 240, 360, 720],          // 1, 2, 3, 4, 6, 12 h
-  dureesLongues: [1440, 2880, 4320, 5760, 7200, 8640, 10080],  // 24 h, puis 2 à 7 jours
+  empreinte: '1ffd41070a00500e8637c82a74219c8e2c876a660a09e522959cdc3244374f90',
+  saisi: '',
+  dureesCourtes: [60, 120, 180, 240, 360, 720],
+  dureesLongues: [1440, 2880, 4320, 5760, 7200, 8640, 10080],
   periodes: [
     { id: 'matin', fr: 'Avant-midi', en: 'Morning' },
     { id: 'apresmidi', fr: 'Après-midi', en: 'Afternoon' },
@@ -554,6 +544,12 @@ var AMI = {
   ],
   horizonJours: 120
 };
+function empreinteDe(t) {
+  if (!window.crypto || !crypto.subtle) return Promise.resolve('');
+  return crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)).then(function (b) {
+    return [].map.call(new Uint8Array(b), function (x) { return x.toString(16).padStart(2, '0'); }).join('');
+  });
+}
 function libDureeAmi(min) {
   if (!min) return '';
   if (min < 1440) return (min / 60) + ' h';
@@ -678,7 +674,7 @@ function libDuree(m) { var h = Math.floor(m / 60), r = m % 60; return h ? (h + '
 function allerPas(n) {
   document.querySelectorAll('#pas span[data-pas]').forEach(function(s) { var k = +s.getAttribute('data-pas'); s.classList.toggle('actif', k === n); s.classList.toggle('fait', k < n); });
   $('c-jour').hidden = n < 2; $('c-heure').hidden = n < 3; $('c-toi').hidden = n < 4; $('c-fin').hidden = true;
-  // En mode ami, l'étape I est la carte du temps, pas celle des soins — les deux ne coexistent jamais.
+  // L'étape I est alors la carte du temps, pas celle des soins — les deux ne coexistent jamais.
   if (etat.ami) { $('c-soin').hidden = true; $('c-ami').hidden = false; }
   var cible = { 2: 'c-jour', 3: 'c-heure', 4: 'c-toi' }[n];
   if (cible) setTimeout(function(){ $(cible).scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
@@ -701,10 +697,9 @@ function chargerDispo() {
     etat.dispo = data.dispo || {}; etat.ouverts = data.ouverts || []; etat.colles = data.colles || {}; etat.semaine = premiereSemaineLibre(); etat.mois = 0; rendreSuggestions(); rendreJours();
   };
   if (!SCRIPT_URL) { setTimeout(function(){ fini(dispoDemo(duree)); }, 500); return; }
-  // Le parcours ami interroge une autre porte : pas de fenêtre horaire, pas de délai, le spa
-  // n'empêche rien. Le bout de journée n'est qu'un filtre passé au serveur.
+  // Deux portes distinctes côté serveur. Le bout de journée n'est qu'un filtre transmis.
   var url = etat.ami
-    ? SCRIPT_URL + '?action=dispo_ami&duree=' + duree + '&pe=' + encodeURIComponent(etat.periodeAmi || '') + '&code=' + encodeURIComponent(AMI.code) + '&_=' + Date.now()
+    ? SCRIPT_URL + '?action=dispo_ami&duree=' + duree + '&pe=' + encodeURIComponent(etat.periodeAmi || '') + '&code=' + encodeURIComponent(AMI.saisi) + '&_=' + Date.now()
     : SCRIPT_URL + '?action=dispo&duree=' + duree + '&jours=' + REGLES.horizonJours + '&_=' + Date.now();
   fetch(url, { method: 'GET', redirect: 'follow' }).then(function(r){ return r.json(); }).then(fini).catch(function(){ etat.chargement = false; $('attente-jours').hidden = true; montrerErreurJours(); });
 }
@@ -893,7 +888,8 @@ $('pourqui').addEventListener('change', function(){
 /* ─── LE CHAMP DE CODE, REPLIÉ ───
    Une case « code promo » ouverte fait douter celui qui n'en a pas : il se croit en train de
    payer trop cher, et une partie de ces gens-là quittent pour aller chercher un code ailleurs.
-   Repliée derrière un lien, elle reste à un clic pour ceux qui en ont un. */
+   Repliée derrière un lien, elle reste à un clic pour ceux qui en ont un.
+   ⛔ Une SEULE porte pour tous les codes, et un libellé neutre. */
 $('pli').addEventListener('click', function() {
   var ferme = $('champ-promo').hidden;
   $('champ-promo').hidden = !ferme;
@@ -901,30 +897,22 @@ $('pli').addEventListener('click', function() {
   this.setAttribute('aria-expanded', ferme ? 'true' : 'false');
   if (ferme) $('promo').focus();
 });
-
-/* ─── LA PORTE DES AMIS ───
-   Même logique de pli, en haut cette fois : le code décide de tout le reste, donc il doit se
-   taper avant le choix du temps. Il reste replié pour la même raison que le pli du bas. */
-$('pli-ami').addEventListener('click', function() {
-  var ferme = $('champ-ami').hidden;
-  $('champ-ami').hidden = !ferme;
-  this.classList.toggle('ouvert', ferme);
-  this.setAttribute('aria-expanded', ferme ? 'true' : 'false');
-  if (ferme) $('code-ami').focus();
-});
-/* La bascule se fait sur la frappe, sans bouton « valider » : un geste de moins.
-   ⛔ Le code n'est pas une preuve — le serveur seul décide. Ici on ne fait que changer d'écran. */
-$('code-ami').addEventListener('input', function() {
+/* La bascule se fait sur la frappe, sans bouton « valider » : un geste de moins. Tout autre code
+   (bienvenue, parrainage, numéro de téléphone) traverse ce champ sans rien changer à l'écran et
+   part au serveur comme avant — lui seul décide de ce qu'il vaut. */
+$('promo').addEventListener('input', function() {
   var v = this.value.trim().toUpperCase().replace(/\s+/g, '');
-  if (v === AMI.code && !etat.ami) { basculerAmi(true); }
+  empreinteDe(v).then(function (e) {
+    var correspond = e === AMI.empreinte;
+    if (correspond && !etat.ami) { AMI.saisi = v; basculerAmi(true); }
+    else if (!correspond && etat.ami) { AMI.saisi = ''; quitterAmi(false); }
+  });
 });
-$('btn-quitter-ami').addEventListener('click', function() {
-  $('code-ami').value = '';
+function quitterAmi(viderLeChamp) {
+  if (viderLeChamp) $('promo').value = '';
   basculerAmi(false);
-  $('champ-ami').hidden = true;
-  $('pli-ami').classList.remove('ouvert');
-  $('pli-ami').setAttribute('aria-expanded', 'false');
-});
+}
+$('btn-quitter-ami').addEventListener('click', function() { quitterAmi(true); });
 $('btn-plus-long').addEventListener('click', function() {
   $('durees-longues').hidden = false;
   this.hidden = true;
@@ -940,8 +928,8 @@ $('btn-retour').addEventListener('click', function(){ allerPas(3); });
 $('form').addEventListener('submit', function(e) {
   e.preventDefault();
   var f = e.target, err = $('erreur-envoi'); err.hidden = true;
-  // Un ami donne trois choses : son prénom, son courriel, son numéro. Son nom de famille, Kevin
-  // l'a déjà — le redemander serait de la collecte pour rien.
+  // Trois champs suffisent ici : prénom, courriel, numéro. Redemander ce qu'on détient déjà
+  // serait de la collecte pour rien (loi 25).
   var requis = etat.ami ? ['prenom', 'courriel', 'tel'] : ['prenom', 'nom', 'courriel', 'tel'];
   var manque = requis.filter(function(id){ return !$(id).value.trim(); });
   if (manque.length) { err.hidden = false; err.textContent = etat.ami
@@ -973,10 +961,9 @@ $('form').addEventListener('submit', function(e) {
     infolettre: $('infolettre').checked,
     beneficiaires: benefs
   };
-  // Le parcours ami porte sa durée et son envie, jamais un soin ni un prix. Le code passe par le
-  // même champ `promo` : c'est lui qui, côté serveur, fait basculer toute la demande.
+  // Ce parcours porte sa durée, jamais un soin. Le code passe par le même champ `promo`.
   if (etat.ami) {
-    demande.promo = AMI.code;
+    demande.promo = AMI.saisi;
     demande.duree = dureeTotale();
     demande.envie = $('envie').value.trim();
     if (dureeTotale() >= 1440) demande.fin_heure = $('fin-heure-ami').value || '11:00';
