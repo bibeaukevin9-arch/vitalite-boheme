@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Vitalité Bohème</title>
+<!--
+  LE PONT — pourquoi cette page existe.
+
+  Les courriels du système de réservation portaient des liens vers script.google.com.
+  Ce domaine sert beaucoup à l'hameçonnage, et les filtres de Microsoft (hotmail, outlook)
+  s'en méfient au point de jeter le message sans un mot : ni réception, ni indésirables,
+  ni rebond. Mesuré le 2026-09-17 : Vincent Labrecque n'a rien reçu du tout, alors que
+  l'envoi avait bien fonctionné et qu'aucun retour d'échec n'est revenu.
+
+  Cette page-ci porte le domaine de Kevin. Elle ne fait rien d'autre que reconduire la
+  personne vers le programme, en gardant la requête telle quelle.
+
+  ⛔ LA REDIRECTION EST EN JAVASCRIPT, VOLONTAIREMENT — jamais un meta refresh.
+     Outlook « Safe Links » ouvre les liens d'un courriel AVANT que la personne clique.
+     Un meta refresh serait suivi par ce robot, et il déclencherait l'action à sa place :
+     un rendez-vous annulé sans que personne l'ait voulu. Un robot n'exécute pas le
+     JavaScript ; une personne, oui.
+-->
+<style>
+  :root{ --or:#c9a227; --noir:#14100d; --creme:#f2ebe2; --texte:#3a2e28; --gris:#7a6a58; }
+  *{ box-sizing:border-box }
+  body{ margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+        background:var(--creme); color:var(--texte); padding:24px;
+        font-family:'Segoe UI',system-ui,-apple-system,sans-serif; }
+  .boite{ max-width:380px; text-align:center }
+  h1{ font-family:Georgia,'Times New Roman',serif; font-weight:400; font-size:27px;
+      margin:0 0 10px; color:var(--noir) }
+  p{ margin:0 0 22px; color:var(--gris); font-size:15px; line-height:1.6 }
+  a{ display:inline-block; text-decoration:none; border:1px solid var(--or); border-radius:2px;
+     padding:12px 26px; color:var(--noir); font-size:14px; letter-spacing:2px;
+     text-transform:uppercase; font-family:Georgia,serif }
+  a:hover{ background:var(--noir); color:var(--or); border-color:var(--noir) }
+  .pt{ display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--or);
+       margin:0 3px; animation:b 1.2s infinite ease-in-out }
+  .pt:nth-child(2){ animation-delay:.15s } .pt:nth-child(3){ animation-delay:.3s }
+  @keyframes b{ 0%,80%,100%{ opacity:.25 } 40%{ opacity:1 } }
+  @media (prefers-reduced-motion:reduce){ .pt{ animation:none; opacity:.6 } }
+</style>
+</head>
+<body>
+  <div class="boite">
+    <h1>Vitalité Bohème</h1>
+    <p id="dit"><span class="pt"></span><span class="pt"></span><span class="pt"></span><br>
+      Un instant, on t'amène à la bonne page.</p>
+    <a id="suite" href="#">Continuer</a>
+  </div>
+<script>
+(function () {
+  // Même adresse que celle de reserver.html. Si elle change là-bas, elle change ici.
+  var PROGRAMME = 'https://script.google.com/macros/s/AKfycby217WbbU_K_cAUy9L1H96Yseh376VTAyT8eYxd2dCNl8Gw6pMmQEO8pi2P0rud6FLG/exec';
+  var q = window.location.search || '';
+
+  // Sans requête, il n'y a rien à reconduire : on renvoie à la réservation.
+  var vers = q.length > 1 ? PROGRAMME + q : 'https://vitaliteboheme.ca/reserver.html';
+
+  var lien = document.getElementById('suite');
+  lien.setAttribute('href', vers);
+
+  // `replace` plutôt que `href` : le bouton « précédent » ne ramène pas sur ce pont,
+  // sinon on repart en boucle vers le programme.
+  setTimeout(function () { window.location.replace(vers); }, 60);
+
+  // Si la redirection est bloquée, la phrase doit cesser de promettre.
+  setTimeout(function () {
+    var d = document.getElementById('dit');
+    if (d) d.textContent = 'Touche « Continuer » pour poursuivre.';
+  }, 2500);
+}());
+</script>
+</body>
+</html>
