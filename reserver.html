@@ -235,11 +235,18 @@
     .etiq-ami { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--or);
       margin: 22px 0 8px; }
     .aide-ami { font-size: 11px; color: var(--gris); margin: 8px 0 0; line-height: 1.4; }
-    .durees, .periodes { display: grid; gap: 8px; }
+    .durees, .zones { display: grid; gap: 8px; }
     .durees { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); }
-    .periodes { grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); }
-    /* 12 px de haut plutôt que 10 : mesuré à 41 px sur un 375, sous la norme tactile de 44. */
-    .periodes .heure { font-size: 15px; font-family: inherit; letter-spacing: .3px; padding: 12px 6px; }
+    /* Les zones sont plus larges que les durées : elles portent leur nom ET leurs bornes, parce
+       qu'on réserve le bloc en entier — il faut voir de quand à quand avant de cocher. */
+    .zones { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+    .zone { background: transparent; border: 1px solid rgba(201,162,39,.35); border-radius: 2px;
+      padding: 12px 10px; cursor: pointer; font: inherit; color: var(--texte); text-align: center;
+      transition: all .15s; display: flex; flex-direction: column; gap: 3px; }
+    .zone .zn { font-size: 15px; }
+    .zone .zh { font-size: 11px; color: var(--gris); letter-spacing: .5px; font-variant-numeric: tabular-nums; }
+    .zone.choisi { background: var(--noir); border-color: var(--noir); color: var(--or); }
+    .zone.choisi .zh { color: var(--or-doux); }
     /* Le champ de code vit hors des cartes, pour rester atteignable quel que soit l'écran
        affiché. Il s'aligne sur elles et garde le même retrait latéral. */
     /* Le bandeau du code : hors des cartes, au-dessus de tout, et ouvert.
@@ -354,21 +361,23 @@
     <button type="button" class="retour-etape" id="btn-quitter-ami"><span data-fr>← Revenir aux soins</span><span data-en>← Back to treatments</span></button>
     <h2 data-num="I" data-fr>Du temps ensemble</h2>
     <h2 data-num="I" data-en>Time together</h2>
-    <p class="sous" data-fr>Pas un massage : un moment. L'heure que tu choisiras sera l'heure où ça commence.</p>
-    <p class="sous" data-en>Not a massage: a moment. The time you pick is when it starts.</p>
+    <p class="sous" data-fr>Pas un massage : un moment. Prends un bout de journée, ou dis-moi combien de temps.</p>
+    <p class="sous" data-en>Not a massage: a moment. Take a part of the day, or tell me how long.</p>
 
-    <p class="etiq-ami" data-fr>Combien de temps</p>
-    <p class="etiq-ami" data-en>How long</p>
-    <div class="durees" id="durees-ami"></div>
-    <button type="button" class="lien-bouton" id="btn-plus-long"><span data-fr>+ Plus longtemps</span><span data-en>+ Longer</span></button>
-    <div class="durees" id="durees-longues" hidden></div>
+    <!-- ⭐ LES ZONES. Une zone se prend EN ENTIER, du début à la fin — ce n'est ni un filtre ni
+         une heure de départ. Plusieurs zones se cumulent, et les trois font la journée.
+         ⛔ Deux versions « à partir de » ont été codées et refusées avant celle-ci. -->
+    <p class="etiq-ami" data-fr>Quel bout de journée</p>
+    <p class="etiq-ami" data-en>Which part of the day</p>
+    <div class="zones" id="zones-ami"></div>
+    <p class="aide-ami" id="aide-zones"></p>
 
-    <div id="bloc-periode" hidden>
-      <p class="etiq-ami" data-fr>À partir de</p>
-      <p class="etiq-ami" data-en>Starting</p>
-      <div class="periodes" id="periodes-ami"></div>
-      <p class="aide-ami" data-fr>Un raccourci pour filtrer les heures. Tu peux ne rien choisir et les voir toutes.</p>
-      <p class="aide-ami" data-en>A shortcut to filter the times. Leave it blank to see them all.</p>
+    <div id="bloc-duree">
+      <p class="etiq-ami" data-fr>Ou alors, combien de temps</p>
+      <p class="etiq-ami" data-en>Or else, how long</p>
+      <div class="durees" id="durees-ami"></div>
+      <button type="button" class="lien-bouton" id="btn-plus-long"><span data-fr>+ Plus longtemps</span><span data-en>+ Longer</span></button>
+      <div class="durees" id="durees-longues" hidden></div>
     </div>
 
     <div id="bloc-fin-ami" hidden>
@@ -530,11 +539,11 @@ function T(fr, en) { return currentLang === 'en' ? en : fr; }
 
 /* ─── ÉTAT ─── */
 var etat = { personnes: [], jour: null, heure: null, dispo: {}, ouverts: [], colles: {}, semaine: 0, chargement: false, vueMois: false, mois: 0,
-  ami: false, dureeAmi: null, periodeAmi: '' };
+  ami: false, dureeAmi: null, zonesAmi: [] };
 var $ = function(id) { return document.getElementById(id); };
 
 function dureeTotale() {
-  if (etat.ami) return etat.dureeAmi || 0;
+  if (etat.ami) return etat.zonesAmi.length ? dureeDesZones() : (etat.dureeAmi || 0);
   var n = etat.personnes.length; if (!n) return 0;
   return etat.personnes.reduce(function(a, s){ return a + s.min; }, 0) + REGLES.tamponGroupeMin * (n - 1);
 }
@@ -551,10 +560,13 @@ var AMI = {
   saisi: '',
   dureesCourtes: [60, 120, 180, 240, 360, 720],
   dureesLongues: [1440, 2880, 4320, 5760, 7200, 8640, 10080],
-  periodes: [
-    { id: 'matin', fr: 'Avant-midi', en: 'Morning' },
-    { id: 'apresmidi', fr: 'Après-midi', en: 'Afternoon' },
-    { id: 'soiree', fr: 'Soirée', en: 'Evening' }
+  // ⭐ Les zones. Une zone se réserve EN ENTIER. Plusieurs se cumulent : du début de la première
+  // à la fin de la dernière. Les trois font la journée. Les bornes doivent rester identiques à
+  // celles de CONFIG.AMI.ZONES dans le programme, sinon l'écran et le serveur se contredisent.
+  zones: [
+    { id: 'matin',     de: '6 h 30', a: '12 h', fr: 'Avant-midi', en: 'Morning' },
+    { id: 'apresmidi', de: '12 h',   a: '17 h', fr: 'Après-midi', en: 'Afternoon' },
+    { id: 'soiree',    de: '17 h',   a: '23 h', fr: 'Soirée',     en: 'Evening' }
   ],
   horizonJours: 120
 };
@@ -570,17 +582,32 @@ function libDureeAmi(min) {
   var j = Math.round(min / 1440);
   return j === 1 ? '24 h' : j + T(' jours', ' days');
 }
+/** Combien de minutes couvrent les zones cochées : du début de la première à la fin de la dernière. */
+function enMinutes(h) { var p = String(h).replace(' h', ':').replace(/\s/g, '').split(':'); return (+p[0]) * 60 + (+(p[1] || 0)); }
+function dureeDesZones() {
+  var o = AMI.zones.filter(function(z){ return etat.zonesAmi.indexOf(z.id) >= 0; });
+  if (!o.length) return 0;
+  return enMinutes(o[o.length - 1].a) - enMinutes(o[0].de);
+}
+/** « Toute la journée », ou « Après-midi + Soirée · 12 h – 23 h ». */
+function libZonesEcran() {
+  var o = AMI.zones.filter(function(z){ return etat.zonesAmi.indexOf(z.id) >= 0; });
+  if (!o.length) return '';
+  var quoi = o.length === 3 ? T('Toute la journée', 'The whole day')
+             : o.map(function(z){ return T(z.fr, z.en); }).join(' + ');
+  return quoi + ' · ' + o[0].de + ' – ' + o[o.length - 1].a;
+}
 /** Entre et sort du mode ami. Tout ce qui appartient à l'autre parcours est remis à zéro. */
 function basculerAmi(actif) {
   etat.ami = actif;
   etat.personnes = []; etat.jour = null; etat.heure = null; etat.dispo = {}; etat.ouverts = []; etat.colles = {};
-  etat.dureeAmi = null; etat.periodeAmi = '';
+  etat.dureeAmi = null; etat.zonesAmi = [];
   $('c-soin').hidden = actif;
   $('c-ami').hidden = !actif;
   $('bloc-envie').hidden = !actif;
   $('durees-longues').hidden = true;
   $('btn-plus-long').hidden = false;
-  $('bloc-periode').hidden = true;
+  $('bloc-duree').hidden = false;
   $('bloc-fin-ami').hidden = true;
   $('total-ami').textContent = '';
   // L'étape « Soin » devient « Temps » : c'est ce qu'on y choisit maintenant.
@@ -596,7 +623,7 @@ function basculerAmi(actif) {
   if (retourJour) retourJour.innerHTML = actif
     ? '<span data-fr>← Changer de durée</span><span data-en>← Change duration</span>'
     : '<span data-fr>← Changer de soin</span><span data-en>← Change treatment</span>';
-  if (actif) { rendreDureesAmi(); rendrePeriodesAmi(); }
+  if (actif) { rendreZonesAmi(); rendreDureesAmi(); }
   applyLang(currentLang);   // les libellés qu'on vient d'injecter portent data-fr / data-en
   allerPas(1);
   $('c-ami').hidden = !actif;
@@ -615,29 +642,70 @@ function rendreDureesAmi() {
   faire(AMI.dureesLongues, 'durees-longues');
 }
 function choisirDureeAmi(min) {
-  etat.dureeAmi = min; etat.jour = null; etat.heure = null; etat.dispo = {};
-  // Au-delà de 24 h, le bout de journée n'a plus de sens — l'heure touchée devient l'heure
-  // d'ARRIVÉE, et c'est l'heure de départ du dernier jour qu'il faut demander à la place.
-  var enJours = min >= 1440;
-  $('bloc-periode').hidden = enJours;
-  $('bloc-fin-ami').hidden = !enJours;
-  if (enJours) { etat.periodeAmi = ''; }
-  $('total-ami').textContent = T('Tu prends ' + libDureeAmi(min) + '.', 'You are taking ' + libDureeAmi(min) + '.');
-  rendreDureesAmi(); rendrePeriodesAmi();
+  etat.dureeAmi = min; etat.zonesAmi = [];   // les deux modes s'excluent
+  etat.jour = null; etat.heure = null; etat.dispo = {};
+  // Au-delà de 24 h, c'est l'heure de départ du dernier jour qu'il faut demander.
+  $('bloc-fin-ami').hidden = min < 1440;
+  rendreZonesAmi(); rendreDureesAmi(); majTotalAmi();
   allerPas(2); chargerDispo();
 }
-function rendrePeriodesAmi() {
-  $('periodes-ami').innerHTML = AMI.periodes.map(function(p) {
-    return '<button type="button" class="heure' + (etat.periodeAmi === p.id ? ' choisi' : '') + '" data-p="' + p.id + '">' + T(p.fr, p.en) + '</button>';
+/**
+ * Les zones : des cases à cocher, pas un filtre. Cocher « soirée » réserve toute la soirée ;
+ * cocher après-midi ET soirée réserve les deux d'un bloc ; les trois font la journée.
+ * Choisir une zone efface la durée, et choisir une durée efface les zones — les deux modes ne se
+ * mélangent jamais.
+ */
+function rendreZonesAmi() {
+  $('zones-ami').innerHTML = AMI.zones.map(function(z) {
+    var pris = etat.zonesAmi.indexOf(z.id) >= 0;
+    return '<button type="button" class="zone' + (pris ? ' choisi' : '') + '" data-z="' + z.id + '">' +
+      '<span class="zn">' + T(z.fr, z.en) + '</span><span class="zh">' + z.de + ' – ' + z.a + '</span></button>';
   }).join('');
-  $('periodes-ami').querySelectorAll('.heure').forEach(function(b) {
-    b.addEventListener('click', function() {
-      var p = b.getAttribute('data-p');
-      etat.periodeAmi = etat.periodeAmi === p ? '' : p;   // retoucher la même la désélectionne
-      etat.jour = null; etat.heure = null; etat.dispo = {};
-      rendrePeriodesAmi(); allerPas(2); chargerDispo();
-    });
+  $('zones-ami').querySelectorAll('.zone').forEach(function(b) {
+    b.addEventListener('click', function() { basculerZone(b.getAttribute('data-z')); });
   });
+  var n = etat.zonesAmi.length, aide = $('aide-zones');
+  if (!n) {
+    aide.textContent = T('Une zone se prend au complet. Tu peux en cocher plusieurs.',
+                         'A zone is taken in full. You can tick more than one.');
+  } else {
+    var ordonnees = AMI.zones.filter(function(z){ return etat.zonesAmi.indexOf(z.id) >= 0; });
+    var quoi = n === 3 ? T('Toute la journée', 'The whole day')
+                       : ordonnees.map(function(z){ return T(z.fr, z.en); }).join(' + ');
+    aide.textContent = quoi + ' · ' + ordonnees[0].de + ' – ' + ordonnees[ordonnees.length - 1].a +
+      (n > 1 && !zonesContigues() ? T(' (tout ce qu\'il y a entre les deux est pris aussi)',
+                                      ' (everything in between is taken too)') : '');
+  }
+}
+function zonesContigues() {
+  var rangs = AMI.zones.map(function(z, i){ return etat.zonesAmi.indexOf(z.id) >= 0 ? i : -1; })
+                       .filter(function(i){ return i >= 0; });
+  return rangs.length < 2 || (rangs[rangs.length - 1] - rangs[0] + 1) === rangs.length;
+}
+function basculerZone(id) {
+  var i = etat.zonesAmi.indexOf(id);
+  if (i >= 0) etat.zonesAmi.splice(i, 1); else etat.zonesAmi.push(id);
+  // Les deux modes s'excluent : une zone efface la durée.
+  etat.dureeAmi = null;
+  $('bloc-fin-ami').hidden = true;
+  etat.jour = null; etat.heure = null; etat.dispo = {};
+  rendreZonesAmi(); rendreDureesAmi(); majTotalAmi();
+  if (etat.zonesAmi.length) { allerPas(2); chargerDispo(); }
+  else { $('jours').innerHTML = ''; allerPas(1); }
+}
+function majTotalAmi() {
+  if (etat.zonesAmi.length) {
+    var o = AMI.zones.filter(function(z){ return etat.zonesAmi.indexOf(z.id) >= 0; });
+    $('total-ami').textContent = etat.zonesAmi.length === 3
+      ? T('Tu prends la journée.', 'You are taking the whole day.')
+      : T('Tu prends ' + o.map(function(z){ return T(z.fr, z.en).toLowerCase(); }).join(' et ') + '.',
+          'You are taking ' + o.map(function(z){ return T(z.fr, z.en).toLowerCase(); }).join(' and ') + '.');
+  } else if (etat.dureeAmi) {
+    $('total-ami').textContent = T('Tu prends ' + libDureeAmi(etat.dureeAmi) + '.',
+                                   'You are taking ' + libDureeAmi(etat.dureeAmi) + '.');
+  } else {
+    $('total-ami').textContent = '';
+  }
 }
 
 /* ─── 1. SOINS ─── */
@@ -702,7 +770,7 @@ function allerPas(n) {
 /* ─── 2. JOURS ─── */
 function cleJour(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 function chargerDispo() {
-  if (etat.ami ? !etat.dureeAmi : !etat.personnes.length) return;
+  if (etat.ami ? (!etat.dureeAmi && !etat.zonesAmi.length) : !etat.personnes.length) return;
   etat.chargement = true; $('attente-jours').hidden = false; $('erreur-jours').hidden = true; $('jours').innerHTML = '';
   var duree = dureeTotale();
   var fini = function(data) {
@@ -713,7 +781,7 @@ function chargerDispo() {
   if (!SCRIPT_URL) { setTimeout(function(){ fini(dispoDemo(duree)); }, 500); return; }
   // Deux portes distinctes côté serveur. Le bout de journée n'est qu'un filtre transmis.
   var url = etat.ami
-    ? SCRIPT_URL + '?action=dispo_ami&duree=' + duree + '&pe=' + encodeURIComponent(etat.periodeAmi || '') + '&code=' + encodeURIComponent(AMI.saisi) + '&_=' + Date.now()
+    ? SCRIPT_URL + '?action=dispo_ami&duree=' + duree + '&zo=' + encodeURIComponent(etat.zonesAmi.join(',')) + '&code=' + encodeURIComponent(AMI.saisi) + '&_=' + Date.now()
     : SCRIPT_URL + '?action=dispo&duree=' + duree + '&jours=' + REGLES.horizonJours + '&_=' + Date.now();
   fetch(url, { method: 'GET', redirect: 'follow' }).then(function(r){ return r.json(); }).then(fini).catch(function(){ etat.chargement = false; $('attente-jours').hidden = true; montrerErreurJours(); });
 }
@@ -811,6 +879,15 @@ function libJour(k) {
 function rendreHeures() {
   if (!etat.jour) return;
   var heures = etat.dispo[etat.jour] || [];
+  // Mode zones : le bloc est déjà défini, il n'y a aucune heure à choisir. On retient celle que
+  // le serveur a renvoyée (le début de la première zone) et on saute directement au récapitulatif.
+  if (etat.ami && etat.zonesAmi.length) {
+    etat.heure = heures[0] || null;
+    $('heure-sous').textContent = '';
+    $('heures').innerHTML = '';
+    if (etat.heure) { rendreRecap(); allerPas(4); }
+    return;
+  }
   var duree = etat.ami ? libDureeAmi(dureeTotale()) : libDuree(dureeTotale());
   $('heure-sous').textContent = T('Le ' + libJour(etat.jour) + ', pour ' + duree + '. L\'heure choisie est celle du début.',
                                   libJour(etat.jour) + ', for ' + duree + '. The time you pick is the start time.');
@@ -828,6 +905,14 @@ function rendreRecap() {
   if (!etat.jour || !etat.heure) return;
   // ⛔ Aucun prix, aucun soin, aucune mention d'adresse en mode ami.
   if (etat.ami) {
+    if (etat.zonesAmi.length) {
+      var o = AMI.zones.filter(function(z){ return etat.zonesAmi.indexOf(z.id) >= 0; });
+      var quoi = etat.zonesAmi.length === 3 ? T('Toute la journée', 'The whole day')
+                 : o.map(function(z){ return T(z.fr, z.en); }).join(' + ');
+      $('recap').innerHTML = '<b>' + libJour(etat.jour) + '</b><br>' + quoi +
+        ' · ' + o[0].de + ' – ' + o[o.length - 1].a + T(' avec Kevin.', ' with Kevin.');
+      return;
+    }
     $('recap').innerHTML = '<b>' + libJour(etat.jour) + ' · ' + libHeure(etat.heure) + '</b><br>' +
       libDureeAmi(dureeTotale()) + T(' avec Kevin.', ' with Kevin.') +
       (dureeTotale() >= 1440 ? '<br>' + T('Départ vers ', 'Leaving around ') + libHeure($('fin-heure-ami').value || '11:00') : '');
@@ -840,7 +925,7 @@ function rendreRecap() {
     '<br>' + T('Total : ', 'Total: ') + '<b>' + prixTotal() + ' $</b> + tx · ' + T('Waterville, adresse envoyée après confirmation.', 'Waterville, address sent after confirmation.');
 }
 function rendreTout() {
-  if (etat.ami) { rendreDureesAmi(); rendrePeriodesAmi(); }
+  if (etat.ami) { rendreZonesAmi(); rendreDureesAmi(); }
   else { rendreSoins(); rendrePersonnes(); rendreBeneficiaires(); }
   if (Object.keys(etat.dispo).length) { rendreSuggestions(); rendreJours(); } if (etat.jour) rendreHeures(); if (etat.heure) rendreRecap();
 }
@@ -995,6 +1080,7 @@ $('form').addEventListener('submit', function(e) {
   if (etat.ami) {
     demande.promo = AMI.saisi;
     demande.duree = dureeTotale();
+    if (etat.zonesAmi.length) demande.zones = etat.zonesAmi.join(',');
     demande.envie = $('envie').value.trim();
     if (dureeTotale() >= 1440) demande.fin_heure = $('fin-heure-ami').value || '11:00';
   }
@@ -1003,7 +1089,9 @@ $('form').addEventListener('submit', function(e) {
     $('attente-envoi').hidden = true;
     if (data && data.ok) {
       $('c-toi').hidden = true; $('c-fin').hidden = false;
-      $('fin-detail').innerHTML = '<b>' + libJour(etat.jour) + ' · ' + libHeure(etat.heure) + '</b> · ' + (etat.ami ? libDureeAmi(dureeTotale()) : libDuree(dureeTotale()));
+      $('fin-detail').innerHTML = (etat.ami && etat.zonesAmi.length)
+        ? '<b>' + libJour(etat.jour) + '</b> · ' + libZonesEcran()
+        : '<b>' + libJour(etat.jour) + ' · ' + libHeure(etat.heure) + '</b> · ' + (etat.ami ? libDureeAmi(dureeTotale()) : libDuree(dureeTotale()));
       document.querySelectorAll('#pas span[data-pas]').forEach(function(s){ s.classList.add('fait'); s.classList.remove('actif'); });
       $('c-fin').scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
