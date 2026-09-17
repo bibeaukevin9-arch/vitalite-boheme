@@ -239,37 +239,86 @@
     .durees { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); }
     /* Les zones sont plus larges que les durées : elles portent leur nom ET leurs bornes, parce
        qu'on réserve le bloc en entier — il faut voir de quand à quand avant de cocher. */
-    /* ─── La grille de l'horaire ─── */
-    .grille-nav { display: flex; align-items: center; gap: 12px; margin: 0 0 10px; }
-    .grille-nav button { background: transparent; border: 1px solid rgba(201,162,39,.35); border-radius: 2px;
-      width: 36px; height: 36px; cursor: pointer; font-size: 18px; color: var(--or); line-height: 1; }
-    .grille-nav button:disabled { opacity: .3; cursor: default; }
-    .gr-titre { flex: 1; text-align: center; font-size: 12px; letter-spacing: 1.5px;
+    /* ─── L'HORAIRE : le jour s'ouvre ───────────────────────────────────────
+       Kevin, 2026-09-17 : « je n'aime pas les carrés alignés », « il faudrait être capable
+       de pointer un peu plus au fil du temps... comme zoomer à l'intérieur de l'horaire »,
+       puis « les couleurs me donnent mal aux yeux... doux, bienveillant ».
+
+       ⛔ Doux ET évident n'est pas un compromis : c'est la SATURATION qui fatigue l'œil,
+          c'est l'ÉCART DE CLARTÉ qui rend lisible. Mesuré sur ces valeurs :
+          saturation max 36 % (l'or plein était à 81 %), écart libre/pris 80 sur 255.
+       ⛔ L'ancien « pris » était rgba(58,46,40,.14) — 28 points sous le fond, donc invisible.
+          C'est ça que Kevin ne voyait pas. Ne pas y revenir. */
+    .h-nav { display: flex; align-items: center; gap: 12px; margin: 0 0 6px; }
+    .h-nav button { background: transparent; border: 1px solid rgba(201,162,39,.35);
+      border-radius: 99px; width: 38px; height: 38px; cursor: pointer; font-size: 20px;
+      color: var(--or); line-height: 1; flex: none; }
+    .h-nav button:disabled { opacity: .3; cursor: default; }
+    .h-titre { flex: 1; text-align: center; font-size: 12px; letter-spacing: 1.5px;
       text-transform: uppercase; color: var(--gris); }
-    .grille-ami { display: flex; flex-direction: column; gap: 4px; }
-    .gr-entete, .gr-ligne { display: grid; grid-template-columns: 78px 1fr 1fr 1fr; gap: 4px; align-items: stretch; }
-    .gr-entete > span { font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
-      color: var(--gris); text-align: center; padding-bottom: 2px; }
-    .gr-jour { font-size: 12px; color: var(--texte); display: flex; flex-direction: column;
-      justify-content: center; line-height: 1.25; }
-    .gr-jour b { font-size: 14px; font-variant-numeric: tabular-nums; }
-    /* 46 px, pas 42 : mesuré sur un 375, sous la norme tactile de 44. */
-    .gr-case { border: 1px solid rgba(201,162,39,.25); border-radius: 2px; background: transparent;
-      min-height: 46px; cursor: pointer; font: inherit; color: var(--texte); padding: 0;
-      transition: all .12s; }
-    .gr-case.libre:hover { border-color: var(--or); }
-    .gr-case.mou { background: repeating-linear-gradient(135deg, transparent, transparent 4px,
-      rgba(201,162,39,.16) 4px, rgba(201,162,39,.16) 8px); border-color: rgba(201,162,39,.3); }
-    .gr-case.dur { background: rgba(58,46,40,.14); border-color: transparent; cursor: default; }
-    .gr-case.passe { background: transparent; border-color: transparent; cursor: default; opacity: .25; }
-    .gr-case.choisi { background: var(--noir); border-color: var(--noir); box-shadow: 0 0 0 2px rgba(201,162,39,.35) inset; }
-    .legende-ami { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 12px; font-size: 11px; color: var(--gris); }
-    .legende-ami span { display: inline-flex; align-items: center; gap: 5px; }
-    .pastille { width: 13px; height: 13px; border-radius: 2px; display: inline-block; flex: none;
-      border: 1px solid rgba(201,162,39,.35); }
-    .pastille.mou { background: repeating-linear-gradient(135deg, transparent, transparent 3px,
-      rgba(201,162,39,.35) 3px, rgba(201,162,39,.35) 6px); }
-    .pastille.dur { background: rgba(58,46,40,.2); border-color: transparent; }
+
+    .h-jour { display: flex; align-items: center; gap: 13px; width: 100%; padding: 12px 6px;
+      border: 0; border-bottom: 1px solid rgba(58,46,40,.12); background: none; color: inherit;
+      font: inherit; text-align: left; cursor: pointer; border-radius: 3px; }
+    .h-jour .quand { flex: none; width: 92px; }
+    .h-jour .quand b { display: block; font-weight: 600; font-size: 15px; color: var(--texte);
+      text-transform: capitalize; line-height: 1.2; }
+    .h-jour .quand span { font-size: 12px; color: var(--gris); font-variant-numeric: tabular-nums; }
+    .h-jour .libres { flex: none; font-size: 12px; color: var(--gris); width: 88px;
+      text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .h-jour[aria-expanded="true"] .quand b { color: var(--or); }
+    .h-jour[data-sel="1"] { background: rgba(107,87,68,.12); }
+    .h-jour[data-sel="1"] .fil { box-shadow: 0 0 0 2px var(--or); }
+
+    .fil { flex: 1; display: flex; height: 22px; border-radius: 99px; overflow: hidden;
+      min-width: 0; background: #efe6d8; touch-action: none; }
+    .fil i { display: block; min-width: 0; }
+
+    /* Les quatre états. Champagne, voile, taupe, brume. */
+    .e-libre { background: linear-gradient(104deg, #f2e3bd, #e8d4a4); }
+    /* ⛔ Le voile est LARGE (18 px) : à 5 px les rayures vibraient, et ça fatigue à soi seul. */
+    .e-mou { background: repeating-linear-gradient(120deg, transparent, transparent 9px,
+      rgba(122,106,76,.26) 9px, rgba(122,106,76,.26) 18px), #cdbda2; }
+    .e-dur { background: #9b8a76; }
+    .e-passe { background: #e6ded1; }
+
+    .h-tiroir { display: none; padding: 6px 0 14px; }
+    .h-tiroir.ouvert { display: block; }
+    .h-horloge { display: flex; gap: 11px; align-items: stretch; }
+    .h-regle { flex: none; width: 56px; position: relative; font-variant-numeric: tabular-nums; }
+    .h-regle i { position: absolute; right: 0; font-style: normal; font-size: 12px;
+      color: var(--gris); transform: translateY(-50%); white-space: nowrap; }
+    .h-bande { position: relative; flex: 1; border-radius: 4px; overflow: hidden; min-width: 0;
+      touch-action: none; -webkit-user-select: none; user-select: none; cursor: ns-resize;
+      background: #efe6d8; height: clamp(420px, 58vh, 620px); }
+    .h-seg { position: absolute; left: 0; right: 0; overflow: hidden; display: flex;
+      align-items: center; justify-content: center; }
+    .h-seg span { font-size: 13px; text-align: center; padding: 0 10px; line-height: 1.3;
+      pointer-events: none; }
+    .h-seg.e-libre span, .h-seg.e-mou span { color: #5a4735; font-weight: 500; }
+    .h-seg.e-dur span { color: #f6efe4; opacity: .75; }
+    .h-sel { position: absolute; left: 0; right: 0; display: none; pointer-events: none;
+      background: #6b5744; box-shadow: 0 0 0 1.5px var(--or) inset; }
+    .h-sel.on { display: flex; align-items: center; justify-content: center; }
+    .h-sel b { color: #f2e5c8; font-size: 14px; font-weight: 600; letter-spacing: .03em;
+      font-variant-numeric: tabular-nums; }
+
+    .h-verdict { margin-top: 14px; border-top: 1px solid rgba(58,46,40,.12); padding-top: 13px;
+      display: flex; align-items: center; gap: 12px; min-height: 58px; flex-wrap: wrap; }
+    .h-verdict .dit { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 21px;
+      line-height: 1.22; color: var(--texte); flex: 1; min-width: 190px; }
+    .h-verdict .dit em { font-style: italic; font-size: 16px; color: var(--gris); }
+    .h-verdict .dit small { display: block; font-family: inherit; font-size: 12.5px;
+      color: var(--gris); margin-top: 3px; line-height: 1.4; font-style: normal; }
+    .h-verdict .combien { flex: none; font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--or); font-weight: 600; font-variant-numeric: tabular-nums; }
+    /* Sous 430 px, le combien-de-libre mange la moitie du ruban : le ruban gagne. */
+    @media (max-width: 430px) {
+      .h-jour { gap: 10px; }
+      .h-jour .quand { width: 82px; }
+      .h-jour .libres { display: none; }
+      .h-regle { width: 48px; }
+    }
     /* Le champ de code vit hors des cartes, pour rester atteignable quel que soit l'écran
        affiché. Il s'aligne sur elles et garde le même retrait latéral. */
     /* Le bandeau du code : hors des cartes, au-dessus de tout, et ouvert.
@@ -323,8 +372,8 @@
   <div class="badge"><span data-fr>Waterville, Estrie</span><span data-en>Waterville, Estrie</span></div>
   <h1 data-fr>Choisis ton <em>moment</em></h1>
   <h1 data-en>Pick your <em>moment</em></h1>
-  <p data-fr>Ton soin, ton jour, ton heure. Kevin confirme lui-même chaque demande, en général dans la journée.</p>
-  <p data-en>Your treatment, your day, your time. Kevin personally confirms every request, usually the same day.</p>
+  <div id="r-sous"><p data-fr>Ton soin, ton jour, ton heure. Kevin confirme lui-même chaque demande, en général dans la journée.</p>
+  <p data-en>Your treatment, your day, your time. Kevin personally confirms every request, usually the same day.</p></div>
   <a href="index.html" class="retour-lien"><span data-fr>← Retour au site</span><span data-en>← Back to website</span></a>
 </header>
 
@@ -384,47 +433,35 @@
     <button type="button" class="retour-etape" id="btn-quitter-ami"><span data-fr>← Revenir aux soins</span><span data-en>← Back to treatments</span></button>
     <h2 data-num="I" data-fr>Du temps ensemble</h2>
     <h2 data-num="I" data-en>Time together</h2>
-    <p class="sous" data-fr>Pas un massage : un moment. Prends un bout de journée, ou dis-moi combien de temps.</p>
-    <p class="sous" data-en>Not a massage: a moment. Take a part of the day, or tell me how long.</p>
+    <p class="sous" data-fr>Pas un massage : un moment. Voici mon horaire — prends ce qui te va.</p>
+    <p class="sous" data-en>Not a massage: a moment. Here is my schedule — take what suits you.</p>
 
-    <!-- ⭐ L'HORAIRE EN PREMIER (Kevin, 2026-09-17, côté amis seulement).
-         La grille EST le sélecteur : on voit ce qui est libre et on clique dessus. Trois états —
-         libre, occupé mais malléable (un quart au spa, qu'un ami peut chevaucher), occupé pour de
-         bon. ⛔ Aucun titre d'événement ne sort du serveur : on voit QUAND Kevin est pris, jamais
-         par qui ni pourquoi. -->
-    <p class="etiq-ami" data-fr>L'horaire de Kevin</p>
-    <p class="etiq-ami" data-en>Kevin's schedule</p>
-    <div class="grille-nav">
+    <!-- ⭐ L'HORAIRE EN PREMIER, côté amis seulement. Il EST le sélecteur.
+         Deux grains, un seul geste : glisser sur les lignes prend des JOURNÉES entières,
+         glisser dans une journée ouverte prend des HEURES.
+         ⛔ Aucun titre d'événement ne sort du serveur : on voit QUAND Kevin est pris,
+            jamais par qui ni pourquoi.
+         ⛔ Aucun carré aligné, aucune légende à apprendre : chaque plage écrit elle-même
+            de quand à quand elle va. -->
+    <p class="aide-ami" data-fr>Glisse sur les lignes pour prendre plusieurs jours de suite. Touche un jour pour l'ouvrir et choisir les heures.</p>
+    <p class="aide-ami" data-en>Slide across the rows to take several days in a row. Tap a day to open it and pick the hours.</p>
+    <div class="h-nav">
       <button type="button" id="gr-prec" aria-label="Avant">‹</button>
-      <div class="gr-titre" id="gr-titre"></div>
+      <div class="h-titre" id="gr-titre"></div>
       <button type="button" id="gr-suiv" aria-label="Après">›</button>
     </div>
-    <div class="grille-ami" id="grille-ami"></div>
+    <div id="grille-ami"></div>
     <div id="gr-attente" class="attente" hidden><span class="pt"></span><span class="pt"></span><span class="pt"></span></div>
-    <div class="legende-ami">
-      <span><i class="pastille libre"></i><span data-fr>Libre</span><span data-en>Free</span></span>
-      <span><i class="pastille mou"></i><span data-fr>Pris, mais je peux m'arranger</span><span data-en>Taken, but I can work it out</span></span>
-      <span><i class="pastille dur"></i><span data-fr>Pas possible</span><span data-en>Not possible</span></span>
-    </div>
-    <p class="aide-ami" id="aide-zones"></p>
-
-    <div id="bloc-duree">
-      <p class="etiq-ami" data-fr>Ou alors, combien de temps</p>
-      <p class="etiq-ami" data-en>Or else, how long</p>
-      <div class="durees" id="durees-ami"></div>
-      <button type="button" class="lien-bouton" id="btn-plus-long"><span data-fr>+ Plus longtemps</span><span data-en>+ Longer</span></button>
-      <div class="durees" id="durees-longues" hidden></div>
+    <div class="h-verdict">
+      <div class="dit" id="ami-verdict"></div>
+      <div class="combien" id="ami-combien"></div>
+      <button type="button" class="valider" id="ami-suite" hidden><span data-fr>C'est ce moment</span><span data-en>That is the moment</span></button>
     </div>
 
+    <!-- L'heure de départ d'un séjour : calculée par le calendrier, gardée ici pour l'envoi. -->
     <div id="bloc-fin-ami" hidden>
-      <p class="etiq-ami" data-fr>Tu repars vers quelle heure ?</p>
-      <p class="etiq-ami" data-en>What time do you head off?</p>
-      <div class="champ"><input id="fin-heure-ami" type="time" step="1800" value="11:00"></div>
-      <p class="aide-ami" data-fr>L'heure de ton départ, le dernier jour.</p>
-      <p class="aide-ami" data-en>Your leaving time, on the last day.</p>
+      <input id="fin-heure-ami" type="time" step="1800" value="11:00">
     </div>
-
-    <p class="total" id="total-ami"></p>
   </section>
 
   <section class="carte" id="c-jour" hidden>
@@ -468,8 +505,8 @@
     <button type="button" class="retour-etape" onclick="allerPas(3)"><span data-fr>← Changer d'heure</span><span data-en>← Change time</span></button>
     <h2 data-num="IV" data-fr>Toi</h2>
     <h2 data-num="IV" data-en>You</h2>
-    <p class="sous" data-fr>Le nécessaire, rien de plus. Le questionnaire de santé viendra après la confirmation.</p>
-    <p class="sous" data-en>Only what is needed. The health form comes after confirmation.</p>
+    <div id="toi-sous"><p class="sous" data-fr>Le nécessaire, rien de plus. Le questionnaire de santé viendra après la confirmation.</p>
+    <p class="sous" data-en>Only what is needed. The health form comes after confirmation.</p></div>
     <form id="form" novalidate>
       <div class="champs">
         <div class="champ"><label for="prenom"><span data-fr>Prénom</span><span data-en>First name</span></label><input id="prenom" name="prenom" required autocomplete="given-name"></div>
@@ -485,7 +522,7 @@
           </select>
           <div class="mineur" id="mineur"><span data-fr>Pour un mineur, un parent ou tuteur signe le questionnaire et reste dans la pièce pendant le soin.</span><span data-en>For a minor, a parent or guardian signs the form and stays in the room during the treatment.</span></div>
         </div>
-        <div class="champ large"><label for="note"><span data-fr>Un mot pour Kevin (facultatif)</span><span data-en>A word for Kevin (optional)</span></label><textarea id="note" name="note" maxlength="500"></textarea></div>
+        <div class="champ large" id="champ-note"><label for="note"><span data-fr>Un mot pour Kevin (facultatif)</span><span data-en>A word for Kevin (optional)</span></label><textarea id="note" name="note" maxlength="500"></textarea></div>
         <div class="piege" aria-hidden="true"><label>Site web<input name="site_web" tabindex="-1" autocomplete="off"></label></div>
       </div>
 
@@ -535,8 +572,8 @@
 
 
 <footer>
-  <span data-fr>Vitalité Bohème · Massothérapie · Waterville, Estrie · </span><span data-en>Vitalité Bohème · Massage therapy · Waterville, Estrie · </span>
-  <a href="tel:+14383683282">438 368-3282</a>
+  <span id="pied-quoi"><span data-fr>Vitalité Bohème · Massothérapie · Waterville, Estrie · </span><span data-en>Vitalité Bohème · Massage therapy · Waterville, Estrie · </span></span>
+  <a href="tel:+14383683282" id="pied-tel">438 368-3282</a>
 </footer>
 
 <script>
@@ -575,11 +612,18 @@ function T(fr, en) { return currentLang === 'en' ? en : fr; }
 
 /* ─── ÉTAT ─── */
 var etat = { personnes: [], jour: null, heure: null, dispo: {}, ouverts: [], colles: {}, semaine: 0, chargement: false, vueMois: false, mois: 0,
-  ami: false, dureeAmi: null, zonesAmi: [], grille: [], grOffset: 0 };
+  ami: false, dureeAmi: null, grille: [], grOffset: 0,
+  // ⛔ `zonesAmi` reste, TOUJOURS VIDE : le calendrier exprime tout en jour + heure + durée,
+  //    et plusieurs branches de la page testent encore `zonesAmi.length`. Les laisser fausses
+  //    est plus sûr que de les réécrire une à une.
+  zonesAmi: [],
+  selJours: null,    // {a,b} : des journées entières, de suite
+  selHeures: null,   // {j,a,b} : des heures dans une journée ouverte
+  grOuvert: null };
 var $ = function(id) { return document.getElementById(id); };
 
 function dureeTotale() {
-  if (etat.ami) return etat.zonesAmi.length ? dureeDesZones() : (etat.dureeAmi || 0);
+  if (etat.ami) return etat.dureeAmi || 0;
   var n = etat.personnes.length; if (!n) return 0;
   return etat.personnes.reduce(function(a, s){ return a + s.min; }, 0) + REGLES.tamponGroupeMin * (n - 1);
 }
@@ -615,9 +659,12 @@ function empreinteDe(t) {
 }
 function libDureeAmi(min) {
   if (!min) return '';
-  if (min < 1440) return (min / 60) + ' h';
-  var j = Math.round(min / 1440);
-  return j === 1 ? '24 h' : j + T(' jours', ' days');
+  var j = Math.floor(min / 1440), r = min % 1440, h = Math.floor(r / 60), m = r % 60;
+  var bouts = [];
+  if (j) bouts.push(j + (j > 1 ? T(' jours', ' days') : T(' jour', ' day')));
+  if (h) bouts.push(h + ' h' + (m && !j ? ' ' + (m < 10 ? '0' : '') + m : ''));
+  if (m && (j || !h)) bouts.push(m + ' min');
+  return bouts.join(' ') || '0 min';
 }
 /** Combien de minutes couvrent les zones cochées : du début de la première à la fin de la dernière. */
 function enMinutes(h) { var p = String(h).replace(' h', ':').replace(/\s/g, '').split(':'); return (+p[0]) * 60 + (+(p[1] || 0)); }
@@ -642,11 +689,12 @@ function basculerAmi(actif) {
   $('c-soin').hidden = actif;
   $('c-ami').hidden = !actif;
   $('bloc-envie').hidden = !actif;
-  $('durees-longues').hidden = true;
-  $('btn-plus-long').hidden = false;
-  $('bloc-duree').hidden = false;
   $('bloc-fin-ami').hidden = true;
-  $('total-ami').textContent = '';
+  etat.selJours = null; etat.selHeures = null; etat.grOuvert = null;
+  // ⛔ Quand le code est entré, TOUT ce qui parle de massothérapie s'efface (Kevin, 2026-09-17 :
+  //    « faudrait enlever tout ce qui n'a pas rapport à la cédule pour le temps entre amis »).
+  //    Ce sont cinq endroits, et aucun n'était couvert avant.
+  rangerMassotherapie(actif);
   // L'étape « Soin » devient « Temps » : c'est ce qu'on y choisit maintenant.
   var onglet = document.querySelector('#pas span[data-pas="1"]');
   if (onglet) onglet.innerHTML = actif
@@ -661,136 +709,311 @@ function basculerAmi(actif) {
     ? '<span data-fr>← Changer de durée</span><span data-en>← Change duration</span>'
     : '<span data-fr>← Changer de soin</span><span data-en>← Change treatment</span>';
   etat.grille = []; etat.grOffset = 0;
-  if (actif) { rendreDureesAmi(); majAideZones(); chargerGrille(); }
+  if (actif) { chargerGrille(); }
   applyLang(currentLang);   // les libellés qu'on vient d'injecter portent data-fr / data-en
   allerPas(1);
   $('c-ami').hidden = !actif;
   if (actif) setTimeout(function(){ $('c-ami').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
 }
-function rendreDureesAmi() {
-  var faire = function(liste, cible) {
-    $(cible).innerHTML = liste.map(function(m) {
-      return '<button type="button" class="heure' + (etat.dureeAmi === m ? ' choisi' : '') + '" data-m="' + m + '">' + libDureeAmi(m) + '</button>';
-    }).join('');
-    $(cible).querySelectorAll('.heure').forEach(function(b) {
-      b.addEventListener('click', function(){ choisirDureeAmi(+b.getAttribute('data-m')); });
-    });
+/** Ce qui n'a rien à voir avec un temps entre amis disparaît — et revient si on quitte le code. */
+function rangerMassotherapie(ami) {
+  var mettre = function (id, fr, en) {
+    var el = $(id); if (!el) return;
+    if (el.dataset.origine === undefined) el.dataset.origine = el.innerHTML;
+    el.innerHTML = ami ? '<span data-fr>' + fr + '</span><span data-en>' + en + '</span>'
+                       : el.dataset.origine;
   };
-  faire(AMI.dureesCourtes, 'durees-ami');
-  faire(AMI.dureesLongues, 'durees-longues');
+  mettre('r-sous', 'Ton moment, à ton rythme. Kevin te répond lui-même.',
+                   'Your moment, at your pace. Kevin answers you himself.');
+  mettre('toi-sous', 'Le nécessaire, rien de plus.', 'Only what is needed.');
+  mettre('pied-quoi', 'Vitalité Bohème · Waterville, Estrie · ',
+                      'Vitalité Bohème · Waterville, Estrie · ');
+  // Deux boîtes à écrire l'une sous l'autre n'avaient aucun sens : « On fait quoi ? » suffit.
+  var n = $('champ-note'); if (n) n.hidden = ami;
+  // Le calendrier fait le jour ET l'heure : les deux étapes du milieu ne servent plus.
+  ['2', '3'].forEach(function (p) {
+    var e = document.querySelector('#pas span[data-pas="' + p + '"]');
+    if (e) e.hidden = ami;
+  });
 }
-function choisirDureeAmi(min) {
-  etat.dureeAmi = min; etat.zonesAmi = [];   // les deux modes s'excluent
-  etat.jour = null; etat.heure = null; etat.dispo = {};
-  // Au-delà de 24 h, c'est l'heure de départ du dernier jour qu'il faut demander.
-  $('bloc-fin-ami').hidden = min < 1440;
-  etat.jour = null;
-  rendreGrille(); rendreDureesAmi(); majTotalAmi();
-  allerPas(2); chargerDispo();
+
+/* ═══ L'HORAIRE — le jour s'ouvre ═══════════════════════════════════════════
+   Deux grains, un seul geste (Kevin, 2026-09-17) :
+     · glisser sur les LIGNES prend des journées entières, à la file ;
+     · glisser DANS une journée ouverte prend des heures, au fil du temps.
+   ⛔ Aucun carré, aucune légende : chaque plage écrit elle-même de quand à quand elle va.
+   ⛔ La sélection bute net sur ce qui est pris — jamais de plage qui saute par-dessus. */
+
+var TR_DEBUT = 390, TR_PAS = 30, TR_N = 35;   // 6 h 30 → minuit, par tranches de 30 min
+var TR_ZONES = { matin: [0, 10], apresmidi: [11, 20], soiree: [21, 32] };
+
+/** Les 35 tranches d'un jour. ⚠️ REPLI : tant que le programme n'est pas redéployé, il ne
+ *  renvoie que les trois zones — on les étale alors sur les tranches, et la page marche pareil. */
+function tranchesDe(ligne) {
+  if (ligne && ligne.t && ligne.t.length === TR_N) return ligne.t;
+  var t = new Array(TR_N), z = (ligne && ligne.z) || {};
+  for (var k = 0; k < TR_N; k++) t[k] = 'dur';
+  Object.keys(TR_ZONES).forEach(function (nom) {
+    var b = TR_ZONES[nom], e = z[nom] || 'dur';
+    for (var k = b[0]; k <= b[1]; k++) t[k] = e;
+  });
+  for (var k = 33; k < TR_N; k++) t[k] = z.soiree || 'dur';   // 23 h → minuit
+  return t;
 }
-/* ═══ LA GRILLE DE L'HORAIRE ═══
-   Elle EST le sélecteur : on voit et on clique. Une case porte un jour et une zone.
-   Cliquer plusieurs cases du même jour cumule les zones — trois font la journée.
-   ⛔ Changer de jour remet la sélection à zéro : une réservation ne couvre qu'un seul jour. */
+function ouvertT(e) { return e === 'libre' || e === 'mou'; }
+function libreDuJour(t) { return t.filter(ouvertT).length; }
+/** Les tranches identiques qui se suivent forment UNE plage : c'est ce qui permet d'écrire dessus. */
+function plagesDe(t) {
+  var out = [], i = 0;
+  while (i < t.length) {
+    var j = i; while (j + 1 < t.length && t[j + 1] === t[i]) j++;
+    out.push({ e: t[i], a: i, b: j, n: j - i + 1 });
+    i = j + 1;
+  }
+  return out;
+}
+function hhmmT(i) { var m = TR_DEBUT + i * TR_PAS; return (m >= 1440 ? '00' : String(Math.floor(m / 60)).padStart(2, '0')) + ':' + String(m % 60).padStart(2, '0'); }
+function libT(i) {
+  var m = TR_DEBUT + i * TR_PAS;
+  if (m >= 1440) return T('minuit', 'midnight');
+  var h = Math.floor(m / 60), r = m % 60;
+  return r ? h + ' h ' + (r < 10 ? '0' : '') + r : h + ' h';
+}
+function libHeureFin(hhmm) {
+  return hhmm === '00:00' ? T('minuit', 'midnight') : libHeure(hhmm);
+}
+function libLibre(n) {
+  var m = n * TR_PAS, tete = m >= 60 ? Math.floor(m / 60) : m;
+  return libDureeAmi(m) + (tete > 1 ? T(' libres', ' free') : T(' libre', ' free'));
+}
+
 function chargerGrille() {
   if (!etat.ami) return;
   $('gr-attente').hidden = false;
   var de = new Date(); de.setDate(de.getDate() + etat.grOffset);
   var cle = de.getFullYear() + '-' + String(de.getMonth() + 1).padStart(2, '0') + '-' + String(de.getDate()).padStart(2, '0');
-  var fini = function(d) {
+  var fini = function (d) {
     $('gr-attente').hidden = true;
     if (!d || !d.ok) { $('grille-ami').innerHTML = '<div class="vide">' + T('L\'horaire ne se charge pas. Réessaie dans une minute.', 'The schedule is not loading. Try again in a minute.') + '</div>'; return; }
     etat.grille = d.jours || [];
-    rendreGrille();
+    etat.selJours = null; etat.selHeures = null; etat.grOuvert = null;
+    rendreGrille(); majVerdictAmi();
   };
-  if (!SCRIPT_URL) { setTimeout(function(){ fini({ ok: true, jours: [] }); }, 300); return; }
+  if (!SCRIPT_URL) { setTimeout(function () { fini({ ok: true, jours: [] }); }, 300); return; }
   fetch(SCRIPT_URL + '?action=grille_ami&de=' + cle + '&n=' + AMI.grillePas + '&code=' + encodeURIComponent(AMI.saisi) + '&_=' + Date.now(),
         { method: 'GET', redirect: 'follow' })
-    .then(function(r){ return r.json(); }).then(fini)
-    .catch(function(){ fini(null); });
+    .then(function (r) { return r.json(); }).then(fini)
+    .catch(function () { fini(null); });
 }
+
 function rendreGrille() {
-  var j = etat.grille || [];
-  if (!j.length) { $('grille-ami').innerHTML = ''; $('gr-titre').textContent = ''; return; }
-  var prem = j[0].d.split('-').map(Number), der = j[j.length - 1].d.split('-').map(Number);
-  var d1 = new Date(prem[0], prem[1] - 1, prem[2]), d2 = new Date(der[0], der[1] - 1, der[2]);
-  var opt = { day: 'numeric', month: 'long' }, loc = currentLang === 'en' ? 'en-CA' : 'fr-CA';
-  $('gr-titre').textContent = d1.toLocaleDateString(loc, opt) + ' – ' + d2.toLocaleDateString(loc, opt);
+  var J = etat.grille || [];
+  if (!J.length) { $('grille-ami').innerHTML = ''; $('gr-titre').textContent = ''; return; }
+  var loc = currentLang === 'en' ? 'en-CA' : 'fr-CA';
+  var p1 = J[0].d.split('-').map(Number), p2 = J[J.length - 1].d.split('-').map(Number);
+  var opt = { day: 'numeric', month: 'long' };
+  $('gr-titre').textContent = new Date(p1[0], p1[1] - 1, p1[2]).toLocaleDateString(loc, opt)
+    + ' – ' + new Date(p2[0], p2[1] - 1, p2[2]).toLocaleDateString(loc, opt);
   $('gr-prec').disabled = etat.grOffset <= 0;
   $('gr-suiv').disabled = etat.grOffset + AMI.grillePas >= AMI.horizonJours;
 
-  var html = '<div class="gr-entete"><span></span>' +
-    AMI.zones.map(function(z){ return '<span>' + T(z.fr, z.en) + '<br>' + z.de + '–' + z.a + '</span>'; }).join('') + '</div>';
-  html += j.map(function(l) {
-    var p = l.d.split('-').map(Number), dd = new Date(p[0], p[1] - 1, p[2]);
-    var jour = dd.toLocaleDateString(loc, { weekday: 'short' }) + '<br><b>' + dd.getDate() + '</b>';
-    var cases = AMI.zones.map(function(z) {
-      var e = (l.z && l.z[z.id]) || 'dur';
-      var pris = etat.jour === l.d && etat.zonesAmi.indexOf(z.id) >= 0;
-      var cliquable = (e === 'libre' || e === 'mou');
-      return '<button type="button" class="gr-case ' + e + (pris ? ' choisi' : '') + '"' +
-        (cliquable ? ' data-j="' + l.d + '" data-z="' + z.id + '"' : ' disabled') +
-        ' aria-label="' + T(z.fr, z.en) + ' ' + dd.getDate() + ' : ' + libEtat(e) + '"></button>';
-    }).join('');
-    return '<div class="gr-ligne"><div class="gr-jour">' + jour + '</div>' + cases + '</div>';
-  }).join('');
-  $('grille-ami').innerHTML = html;
-  $('grille-ami').querySelectorAll('.gr-case[data-j]').forEach(function(b) {
-    b.addEventListener('click', function() { toucherCase(b.getAttribute('data-j'), b.getAttribute('data-z')); });
+  var box = $('grille-ami'); box.innerHTML = '';
+  J.forEach(function (ligne, idx) {
+    var t = tranchesDe(ligne), pl = plagesDe(t), libres = libreDuJour(t);
+    var p = ligne.d.split('-').map(Number), dd = new Date(p[0], p[1] - 1, p[2]);
+    var sel = etat.selJours && idx >= etat.selJours.a && idx <= etat.selJours.b;
+
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'h-jour'; b.dataset.i = idx;
+    b.dataset.sel = sel ? '1' : '0';
+    b.setAttribute('aria-expanded', etat.grOuvert === idx ? 'true' : 'false');
+    b.innerHTML = '<span class="quand"><b>' + dd.toLocaleDateString(loc, { weekday: 'long' }) + '</b>'
+      + '<span>' + dd.toLocaleDateString(loc, { day: 'numeric', month: 'short' }) + '</span></span>'
+      + '<span class="fil">'
+      + pl.map(function (x) { return '<i class="e-' + x.e + '" style="flex:' + x.n + '"></i>'; }).join('')
+      + '</span>'
+      + '<span class="libres">' + (libres ? libLibre(libres) : '—') + '</span>';
+    box.appendChild(b);
+    glisserJoursAmi(b.querySelector('.fil'), idx);
+
+    var tir = document.createElement('div');
+    tir.className = 'h-tiroir' + (etat.grOuvert === idx ? ' ouvert' : '');
+    tir.innerHTML = '<div class="h-horloge"><div class="h-regle"></div>'
+      + '<div class="h-bande" tabindex="0" role="slider" aria-label="' + T('La journée, de 6 h 30 à minuit', 'The day, from 6:30 to midnight') + '">'
+      + '<div class="h-sel"><b></b></div></div></div>';
+    box.appendChild(tir);
+
+    var bande = tir.querySelector('.h-bande'), cur = tir.querySelector('.h-sel');
+    pl.forEach(function (x) {
+      var seg = document.createElement('div');
+      seg.className = 'h-seg e-' + x.e;
+      seg.style.top = (x.a * 100 / TR_N) + '%';
+      seg.style.height = (x.n * 100 / TR_N) + '%';
+      if (x.n >= 3) {
+        var q = document.createElement('span');
+        if (ouvertT(x.e)) q.textContent = T('de ', 'from ') + libT(x.a) + T(' à ', ' to ') + libT(x.b + 1)
+          + (x.n >= 5 ? ' · ' + libLibre(x.n) : '');
+        else if (x.e === 'dur') q.textContent = T('pris', 'taken');
+        seg.appendChild(q);
+      }
+      bande.insertBefore(seg, cur);
+    });
+    var regle = tir.querySelector('.h-regle');
+    for (var h = 0; h < TR_N; h += 4) {
+      var e = document.createElement('i');
+      e.textContent = libT(h); e.style.top = ((h + .5) * 100 / TR_N) + '%'; regle.appendChild(e);
+    }
+    glisserHeuresAmi(bande, cur, idx, t);
+
+    b.addEventListener('click', function () {
+      if (b.querySelector('.fil').dataset.avale === '1') return;   // c'était un glissement
+      etat.grOuvert = (etat.grOuvert === idx) ? null : idx;
+      if (etat.grOuvert !== null) etat.selJours = null;
+      etat.selHeures = null;
+      rendreGrille(); majVerdictAmi();
+    });
   });
-  majAideZones();
 }
-function libEtat(e) {
-  return { libre: T('libre', 'free'), mou: T('pris, mais arrangeable', 'taken but workable'),
-           dur: T('pas possible', 'not possible'), passe: T('passé', 'past') }[e] || e;
+
+function majSelJoursAmi() {
+  $('grille-ami').querySelectorAll('.h-jour').forEach(function (el) {
+    var i = +el.dataset.i;
+    el.dataset.sel = (etat.selJours && i >= etat.selJours.a && i <= etat.selJours.b) ? '1' : '0';
+  });
 }
-/** Une case touchée : le jour se fixe, la zone se coche. Changer de jour repart à zéro. */
-function toucherCase(jour, zone) {
-  if (etat.jour !== jour) { etat.jour = jour; etat.zonesAmi = []; }
-  var i = etat.zonesAmi.indexOf(zone);
-  if (i >= 0) etat.zonesAmi.splice(i, 1); else etat.zonesAmi.push(zone);
-  etat.dureeAmi = null;                       // les deux modes s'excluent
-  $('bloc-fin-ami').hidden = true;
-  if (!etat.zonesAmi.length) { etat.jour = null; etat.heure = null; }
-  rendreGrille(); rendreDureesAmi(); majTotalAmi();
-  if (etat.zonesAmi.length) {
-    var o = AMI.zones.filter(function(z){ return etat.zonesAmi.indexOf(z.id) >= 0; });
-    etat.heure = o[0].de.replace(' h 30', ':30').replace(' h', ':00');
-    rendreRecap(); allerPas(4);
-  } else { allerPas(1); }
+
+/** Glisser DANS une journée : on prend des heures. */
+function glisserHeuresAmi(bande, cur, idx, t) {
+  var ancre = null;
+  function ou(ev) {
+    var r = bande.getBoundingClientRect();
+    var y = Math.min(Math.max(ev.clientY - r.top, 0), r.height - .01);
+    return Math.floor(y / r.height * TR_N);
+  }
+  function poser(a, b) {
+    cur.style.top = (a * 100 / TR_N) + '%';
+    cur.style.height = ((b - a + 1) * 100 / TR_N) + '%';
+    cur.classList.add('on');
+    cur.firstChild.textContent = libDureeAmi((b - a + 1) * TR_PAS);
+    etat.selHeures = { j: idx, a: a, b: b }; etat.selJours = null;
+    majSelJoursAmi(); majVerdictAmi();
+  }
+  function etirer(i) {
+    var a = Math.min(ancre, i), b = Math.max(ancre, i), k;
+    if (i >= ancre) { for (k = ancre; k <= b; k++) if (!ouvertT(t[k])) { b = k - 1; break; } }
+    else { for (k = ancre; k >= a; k--) if (!ouvertT(t[k])) { a = k + 1; break; } }
+    if (b >= a) poser(a, b);
+  }
+  bande.addEventListener('pointerdown', function (ev) {
+    var i = ou(ev); if (!ouvertT(t[i])) return;
+    ancre = i; bande.setPointerCapture(ev.pointerId); poser(i, i); ev.preventDefault();
+  });
+  bande.addEventListener('pointermove', function (ev) {
+    if (ancre !== null) { etirer(ou(ev)); ev.preventDefault(); } });
+  bande.addEventListener('pointerup', function () { ancre = null; });
+  bande.addEventListener('pointercancel', function () { ancre = null; });
+  bande.addEventListener('keydown', function (ev) {
+    if (ev.key !== 'ArrowDown' && ev.key !== 'ArrowUp') return;
+    if (ancre === null) { for (var i = 0; i < TR_N; i++) if (ouvertT(t[i])) { ancre = i; poser(i, i); break; } }
+    else etirer(Math.min(Math.max(ancre + (ev.key === 'ArrowDown' ? 1 : -1), 0), TR_N - 1));
+    ev.preventDefault();
+  });
 }
-function majAideZones() {
-  var n = etat.zonesAmi.length, aide = $('aide-zones');
-  if (!n) {
-    aide.textContent = T('Touche un bout de journée dans la grille. Il se prend au complet, et tu peux en prendre plusieurs le même jour.',
-                         'Tap a part of a day in the grid. It is taken in full, and you can take more than one on the same day.');
+
+/** Glisser SUR les lignes : on prend des journées entières, de suite. */
+function glisserJoursAmi(fil, idx) {
+  var ancre = null, bouge = false, rects = null;
+  var aDuLibre = function (i) { return libreDuJour(tranchesDe(etat.grille[i])) > 0; };
+  function quel(ev) {
+    for (var k = 0; k < rects.length; k++)
+      if (ev.clientY >= rects[k].h && ev.clientY <= rects[k].bas) return rects[k].i;
+    return null;
+  }
+  fil.addEventListener('pointerdown', function (ev) {
+    if (!aDuLibre(idx)) return;
+    ancre = idx; bouge = false;
+    rects = [].map.call($('grille-ami').querySelectorAll('.h-jour'), function (el) {
+      var r = el.getBoundingClientRect(); return { i: +el.dataset.i, h: r.top, bas: r.bottom };
+    });
+    fil.setPointerCapture(ev.pointerId);
+    etat.selJours = { a: idx, b: idx }; etat.selHeures = null;
+    majSelJoursAmi(); majVerdictAmi();
+    ev.preventDefault(); ev.stopPropagation();
+  });
+  fil.addEventListener('pointermove', function (ev) {
+    if (ancre === null) return;
+    var c = quel(ev); if (c === null) return;
+    if (c !== ancre) bouge = true;
+    var a = Math.min(ancre, c), b = Math.max(ancre, c), k;
+    if (c >= ancre) { for (k = ancre; k <= b; k++) if (!aDuLibre(k)) { b = k - 1; break; } }
+    else { for (k = ancre; k >= a; k--) if (!aDuLibre(k)) { a = k + 1; break; } }
+    if (b < a) return;
+    etat.selJours = { a: a, b: b }; majSelJoursAmi(); majVerdictAmi();
+    ev.preventDefault();
+  });
+  function fini() {
+    if (ancre === null) return;
+    ancre = null;
+    if (bouge) { fil.dataset.avale = '1'; setTimeout(function () { fil.dataset.avale = ''; }, 260); }
+  }
+  fil.addEventListener('pointerup', fini);
+  fil.addEventListener('pointercancel', fini);
+}
+
+/** Ce que la sélection vaut, en clair : jour, heure de début, durée en minutes. */
+function momentAmi() {
+  var J = etat.grille || [];
+  if (etat.selHeures) {
+    var l = J[etat.selHeures.j]; if (!l) return null;
+    return { jour: l.d, heure: hhmmT(etat.selHeures.a),
+             duree: (etat.selHeures.b - etat.selHeures.a + 1) * TR_PAS, fin: null, jours: 1 };
+  }
+  if (etat.selJours) {
+    var a = J[etat.selJours.a], b = J[etat.selJours.b]; if (!a || !b) return null;
+    var ta = tranchesDe(a), tb = tranchesDe(b), d1 = -1, f2 = -1, k;
+    for (k = 0; k < TR_N; k++) if (ouvertT(ta[k])) { d1 = k; break; }
+    for (k = TR_N - 1; k >= 0; k--) if (ouvertT(tb[k])) { f2 = k; break; }
+    if (d1 < 0 || f2 < 0) return null;
+    var pa = a.d.split('-').map(Number), pb = b.d.split('-').map(Number);
+    var deb = new Date(pa[0], pa[1] - 1, pa[2], Math.floor((TR_DEBUT + d1 * TR_PAS) / 60), (TR_DEBUT + d1 * TR_PAS) % 60);
+    var mf = TR_DEBUT + (f2 + 1) * TR_PAS;
+    var fin = new Date(pb[0], pb[1] - 1, pb[2], Math.floor(mf / 60), mf % 60);
+    return { jour: a.d, heure: hhmmT(d1), duree: Math.round((fin - deb) / 60000),
+             fin: hhmmT(f2 + 1), jours: etat.selJours.b - etat.selJours.a + 1 };
+  }
+  return null;
+}
+
+function majVerdictAmi() {
+  var m = momentAmi(), dit = $('ami-verdict'), cb = $('ami-combien'), suite = $('ami-suite');
+  if (!m) {
+    dit.innerHTML = '<em>' + (etat.grOuvert !== null
+      ? T('Glisse ton doigt dans la journée.', 'Slide your finger inside the day.')
+      : T('Touche un jour, ou glisse sur les lignes.', 'Tap a day, or slide across the rows.')) + '</em>';
+    cb.textContent = ''; suite.hidden = true; return;
+  }
+  suite.hidden = false;
+  if (m.jours > 1) {
+    dit.innerHTML = '<b>' + T('du ', 'from ') + libJour(etat.grille[etat.selJours.a].d) + T(' au ', ' to ')
+      + libJour(etat.grille[etat.selJours.b].d) + '</b>'
+      + '<small>' + T('arrivée ', 'arriving ') + libHeure(m.heure) + T(' · départ ', ' · leaving ') + libHeureFin(m.fin)
+      + T(' — ouvre le premier ou le dernier jour pour ajuster', ' — open the first or last day to adjust') + '</small>';
+    cb.textContent = m.jours + T(' jours', ' days');
   } else {
-    var ordonnees = AMI.zones.filter(function(z){ return etat.zonesAmi.indexOf(z.id) >= 0; });
-    var quoi = n === 3 ? T('Toute la journée', 'The whole day')
-                       : ordonnees.map(function(z){ return T(z.fr, z.en); }).join(' + ');
-    aide.textContent = quoi + ' · ' + ordonnees[0].de + ' – ' + ordonnees[ordonnees.length - 1].a +
-      (n > 1 && !zonesContigues() ? T(' (tout ce qu\'il y a entre les deux est pris aussi)',
-                                      ' (everything in between is taken too)') : '');
+    var fin = etat.selHeures ? libT(etat.selHeures.b + 1) : libHeureFin(m.fin);
+    dit.innerHTML = '<b>' + libJour(m.jour) + '</b><br>' + T('de ', 'from ') + libHeure(m.heure) + T(' à ', ' to ') + fin
+      + (etat.selJours ? '<small>' + T('ouvre la journée pour ajuster', 'open the day to adjust') + '</small>' : '');
+    cb.textContent = libDureeAmi(m.duree);
   }
 }
-function zonesContigues() {
-  var rangs = AMI.zones.map(function(z, i){ return etat.zonesAmi.indexOf(z.id) >= 0 ? i : -1; })
-                       .filter(function(i){ return i >= 0; });
-  return rangs.length < 2 || (rangs[rangs.length - 1] - rangs[0] + 1) === rangs.length;
-}
-function majTotalAmi() {
-  if (etat.zonesAmi.length) {
-    var o = AMI.zones.filter(function(z){ return etat.zonesAmi.indexOf(z.id) >= 0; });
-    $('total-ami').textContent = etat.zonesAmi.length === 3
-      ? T('Tu prends la journée.', 'You are taking the whole day.')
-      : T('Tu prends ' + o.map(function(z){ return T(z.fr, z.en).toLowerCase(); }).join(' et ') + '.',
-          'You are taking ' + o.map(function(z){ return T(z.fr, z.en).toLowerCase(); }).join(' and ') + '.');
-  } else if (etat.dureeAmi) {
-    $('total-ami').textContent = T('Tu prends ' + libDureeAmi(etat.dureeAmi) + '.',
-                                   'You are taking ' + libDureeAmi(etat.dureeAmi) + '.');
-  } else {
-    $('total-ami').textContent = '';
-  }
+
+/** On retient le moment : il devient jour + heure + durée, ce que le serveur attend déjà. */
+function validerMomentAmi() {
+  var m = momentAmi(); if (!m) return;
+  etat.jour = m.jour; etat.heure = m.heure; etat.dureeAmi = m.duree; etat.zonesAmi = [];
+  $('bloc-fin-ami').hidden = m.duree < 1440;
+  if (m.fin) $('fin-heure-ami').value = m.fin;
+  rendreRecap(); allerPas(4);
 }
 
 /* ─── 1. SOINS ─── */
@@ -1000,7 +1223,7 @@ function rendreRecap() {
     }
     $('recap').innerHTML = '<b>' + libJour(etat.jour) + ' · ' + libHeure(etat.heure) + '</b><br>' +
       libDureeAmi(dureeTotale()) + T(' avec Kevin.', ' with Kevin.') +
-      (dureeTotale() >= 1440 ? '<br>' + T('Départ vers ', 'Leaving around ') + libHeure($('fin-heure-ami').value || '11:00') : '');
+      (dureeTotale() >= 1440 ? '<br>' + T('Départ vers ', 'Leaving around ') + libHeureFin($('fin-heure-ami').value || '11:00') : '');
     return;
   }
   var n = etat.personnes.length;
@@ -1010,7 +1233,7 @@ function rendreRecap() {
     '<br>' + T('Total : ', 'Total: ') + '<b>' + prixTotal() + ' $</b> + tx · ' + T('Waterville, adresse envoyée après confirmation.', 'Waterville, address sent after confirmation.');
 }
 function rendreTout() {
-  if (etat.ami) { rendreGrille(); rendreDureesAmi(); }
+  if (etat.ami) { rendreGrille(); majVerdictAmi(); }
   else { rendreSoins(); rendrePersonnes(); rendreBeneficiaires(); }
   if (Object.keys(etat.dispo).length) { rendreSuggestions(); rendreJours(); } if (etat.jour) rendreHeures(); if (etat.heure) rendreRecap();
 }
@@ -1113,6 +1336,7 @@ function quitterAmi(viderLeChamp) {
   basculerAmi(false);
 }
 $('btn-quitter-ami').addEventListener('click', function() { quitterAmi(true); });
+$('ami-suite').addEventListener('click', function() { validerMomentAmi(); });
 $('gr-prec').addEventListener('click', function() {
   etat.grOffset = Math.max(0, etat.grOffset - AMI.grillePas);
   chargerGrille();
@@ -1120,10 +1344,6 @@ $('gr-prec').addEventListener('click', function() {
 $('gr-suiv').addEventListener('click', function() {
   etat.grOffset = Math.min(AMI.horizonJours - AMI.grillePas, etat.grOffset + AMI.grillePas);
   chargerGrille();
-});
-$('btn-plus-long').addEventListener('click', function() {
-  $('durees-longues').hidden = false;
-  this.hidden = true;
 });
 $('fin-heure-ami').addEventListener('change', function() { if (etat.heure) rendreRecap(); });
 
