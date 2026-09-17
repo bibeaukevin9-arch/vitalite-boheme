@@ -117,7 +117,13 @@
     body::before { opacity: .9; }
     .r-header { background: var(--noir); padding: 40px 24px 34px; border-bottom: 1px solid rgba(201,162,39,.4); }
     .r-header::after { content: ''; display: block; width: 60px; height: 1px; background: var(--or); margin: 18px auto 0; }
-    .r-header .logo { width: 84px; height: 84px; border: 1px solid var(--or); box-shadow: 0 0 0 6px rgba(201,162,39,.12); }
+    /* 66 px, pas 84 (Kevin, 2026-09-17 : « le logo est trop gros, dézoom »).
+       ⚠️ Le recadrage de l'image, lui, ne peut PAS se desserrer : « logo 2026.png » est en format
+       paysage et le mot VITALITÉ BOHÈME commence juste sous le VB. Élargir le cadrage fait entrer
+       ce mot, que le cercle coupe ; le prolonger par miroir duplique le B ; poser le logo entier
+       sur un fond uni recrée les bandes noires qu'on venait justement d'enlever. Les trois ont été
+       essayées et mesurées. C'est donc le CERCLE qui rapetisse, jamais le cadrage. */
+    .r-header .logo { width: 66px; height: 66px; border: 1px solid var(--or); box-shadow: 0 0 0 5px rgba(201,162,39,.12); }
     .r-header .badge { color: var(--or); border: 1px solid rgba(201,162,39,.5); padding: 5px 18px; border-radius: 2px; }
     .r-header h1 { color: var(--creme); font-size: 40px; font-weight: 400; }
     .r-header h1 em { color: var(--or); }
@@ -240,7 +246,19 @@
     .periodes .heure { font-size: 15px; font-family: inherit; letter-spacing: .3px; padding: 12px 6px; }
     /* Le champ de code vit hors des cartes, pour rester atteignable quel que soit l'écran
        affiché. Il s'aligne sur elles et garde le même retrait latéral. */
-    .zone-code.hors-carte { margin: -6px 0 22px; padding: 0 26px; }
+    /* Le bandeau du code : hors des cartes, au-dessus de tout, et ouvert.
+       Assez présent pour se voir du premier coup d'œil, assez sobre pour ne pas voler la
+       vedette aux soins — c'est eux qu'on vient choisir. */
+    .bandeau-code { max-width: 640px; margin: 0 auto 18px; padding: 16px 20px;
+      background: rgba(255,255,255,.5); border: 1px solid rgba(201,162,39,.35); border-radius: 2px; }
+    .bandeau-code .champ { margin: 0; }
+    .bandeau-code label { display: block; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--or); margin-bottom: 6px; }
+    .bandeau-code input { width: 100%; font: inherit; font-size: 16px; padding: 11px 12px;
+      border: 1px solid rgba(201,162,39,.4); border-radius: 2px; background: #fff; color: var(--texte); }
+    .bandeau-code input:focus { outline: none; border-color: var(--or); box-shadow: 0 0 0 3px rgba(201,162,39,.15); }
+    .code-echo { margin-top: 10px; font-size: 13px; line-height: 1.45; color: var(--vert);
+      border-left: 2px solid var(--vert); padding-left: 10px; }
     #bloc-fin-ami .champ { max-width: 180px; }
     #bloc-fin-ami input { font: inherit; font-size: 16px; padding: 10px 12px;
       border: 1px solid rgba(201,162,39,.35); border-radius: 2px; background: transparent; color: var(--texte); }
@@ -275,7 +293,7 @@
 <button class="lang-btn" id="lang-btn" onclick="toggleLang()"><span class="lbl actif" id="lbl-fr">FR</span><span class="sep">|</span><span class="lbl" id="lbl-en">EN</span></button>
 
 <header class="r-header">
-  <div class="logo"><img src="images/logo-vb-2026-rond2.png" alt="Vitalité Bohème" /></div>
+  <div class="logo"><img src="images/logo-vb-rond-plein.png" alt="Vitalité Bohème" /></div>
   <div class="badge"><span data-fr>Waterville, Estrie</span><span data-en>Waterville, Estrie</span></div>
   <h1 data-fr>Choisis ton <em>moment</em></h1>
   <h1 data-en>Pick your <em>moment</em></h1>
@@ -302,6 +320,25 @@
 
   <aside class="resume" id="resume"></aside>
 
+  <!-- ─── LE CHAMP DE CODE ───
+       Il vit ICI : hors des cartes, au-dessus de tout, et OUVERT.
+       ⚠️ Il était replié jusqu'au 2026-09-17, pour une raison qui tenait : une case de code
+       ouverte fait douter celui qui n'en a pas — il se croit en train de payer trop cher.
+       Kevin a tranché l'inverse le 17 : « je le trouve pas super visible, il faudrait vraiment
+       le mettre visible dès le départ, même au-dessus des chiffres ». Si les réservations
+       baissent, c'est la première chose à remettre en question.
+       ⛔ Hors des cartes, parce qu'un code peut faire basculer la page : dans la carte des soins,
+       il disparaîtrait avec elle et plus personne ne pourrait corriger une faute de frappe.
+       ⛔ Libellé neutre. Rien ici ne dit ce qu'un code peut ouvrir. -->
+  <div class="bandeau-code">
+    <div class="champ large">
+      <label for="promo"><span data-fr>Tu as un code ?</span><span data-en>Have a code?</span></label>
+      <input id="promo" name="promo" autocomplete="off" autocapitalize="characters" placeholder="819 000-0000">
+      <div class="aide"><span data-fr>Un seul code. Le numéro de la personne qui t'a parlé de nous en est un.</span><span data-en>One code only. The number of whoever told you about us counts as one.</span></div>
+    </div>
+    <div class="code-echo" id="code-echo" hidden></div>
+  </div>
+
   <section class="carte active" id="c-soin">
     <h2 data-num="I" data-fr>Ton temps de massage</h2>
     <h2 data-num="I" data-en>Your massage time</h2>
@@ -313,25 +350,6 @@
     <p class="total" id="total"></p>
   </section>
 
-  <!-- ─── LE CHAMP DE CODE, REPLIÉ ───
-       Déplacé de l'étape IV à ici le 2026-09-17, à la demande de Kevin. Trois raisons :
-       un code peut décider de tout le reste, il ne peut donc plus être demandé en dernier ;
-       il n'y a qu'UNE seule porte pour tous les codes ; et il vit HORS des cartes, sinon il
-       disparaîtrait avec la carte des soins dès qu'un code fait basculer la page — plus moyen
-       alors de corriger une faute de frappe.
-       ⛔ Le libellé reste « J'ai un code », neutre, et ne dit rien de ce qu'un code peut ouvrir.
-       ⛔ Et il reste REPLIÉ : une case de code ouverte fait douter celui qui n'en a pas — il se
-       croit en train de payer trop cher, et une partie de ces gens-là quittent la page. -->
-  <div class="zone-code hors-carte">
-    <button type="button" class="pli" id="pli" aria-expanded="false" aria-controls="champ-promo">
-      <svg id="pli-chev" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 L6 7.5 L9 4.5"></path></svg>
-      <span data-fr>J'ai un code</span><span data-en>I have a code</span>
-    </button>
-    <div class="champ large" id="champ-promo" hidden>
-      <label for="promo"><span data-fr>Code promo</span><span data-en>Promo code</span></label>
-      <input id="promo" name="promo" autocomplete="off" autocapitalize="characters" placeholder="819 000-0000">
-      <div class="aide"><span data-fr>Un seul code. Le numéro de la personne qui t'a parlé de nous en est un.</span><span data-en>One code only. The number of whoever told you about us counts as one.</span></div>
-    </div>
   </div>
 
   <!-- Écran de réservation de temps. Il remplace le choix du soin, il ne s'y ajoute pas.
@@ -885,27 +903,43 @@ $('pourqui').addEventListener('change', function(){
   rendreBeneficiaires();
 });
 
-/* ─── LE CHAMP DE CODE, REPLIÉ ───
-   Une case « code promo » ouverte fait douter celui qui n'en a pas : il se croit en train de
-   payer trop cher, et une partie de ces gens-là quittent pour aller chercher un code ailleurs.
-   Repliée derrière un lien, elle reste à un clic pour ceux qui en ont un.
-   ⛔ Une SEULE porte pour tous les codes, et un libellé neutre. */
-$('pli').addEventListener('click', function() {
-  var ferme = $('champ-promo').hidden;
-  $('champ-promo').hidden = !ferme;
-  this.classList.toggle('ouvert', ferme);
-  this.setAttribute('aria-expanded', ferme ? 'true' : 'false');
-  if (ferme) $('promo').focus();
-});
-/* La bascule se fait sur la frappe, sans bouton « valider » : un geste de moins. Tout autre code
-   (bienvenue, parrainage, numéro de téléphone) traverse ce champ sans rien changer à l'écran et
-   part au serveur comme avant — lui seul décide de ce qu'il vaut. */
+/* ─── LE CHAMP DE CODE ───
+   ⛔ Une SEULE porte pour tous les codes, et un libellé neutre.
+   Un code qui ne vaut que pour un soin précis LE CHOISIT tout de suite (Kevin, 2026-09-17 :
+   « si on écrit le code qui sélectionne les 90 minutes, ben ça sélectionne les 90 minutes tout
+   de suite »). Ça évite l'aller-retour : sans ça, le serveur renvoyait `promo_soin` et la
+   personne devait deviner qu'il fallait revenir changer son soin.
+   Les codes listés ici sont déjà publics — ils vivent dans les posts et les courriels de Kevin.
+   Un code ami, lui, n'est jamais écrit : seule son empreinte l'est, plus haut. */
+var CODES_SOIN = { 'BOHEME90': 'suedois90', 'PARRAIN': 'suedois90' };
+function soinDuCode(v) {
+  if (CODES_SOIN[v]) return CODES_SOIN[v];
+  // Un numéro de téléphone, ou le code personnel d'un client : parrainage, donc 90 min.
+  var chiffres = v.replace(/\D/g, '');
+  if (chiffres.length >= 10 && chiffres.length <= 11) return 'suedois90';
+  if (v.indexOf('VB-') === 0 && v.length > 3) return 'suedois90';
+  return '';
+}
 $('promo').addEventListener('input', function() {
   var v = this.value.trim().toUpperCase().replace(/\s+/g, '');
+  var echo = $('code-echo');
   empreinteDe(v).then(function (e) {
-    var correspond = e === AMI.empreinte;
-    if (correspond && !etat.ami) { AMI.saisi = v; basculerAmi(true); }
-    else if (!correspond && etat.ami) { AMI.saisi = ''; quitterAmi(false); }
+    if (e === AMI.empreinte) {
+      if (!etat.ami) { AMI.saisi = v; basculerAmi(true); }
+      echo.hidden = true;
+      return;
+    }
+    if (etat.ami) { AMI.saisi = ''; quitterAmi(false); }
+    var sid = soinDuCode(v);
+    if (sid && (!etat.personnes.length || etat.personnes[0].id !== sid)) {
+      var s = soinParId(sid);
+      choisirSoin(sid);
+      echo.hidden = false;
+      echo.innerHTML = T('Ce code vaut pour le ' + s.min + ' min : je l\'ai choisi pour toi.',
+                         'This code applies to the ' + s.min + ' min: it is now selected.');
+    } else if (!v) {
+      echo.hidden = true;
+    }
   });
 });
 function quitterAmi(viderLeChamp) {
