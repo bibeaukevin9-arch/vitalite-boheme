@@ -117,13 +117,9 @@
     body::before { opacity: .9; }
     .r-header { background: var(--noir); padding: 40px 24px 34px; border-bottom: 1px solid rgba(201,162,39,.4); }
     .r-header::after { content: ''; display: block; width: 60px; height: 1px; background: var(--or); margin: 18px auto 0; }
-    /* 66 px, pas 84 (Kevin, 2026-09-17 : « le logo est trop gros, dézoom »).
-       ⚠️ Le recadrage de l'image, lui, ne peut PAS se desserrer : « logo 2026.png » est en format
-       paysage et le mot VITALITÉ BOHÈME commence juste sous le VB. Élargir le cadrage fait entrer
-       ce mot, que le cercle coupe ; le prolonger par miroir duplique le B ; poser le logo entier
-       sur un fond uni recrée les bandes noires qu'on venait justement d'enlever. Les trois ont été
-       essayées et mesurées. C'est donc le CERCLE qui rapetisse, jamais le cadrage. */
-    .r-header .logo { width: 66px; height: 66px; border: 1px solid var(--or); box-shadow: 0 0 0 5px rgba(201,162,39,.12); }
+    /* Le cercle est revenu à 78 px : c'est le LOGO qui a de l'air maintenant, plus besoin de
+       rapetisser le cadre. Voir la note sur l'image, plus bas dans le <body>. */
+    .r-header .logo { width: 78px; height: 78px; border: 1px solid var(--or); box-shadow: 0 0 0 5px rgba(201,162,39,.12); }
     .r-header .badge { color: var(--or); border: 1px solid rgba(201,162,39,.5); padding: 5px 18px; border-radius: 2px; }
     .r-header h1 { color: var(--creme); font-size: 40px; font-weight: 400; }
     .r-header h1 em { color: var(--or); }
