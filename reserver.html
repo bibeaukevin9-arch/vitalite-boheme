@@ -225,6 +225,25 @@
        gardait ses 28 px de marge et chaque case de jour tombait à 32 px de
        large. Sur un écran de 375 px, le doigt visait 32 px pour choisir son
        jour — c'est la toute première chose qu'on touche sur cette page.
+    /* ─── Parcours ami (2026-09-17) ───────────────────────────────────
+       Aucune couleur neuve, aucune forme neuve : les durées et les bouts de journée
+       empruntent la robe des boutons d'heure, déjà définie plus haut. Ce bloc ne pose
+       que les étiquettes de section et la grille, pour que l'écran garde exactement
+       le thème du reste de la page. */
+    .etiq-ami { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--or);
+      margin: 22px 0 8px; }
+    .aide-ami { font-size: 11px; color: var(--gris); margin: 8px 0 0; line-height: 1.4; }
+    .durees, .periodes { display: grid; gap: 8px; }
+    .durees { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); }
+    .periodes { grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); }
+    /* 12 px de haut plutôt que 10 : mesuré à 41 px sur un 375, sous la norme tactile de 44. */
+    .periodes .heure { font-size: 15px; font-family: inherit; letter-spacing: .3px; padding: 12px 6px; }
+    #bloc-fin-ami .champ { max-width: 180px; }
+    #bloc-fin-ami input { font: inherit; font-size: 16px; padding: 10px 12px;
+      border: 1px solid rgba(201,162,39,.35); border-radius: 2px; background: transparent; color: var(--texte); }
+    #envie { min-height: 84px; resize: vertical; }
+
+    /* ═══════════════════════════════════════════════════════════════════
        Mesuré le 2026-09-11 : 375 − 40 (page) − 56 (carte) = 277 px pour sept
        jours. Ici on rend 28 px à la page et 28 à la carte : 319 px, donc des
        cases de 42 px. La norme tactile est 44.
@@ -289,6 +308,61 @@
     <div class="personnes" id="personnes"></div>
     <button type="button" class="lien-bouton" id="btn-ajouter" hidden><span data-fr>+ Ajouter une personne</span><span data-en>+ Add a person</span></button>
     <p class="total" id="total"></p>
+
+    <!-- Le code des amis. ⚠️ Il lui faut sa propre porte, ICI et pas à l'étape IV : c'est lui qui
+         décide de tout le reste, et un ami ne doit pas choisir un soin avant de l'avoir tapé.
+         Le pli du bas (« J'ai un code ») reste intact pour les codes promo — et reste replié,
+         pour la raison écrite plus bas : une case ouverte fait douter celui qui n'a pas de code. -->
+    <div class="zone-code" id="zone-code-ami">
+      <button type="button" class="pli" id="pli-ami" aria-expanded="false" aria-controls="champ-ami">
+        <svg id="pli-ami-chev" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5 L6 7.5 L9 4.5"></path></svg>
+        <span data-fr>Kevin t'a donné un code ?</span><span data-en>Kevin gave you a code?</span>
+      </button>
+      <div class="champ large" id="champ-ami" hidden>
+        <label for="code-ami"><span data-fr>Ton code</span><span data-en>Your code</span></label>
+        <input id="code-ami" autocomplete="off" autocapitalize="characters" placeholder="AMI000">
+        <div class="aide" id="aide-code-ami"><span data-fr>Celui qu'il t'a dit de vive voix.</span><span data-en>The one he told you in person.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────────────────────────────────────────────────────────────────────
+       LE PARCOURS AMI. Il remplace le choix du soin, il ne s'y ajoute pas.
+       Kevin, 2026-09-16 : « quand le code ami apparaît, les soins ne font plus partie du jeu,
+       ce n'est pas un massage, c'est du temps de connexion ». Donc aucun prix nulle part,
+       aucun questionnaire de santé, et la durée se compte en heures ou en jours.
+       La durée et le bout de journée vivent sur le MÊME écran (demande du 2026-09-17).
+       ───────────────────────────────────────────────────────────────────────── -->
+  <section class="carte" id="c-ami" hidden>
+    <button type="button" class="retour-etape" id="btn-quitter-ami"><span data-fr>← Revenir aux soins</span><span data-en>← Back to treatments</span></button>
+    <h2 data-num="I" data-fr>Du temps ensemble</h2>
+    <h2 data-num="I" data-en>Time together</h2>
+    <p class="sous" data-fr>Pas un massage : un moment. L'heure que tu choisiras sera l'heure où ça commence.</p>
+    <p class="sous" data-en>Not a massage: a moment. The time you pick is when it starts.</p>
+
+    <p class="etiq-ami" data-fr>Combien de temps</p>
+    <p class="etiq-ami" data-en>How long</p>
+    <div class="durees" id="durees-ami"></div>
+    <button type="button" class="lien-bouton" id="btn-plus-long"><span data-fr>+ Plus longtemps</span><span data-en>+ Longer</span></button>
+    <div class="durees" id="durees-longues" hidden></div>
+
+    <div id="bloc-periode" hidden>
+      <p class="etiq-ami" data-fr>À partir de</p>
+      <p class="etiq-ami" data-en>Starting</p>
+      <div class="periodes" id="periodes-ami"></div>
+      <p class="aide-ami" data-fr>Un raccourci pour filtrer les heures. Tu peux ne rien choisir et les voir toutes.</p>
+      <p class="aide-ami" data-en>A shortcut to filter the times. Leave it blank to see them all.</p>
+    </div>
+
+    <div id="bloc-fin-ami" hidden>
+      <p class="etiq-ami" data-fr>Tu repars vers quelle heure ?</p>
+      <p class="etiq-ami" data-en>What time do you head off?</p>
+      <div class="champ"><input id="fin-heure-ami" type="time" step="1800" value="11:00"></div>
+      <p class="aide-ami" data-fr>L'heure de ton départ, le dernier jour.</p>
+      <p class="aide-ami" data-en>Your leaving time, on the last day.</p>
+    </div>
+
+    <p class="total" id="total-ami"></p>
   </section>
 
   <section class="carte" id="c-jour" hidden>
@@ -356,6 +430,15 @@
       <!-- Qui reçoit le soin. Sans ça, Kevin ouvrait sa porte à un nom qu'il n'avait pas, et
            ne pouvait envoyer le questionnaire de santé à personne. Voir article 9.1.1 du RMPQ. -->
       <div id="beneficiaires"></div>
+
+      <!-- La boîte « on fait quoi », en mode ami seulement. ⛔ Une boîte à ÉCRIRE, jamais des
+           cases à cocher (Kevin, 2026-09-17). Ce qu'ils écrivent arrive tel quel dans son
+           courriel et dans l'événement — dans leurs mots, pas dans les nôtres. -->
+      <div class="champ large" id="bloc-envie" hidden>
+        <label for="envie"><span data-fr>On fait quoi ? (facultatif)</span><span data-en>What are we doing? (optional)</span></label>
+        <textarea id="envie" name="envie" rows="3" maxlength="500"></textarea>
+        <div class="aide"><span data-fr>Écris ce qui te tente. Kevin le lit avant de répondre.</span><span data-en>Write what you feel like. Kevin reads it before answering.</span></div>
+      </div>
 
       <div class="zone-code">
         <button type="button" class="pli" id="pli" aria-expanded="false" aria-controls="champ-promo">
@@ -439,15 +522,113 @@ function toggleLang() { applyLang(currentLang === 'fr' ? 'en' : 'fr'); }
 function T(fr, en) { return currentLang === 'en' ? en : fr; }
 
 /* ─── ÉTAT ─── */
-var etat = { personnes: [], jour: null, heure: null, dispo: {}, ouverts: [], colles: {}, semaine: 0, chargement: false, vueMois: false, mois: 0 };
+var etat = { personnes: [], jour: null, heure: null, dispo: {}, ouverts: [], colles: {}, semaine: 0, chargement: false, vueMois: false, mois: 0,
+  ami: false, dureeAmi: null, periodeAmi: '' };
 var $ = function(id) { return document.getElementById(id); };
 
 function dureeTotale() {
+  if (etat.ami) return etat.dureeAmi || 0;
   var n = etat.personnes.length; if (!n) return 0;
   return etat.personnes.reduce(function(a, s){ return a + s.min; }, 0) + REGLES.tamponGroupeMin * (n - 1);
 }
 function prixTotal() { return etat.personnes.reduce(function(a, s){ return a + s.prix; }, 0); }
 function soinParId(id) { return SOINS.filter(function(s){ return s.id === id; })[0]; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   PARCOURS AMI
+   ═══════════════════════════════════════════════════════════════════
+   Le code fait disparaître les soins et le prix. Kevin, 2026-09-16 : « quand le code ami
+   apparaît, les soins ne font plus partie du jeu, ce n'est pas un massage, c'est du temps
+   de connexion ». À partir de là, deux choses seulement : combien de temps, et quand — sur
+   le même écran (demande du 2026-09-17).
+   ⛔ Le code n'est PAS vérifié ici : le serveur seul décide. Le formulaire bascule sur la
+      forme du code, et une erreur de frappe revient du serveur comme n'importe quelle autre.  */
+var AMI = {
+  code: 'AMI284',
+  dureesCourtes: [60, 120, 180, 240, 360, 720],          // 1, 2, 3, 4, 6, 12 h
+  dureesLongues: [1440, 2880, 4320, 5760, 7200, 8640, 10080],  // 24 h, puis 2 à 7 jours
+  periodes: [
+    { id: 'matin', fr: 'Avant-midi', en: 'Morning' },
+    { id: 'apresmidi', fr: 'Après-midi', en: 'Afternoon' },
+    { id: 'soiree', fr: 'Soirée', en: 'Evening' }
+  ],
+  horizonJours: 120
+};
+function libDureeAmi(min) {
+  if (!min) return '';
+  if (min < 1440) return (min / 60) + ' h';
+  var j = Math.round(min / 1440);
+  return j === 1 ? '24 h' : j + T(' jours', ' days');
+}
+/** Entre et sort du mode ami. Tout ce qui appartient à l'autre parcours est remis à zéro. */
+function basculerAmi(actif) {
+  etat.ami = actif;
+  etat.personnes = []; etat.jour = null; etat.heure = null; etat.dispo = {}; etat.ouverts = []; etat.colles = {};
+  etat.dureeAmi = null; etat.periodeAmi = '';
+  $('c-soin').hidden = actif;
+  $('c-ami').hidden = !actif;
+  $('bloc-envie').hidden = !actif;
+  $('durees-longues').hidden = true;
+  $('btn-plus-long').hidden = false;
+  $('bloc-periode').hidden = true;
+  $('bloc-fin-ami').hidden = true;
+  $('total-ami').textContent = '';
+  // L'étape « Soin » devient « Temps » : c'est ce qu'on y choisit maintenant.
+  var onglet = document.querySelector('#pas span[data-pas="1"]');
+  if (onglet) onglet.innerHTML = actif
+    ? '<span data-fr>Temps</span><span data-en>Time</span>'
+    : '<span data-fr>Soin</span><span data-en>Treatment</span>';
+  // Les bénéficiaires et le « le soin est pour » n'ont aucun sens sans soin.
+  var pq = $('pourqui').closest('.champ'); if (pq) pq.hidden = actif;
+  $('beneficiaires').hidden = actif;
+  // Le bouton de retour de l'étape II parlait de soin : sans soin, il ramène au temps.
+  var retourJour = $('c-jour').querySelector('.retour-etape');
+  if (retourJour) retourJour.innerHTML = actif
+    ? '<span data-fr>← Changer de durée</span><span data-en>← Change duration</span>'
+    : '<span data-fr>← Changer de soin</span><span data-en>← Change treatment</span>';
+  if (actif) { rendreDureesAmi(); rendrePeriodesAmi(); }
+  applyLang(currentLang);   // les libellés qu'on vient d'injecter portent data-fr / data-en
+  allerPas(1);
+  $('c-ami').hidden = !actif;
+  if (actif) setTimeout(function(){ $('c-ami').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
+}
+function rendreDureesAmi() {
+  var faire = function(liste, cible) {
+    $(cible).innerHTML = liste.map(function(m) {
+      return '<button type="button" class="heure' + (etat.dureeAmi === m ? ' choisi' : '') + '" data-m="' + m + '">' + libDureeAmi(m) + '</button>';
+    }).join('');
+    $(cible).querySelectorAll('.heure').forEach(function(b) {
+      b.addEventListener('click', function(){ choisirDureeAmi(+b.getAttribute('data-m')); });
+    });
+  };
+  faire(AMI.dureesCourtes, 'durees-ami');
+  faire(AMI.dureesLongues, 'durees-longues');
+}
+function choisirDureeAmi(min) {
+  etat.dureeAmi = min; etat.jour = null; etat.heure = null; etat.dispo = {};
+  // Au-delà de 24 h, le bout de journée n'a plus de sens — l'heure touchée devient l'heure
+  // d'ARRIVÉE, et c'est l'heure de départ du dernier jour qu'il faut demander à la place.
+  var enJours = min >= 1440;
+  $('bloc-periode').hidden = enJours;
+  $('bloc-fin-ami').hidden = !enJours;
+  if (enJours) { etat.periodeAmi = ''; }
+  $('total-ami').textContent = T('Tu prends ' + libDureeAmi(min) + '.', 'You are taking ' + libDureeAmi(min) + '.');
+  rendreDureesAmi(); rendrePeriodesAmi();
+  allerPas(2); chargerDispo();
+}
+function rendrePeriodesAmi() {
+  $('periodes-ami').innerHTML = AMI.periodes.map(function(p) {
+    return '<button type="button" class="heure' + (etat.periodeAmi === p.id ? ' choisi' : '') + '" data-p="' + p.id + '">' + T(p.fr, p.en) + '</button>';
+  }).join('');
+  $('periodes-ami').querySelectorAll('.heure').forEach(function(b) {
+    b.addEventListener('click', function() {
+      var p = b.getAttribute('data-p');
+      etat.periodeAmi = etat.periodeAmi === p ? '' : p;   // retoucher la même la désélectionne
+      etat.jour = null; etat.heure = null; etat.dispo = {};
+      rendrePeriodesAmi(); allerPas(2); chargerDispo();
+    });
+  });
+}
 
 /* ─── 1. SOINS ─── */
 function rendreSoins() {
@@ -497,6 +678,8 @@ function libDuree(m) { var h = Math.floor(m / 60), r = m % 60; return h ? (h + '
 function allerPas(n) {
   document.querySelectorAll('#pas span[data-pas]').forEach(function(s) { var k = +s.getAttribute('data-pas'); s.classList.toggle('actif', k === n); s.classList.toggle('fait', k < n); });
   $('c-jour').hidden = n < 2; $('c-heure').hidden = n < 3; $('c-toi').hidden = n < 4; $('c-fin').hidden = true;
+  // En mode ami, l'étape I est la carte du temps, pas celle des soins — les deux ne coexistent jamais.
+  if (etat.ami) { $('c-soin').hidden = true; $('c-ami').hidden = false; }
   var cible = { 2: 'c-jour', 3: 'c-heure', 4: 'c-toi' }[n];
   if (cible) setTimeout(function(){ $(cible).scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
   // Le soin a pu changer depuis la dernière visite à l'étape IV : on refait les blocs
@@ -509,7 +692,7 @@ function allerPas(n) {
 /* ─── 2. JOURS ─── */
 function cleJour(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 function chargerDispo() {
-  if (!etat.personnes.length) return;
+  if (etat.ami ? !etat.dureeAmi : !etat.personnes.length) return;
   etat.chargement = true; $('attente-jours').hidden = false; $('erreur-jours').hidden = true; $('jours').innerHTML = '';
   var duree = dureeTotale();
   var fini = function(data) {
@@ -518,7 +701,11 @@ function chargerDispo() {
     etat.dispo = data.dispo || {}; etat.ouverts = data.ouverts || []; etat.colles = data.colles || {}; etat.semaine = premiereSemaineLibre(); etat.mois = 0; rendreSuggestions(); rendreJours();
   };
   if (!SCRIPT_URL) { setTimeout(function(){ fini(dispoDemo(duree)); }, 500); return; }
-  var url = SCRIPT_URL + '?action=dispo&duree=' + duree + '&jours=' + REGLES.horizonJours + '&_=' + Date.now();
+  // Le parcours ami interroge une autre porte : pas de fenêtre horaire, pas de délai, le spa
+  // n'empêche rien. Le bout de journée n'est qu'un filtre passé au serveur.
+  var url = etat.ami
+    ? SCRIPT_URL + '?action=dispo_ami&duree=' + duree + '&pe=' + encodeURIComponent(etat.periodeAmi || '') + '&code=' + encodeURIComponent(AMI.code) + '&_=' + Date.now()
+    : SCRIPT_URL + '?action=dispo&duree=' + duree + '&jours=' + REGLES.horizonJours + '&_=' + Date.now();
   fetch(url, { method: 'GET', redirect: 'follow' }).then(function(r){ return r.json(); }).then(fini).catch(function(){ etat.chargement = false; $('attente-jours').hidden = true; montrerErreurJours(); });
 }
 function montrerErreurJours() {
@@ -615,8 +802,9 @@ function libJour(k) {
 function rendreHeures() {
   if (!etat.jour) return;
   var heures = etat.dispo[etat.jour] || [];
-  $('heure-sous').textContent = T('Le ' + libJour(etat.jour) + ', pour ' + libDuree(dureeTotale()) + '. L\'heure choisie est celle du début.',
-                                  libJour(etat.jour) + ', for ' + libDuree(dureeTotale()) + '. The time you pick is the start time.');
+  var duree = etat.ami ? libDureeAmi(dureeTotale()) : libDuree(dureeTotale());
+  $('heure-sous').textContent = T('Le ' + libJour(etat.jour) + ', pour ' + duree + '. L\'heure choisie est celle du début.',
+                                  libJour(etat.jour) + ', for ' + duree + '. The time you pick is the start time.');
   var collees = etat.colles[etat.jour] || [];
   var ordre = heures.filter(function (h) { return collees.indexOf(h) >= 0; }).concat(heures.filter(function (h) { return collees.indexOf(h) < 0; }));
   $('heures').innerHTML = heures.length ? ordre.map(function(h){ var c = collees.indexOf(h) >= 0; return '<button type="button" class="heure' + (c ? ' collee' : '') + (etat.heure === h ? ' choisi' : '') + '" data-h="' + h + '">' + (c ? '<span class="etoile">✦ </span>' : '') + libHeure(h) + '</button>'; }).join('')
@@ -629,13 +817,24 @@ function rendreHeures() {
 /* ─── 4. RÉCAP + ENVOI ─── */
 function rendreRecap() {
   if (!etat.jour || !etat.heure) return;
+  // ⛔ Aucun prix, aucun soin, aucune mention d'adresse en mode ami.
+  if (etat.ami) {
+    $('recap').innerHTML = '<b>' + libJour(etat.jour) + ' · ' + libHeure(etat.heure) + '</b><br>' +
+      libDureeAmi(dureeTotale()) + T(' avec Kevin.', ' with Kevin.') +
+      (dureeTotale() >= 1440 ? '<br>' + T('Départ vers ', 'Leaving around ') + libHeure($('fin-heure-ami').value || '11:00') : '');
+    return;
+  }
   var n = etat.personnes.length;
   $('recap').innerHTML = '<b>' + libJour(etat.jour) + ' · ' + libHeure(etat.heure) + '</b><br>' +
     etat.personnes.map(function(s, i){ return (n > 1 ? (i + 1) + '. ' : '') + s.min + ' min · ' + T(s.fr, s.en) + ' · ' + s.prix + ' $ + tx'; }).join('<br>') +
     (n > 1 ? '<br>' + T('L\'une après l\'autre, ' + REGLES.tamponGroupeMin + ' min entre chaque.', 'One after the other, ' + REGLES.tamponGroupeMin + ' min between each.') : '') +
     '<br>' + T('Total : ', 'Total: ') + '<b>' + prixTotal() + ' $</b> + tx · ' + T('Waterville, adresse envoyée après confirmation.', 'Waterville, address sent after confirmation.');
 }
-function rendreTout() { rendreSoins(); rendrePersonnes(); rendreBeneficiaires(); if (Object.keys(etat.dispo).length) { rendreSuggestions(); rendreJours(); } if (etat.jour) rendreHeures(); if (etat.heure) rendreRecap(); }
+function rendreTout() {
+  if (etat.ami) { rendreDureesAmi(); rendrePeriodesAmi(); }
+  else { rendreSoins(); rendrePersonnes(); rendreBeneficiaires(); }
+  if (Object.keys(etat.dispo).length) { rendreSuggestions(); rendreJours(); } if (etat.jour) rendreHeures(); if (etat.heure) rendreRecap();
+}
 /* ─── QUI REÇOIT LE SOIN ───
    Avant le 2026-09-10, Kevin recevait « Pour : une autre personne » et rien d'autre : aucun nom,
    donc personne à qui envoyer le questionnaire de santé. Et une réservation à deux ne portait
@@ -703,6 +902,35 @@ $('pli').addEventListener('click', function() {
   if (ferme) $('promo').focus();
 });
 
+/* ─── LA PORTE DES AMIS ───
+   Même logique de pli, en haut cette fois : le code décide de tout le reste, donc il doit se
+   taper avant le choix du temps. Il reste replié pour la même raison que le pli du bas. */
+$('pli-ami').addEventListener('click', function() {
+  var ferme = $('champ-ami').hidden;
+  $('champ-ami').hidden = !ferme;
+  this.classList.toggle('ouvert', ferme);
+  this.setAttribute('aria-expanded', ferme ? 'true' : 'false');
+  if (ferme) $('code-ami').focus();
+});
+/* La bascule se fait sur la frappe, sans bouton « valider » : un geste de moins.
+   ⛔ Le code n'est pas une preuve — le serveur seul décide. Ici on ne fait que changer d'écran. */
+$('code-ami').addEventListener('input', function() {
+  var v = this.value.trim().toUpperCase().replace(/\s+/g, '');
+  if (v === AMI.code && !etat.ami) { basculerAmi(true); }
+});
+$('btn-quitter-ami').addEventListener('click', function() {
+  $('code-ami').value = '';
+  basculerAmi(false);
+  $('champ-ami').hidden = true;
+  $('pli-ami').classList.remove('ouvert');
+  $('pli-ami').setAttribute('aria-expanded', 'false');
+});
+$('btn-plus-long').addEventListener('click', function() {
+  $('durees-longues').hidden = false;
+  this.hidden = true;
+});
+$('fin-heure-ami').addEventListener('change', function() { if (etat.heure) rendreRecap(); });
+
 /* ⛔ Les 30 minutes automatiques ont été retirées le 2026-09-10 (décision de Kevin).
    La récompense du parrain est UNE seule chose et elle se réclame avec le code PARRAIN :
    un 90 min au prix du 60. Rien ne s'applique dans le dos du client. */
@@ -712,11 +940,16 @@ $('btn-retour').addEventListener('click', function(){ allerPas(3); });
 $('form').addEventListener('submit', function(e) {
   e.preventDefault();
   var f = e.target, err = $('erreur-envoi'); err.hidden = true;
-  var manque = ['prenom', 'nom', 'courriel', 'tel'].filter(function(id){ return !$(id).value.trim(); });
-  if (manque.length) { err.hidden = false; err.textContent = T('Il manque : prénom, nom, courriel et téléphone sont nécessaires.', 'Missing: first name, last name, email and phone are required.'); $(manque[0]).focus(); return; }
+  // Un ami donne trois choses : son prénom, son courriel, son numéro. Son nom de famille, Kevin
+  // l'a déjà — le redemander serait de la collecte pour rien.
+  var requis = etat.ami ? ['prenom', 'courriel', 'tel'] : ['prenom', 'nom', 'courriel', 'tel'];
+  var manque = requis.filter(function(id){ return !$(id).value.trim(); });
+  if (manque.length) { err.hidden = false; err.textContent = etat.ami
+    ? T('Il manque : prénom, courriel et téléphone.', 'Missing: first name, email and phone.')
+    : T('Il manque : prénom, nom, courriel et téléphone sont nécessaires.', 'Missing: first name, last name, email and phone are required.'); $(manque[0]).focus(); return; }
   if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test($('courriel').value.trim())) { err.hidden = false; err.textContent = T('Le courriel ne semble pas complet.', 'The email address looks incomplete.'); $('courriel').focus(); return; }
   if ($('tel').value.replace(/\D/g, '').length < 10) { err.hidden = false; err.textContent = T('Le téléphone doit avoir 10 chiffres.', 'The phone number needs 10 digits.'); $('tel').focus(); return; }
-  var benefs = beneficiaires();
+  var benefs = etat.ami ? [] : beneficiaires();   // aucun bénéficiaire sans soin
   for (var bi = 0; bi < benefs.length; bi++) {
     var b = benefs[bi];
     if (!b.prenom || !b.nom || b.tel.replace(/\D/g, '').length < 10) {
@@ -734,18 +967,26 @@ $('form').addEventListener('submit', function(e) {
   if (!$('consent').checked) { err.hidden = false; err.textContent = T('Coche la case pour confirmer que tu as lu la politique.', 'Tick the box to confirm you have read the policy.'); return; }
   var demande = {
     action: 'demande', lang: currentLang, jour: etat.jour, heure: etat.heure,
-    soins: etat.personnes.map(function(s){ return s.id; }),
+    soins: etat.ami ? [] : etat.personnes.map(function(s){ return s.id; }),
     prenom: $('prenom').value.trim(), nom: $('nom').value.trim(), courriel: $('courriel').value.trim(), tel: $('tel').value.trim(),
     pourqui: $('pourqui').value, promo: $('promo').value.trim().toUpperCase(), note: $('note').value.trim(), site_web: f.site_web.value,
     infolettre: $('infolettre').checked,
     beneficiaires: benefs
   };
+  // Le parcours ami porte sa durée et son envie, jamais un soin ni un prix. Le code passe par le
+  // même champ `promo` : c'est lui qui, côté serveur, fait basculer toute la demande.
+  if (etat.ami) {
+    demande.promo = AMI.code;
+    demande.duree = dureeTotale();
+    demande.envie = $('envie').value.trim();
+    if (dureeTotale() >= 1440) demande.fin_heure = $('fin-heure-ami').value || '11:00';
+  }
   f.hidden = true; $('attente-envoi').hidden = false;
   var fini = function(data) {
     $('attente-envoi').hidden = true;
     if (data && data.ok) {
       $('c-toi').hidden = true; $('c-fin').hidden = false;
-      $('fin-detail').innerHTML = '<b>' + libJour(etat.jour) + ' · ' + libHeure(etat.heure) + '</b> · ' + libDuree(dureeTotale());
+      $('fin-detail').innerHTML = '<b>' + libJour(etat.jour) + ' · ' + libHeure(etat.heure) + '</b> · ' + (etat.ami ? libDureeAmi(dureeTotale()) : libDuree(dureeTotale()));
       document.querySelectorAll('#pas span[data-pas]').forEach(function(s){ s.classList.add('fait'); s.classList.remove('actif'); });
       $('c-fin').scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else {
