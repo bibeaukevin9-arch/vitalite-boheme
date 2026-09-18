@@ -257,67 +257,137 @@
     .h-titre { flex: 1; text-align: center; font-size: 12px; letter-spacing: 1.5px;
       text-transform: uppercase; color: var(--gris); }
 
-    .h-jour { display: flex; align-items: center; gap: 13px; width: 100%; padding: 12px 6px;
-      border: 0; border-bottom: 1px solid rgba(58,46,40,.12); background: none; color: inherit;
-      font: inherit; text-align: left; cursor: pointer; border-radius: 3px; }
-    .h-jour .quand { flex: none; width: 92px; }
-    .h-jour .quand b { display: block; font-weight: 600; font-size: 15px; color: var(--texte);
-      text-transform: capitalize; line-height: 1.2; }
-    .h-jour .quand span { font-size: 12px; color: var(--gris); font-variant-numeric: tabular-nums; }
-    .h-jour .libres { flex: none; font-size: 12px; color: var(--gris); width: 88px;
-      text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-    .h-jour[aria-expanded="true"] .quand b { color: var(--or); }
-    .h-jour[data-sel="1"] { background: rgba(107,87,68,.12); }
-    .h-jour[data-sel="1"] .fil { box-shadow: 0 0 0 2px var(--or); }
+    /* Trois cibles, aucun mode. La date prend la journee ; une section prend ce bout de
+       journee et ouvre son detail ; dans le detail, on dit de quand a quand.
+       Tout au toucher. Aucun carre aligne : une suite de tranches identiques forme une plage,
+       et la plage ecrit elle-meme de quand a quand elle va.
+       Les quatre etats : champagne #eedbaf (libre), voile #cdbda2 (spa), taupe #9b8a76 (pris),
+       brume #e6ded1 (passe). Saturation 36 %, ecart libre/pris 80 sur 255. */
+    .h-ligne { display: flex; align-items: stretch; gap: 10px; margin-bottom: 8px; }
 
-    .fil { flex: 1; display: flex; height: 22px; border-radius: 99px; overflow: hidden;
-      min-width: 0; background: #efe6d8; touch-action: none; }
-    .fil i { display: block; min-width: 0; }
+    .h-date { flex: none; width: 66px; background: transparent; border: 1px solid transparent;
+      border-radius: 2px; cursor: pointer; font: inherit; color: inherit; padding: 5px 3px;
+      display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+      transition: border-color .15s, background .15s; }
+    .h-date b { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 22px; font-weight: 400;
+      color: var(--texte); line-height: 1; font-variant-numeric: tabular-nums; }
+    .h-date span { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--gris); margin-top: 3px; }
+    .h-date:hover:not(:disabled) { border-color: rgba(201,162,39,.35); }
+    .h-date[aria-pressed="true"] { background: #6b5744; border-color: #6b5744; align-items: center; }
+    .h-date[aria-pressed="true"] b { color: #f2e5c8; }
+    .h-date[aria-pressed="true"] span { color: #f2e5c8; opacity: .72; }
+    .h-date:disabled { opacity: .28; cursor: not-allowed; }
 
-    /* Les quatre états. Champagne, voile, taupe, brume. */
-    .e-libre { background: linear-gradient(104deg, #f2e3bd, #e8d4a4); }
-    /* ⛔ Le voile est LARGE (18 px) : à 5 px les rayures vibraient, et ça fatigue à soi seul. */
-    .e-mou { background: repeating-linear-gradient(120deg, transparent, transparent 9px,
-      rgba(122,106,76,.26) 9px, rgba(122,106,76,.26) 18px), #cdbda2; }
-    .e-dur { background: #9b8a76; }
-    .e-passe { background: #e6ded1; }
+    .h-secs { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; min-width: 0; }
+    .h-sec { background: transparent; border: 1px solid rgba(201,162,39,.35); border-radius: 2px;
+      padding: 9px 7px 8px; cursor: pointer; font: inherit; color: var(--texte); text-align: left;
+      display: flex; flex-direction: column; gap: 6px; min-width: 0;
+      transition: border-color .15s, background .15s; }
+    .h-sec .nom { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 15px;
+      color: var(--texte); line-height: 1; }
+    /* ⛔ Pas une jauge : une jauge dit COMBIEN, le ruban dit OÙ. Les tranches sont à leur vraie
+       place dans la section — on voit d'un coup si le libre est d'un seul tenant ou en miettes.
+       ⛔ TOUT se dit dans le ruban, jamais sur le carré : le carré reste propre. */
+    .h-sec .ruban { display: flex; height: 5px; overflow: hidden; }
+    .h-sec .ruban i { display: block; min-width: 0; }
+    .r-libre { background: #eedbaf; }
+    /* ⭐ Le spa n'est NI libre NI pris — c'est ce que Kevin arbitre. Il alterne donc les deux
+       couleurs, à même le ruban. Une couleur à lui aurait demandé une légende ; ces rayures-là
+       se lisent toutes seules : moitié libre, moitié occupé, donc négociable.
+       ⭐ DE BIAIS, 45°, 4 px : choix de Kevin (« B ») sur la planche des six façons, 2026-09-17.
+       ⛔ Ne pas revenir à la verticale : à 90° les rayures s'alignent sur les tranches voisines
+          et se relisent comme des cellules — c'est le carré aligné qui rentre par la fenêtre. */
+    .r-mou   { background: repeating-linear-gradient(135deg,
+                 #eedbaf 0 4px, #9b8a76 4px 8px); }
+    .r-dur   { background: #9b8a76; }
+    .r-passe { background: #e6ded1; }
+    .h-sec .dit { font-size: 9.5px; letter-spacing: 1.2px; text-transform: uppercase;
+      color: var(--gris); line-height: 1.2; }
+    .h-sec:hover:not(:disabled) { border-color: var(--or); }
+    /* ⛔ Le carré du spa ne porte RIEN : ni fond hachuré, ni cadre en pointillé. Kevin,
+       2026-09-17 : « les carrés de spa avec les lignes, j'aime pas ça ». Le ruban rayé et le
+       mot « le spa » le disent deux fois — le carré n'a pas à le redire une troisième. */
+    .h-sec.complet { opacity: .42; cursor: not-allowed; }
+    .h-sec.passe { opacity: .25; cursor: not-allowed; }
+    .h-sec.choisi { background: #6b5744; border-color: #6b5744; }
+    .h-sec.choisi .nom { color: #f2e5c8; }
+    .h-sec.choisi .dit { color: #f2e5c8; opacity: .75; }
+    /* Sur le brun du choisi, le ruban garde son sol clair : sans ça, le « pris » se confondrait
+       avec le fond de la section et le ruban dirait « tout libre ». */
+    .h-sec.choisi .ruban { background: rgba(242,229,200,.22); }
+    .h-sec.choisi .r-libre { background: #eedbaf; }
+    .h-sec.choisi .r-mou   { background: repeating-linear-gradient(135deg,
+                               #eedbaf 0 4px, rgba(20,16,13,.55) 4px 8px); }
+    .h-sec.choisi .r-dur   { background: rgba(20,16,13,.55); }
+    .h-sec.choisi .r-passe { background: rgba(242,229,200,.18); }
 
-    .h-tiroir { display: none; padding: 6px 0 14px; }
-    .h-tiroir.ouvert { display: block; }
-    .h-horloge { display: flex; gap: 11px; align-items: stretch; }
-    .h-regle { flex: none; width: 56px; position: relative; font-variant-numeric: tabular-nums; }
-    .h-regle i { position: absolute; right: 0; font-style: normal; font-size: 12px;
-      color: var(--gris); transform: translateY(-50%); white-space: nowrap; }
-    .h-bande { position: relative; flex: 1; border-radius: 4px; overflow: hidden; min-width: 0;
-      touch-action: none; -webkit-user-select: none; user-select: none; cursor: ns-resize;
-      background: #efe6d8; height: clamp(420px, 58vh, 620px); }
-    .h-seg { position: absolute; left: 0; right: 0; overflow: hidden; display: flex;
-      align-items: center; justify-content: center; }
-    .h-seg span { font-size: 13px; text-align: center; padding: 0 10px; line-height: 1.3;
-      pointer-events: none; }
-    .h-seg.e-libre span, .h-seg.e-mou span { color: #5a4735; font-weight: 500; }
-    .h-seg.e-dur span { color: #f6efe4; opacity: .75; }
-    .h-sel { position: absolute; left: 0; right: 0; display: none; pointer-events: none;
-      background: #6b5744; box-shadow: 0 0 0 1.5px var(--or) inset; }
-    .h-sel.on { display: flex; align-items: center; justify-content: center; }
-    .h-sel b { color: #f2e5c8; font-size: 14px; font-weight: 600; letter-spacing: .03em;
-      font-variant-numeric: tabular-nums; }
+    /* Le detail : une PHRASE, pas une grille. Zero bouton d'heure tant qu'on ne touche pas
+       une borne, et jamais deux listes ouvertes en meme temps. */
+    .h-tiroir { margin: 10px 0 16px; padding: 18px 14px; border: 1px solid rgba(201,162,39,.25);
+      border-radius: 2px; background: rgba(255,255,255,.45); }
+    .h-tiroir .chapo { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 21px;
+      color: var(--texte); margin: 0 0 3px; text-transform: capitalize; }
+    .h-tiroir .sous { font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--or); margin: 0 0 18px; }
+    .h-phrase { font-family: 'Cormorant Garamond', Georgia, serif; font-size: clamp(23px, 4.4vw, 28px);
+      color: var(--texte); line-height: 1.35; margin: 0 0 4px; display: flex; flex-wrap: wrap;
+      align-items: baseline; gap: 0 10px; }
+    .h-phrase .mot { color: var(--gris); font-size: .72em; }
+    .h-borne { background: transparent; border: 0; border-bottom: 1.5px solid var(--or);
+      cursor: pointer; font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1em;
+      color: var(--texte); padding: 2px 3px 3px; font-variant-numeric: tabular-nums;
+      min-height: 44px; transition: .15s; }
+    .h-borne:hover { color: var(--or); }
+    .h-borne[aria-expanded="true"] { background: #6b5744; color: #f2e5c8;
+      border-bottom-color: #6b5744; padding-inline: 9px; }
+    .h-combien { font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--or); margin: 0; }
+    .h-heures { display: grid; grid-template-columns: repeat(auto-fill, minmax(66px, 1fr));
+      gap: 6px; margin-top: 14px; }
+    .h-heure { background: transparent; border: 1px solid rgba(201,162,39,.25); border-radius: 2px;
+      min-height: 44px; padding: 8px 4px; cursor: pointer; font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 17px; color: var(--texte); font-variant-numeric: tabular-nums; transition: .15s; }
+    .h-heure:hover { border-color: var(--or); }
+    .h-heure[aria-pressed="true"] { background: #6b5744; border-color: #6b5744; color: #f2e5c8; }
+    .h-demies { background: none; border: 0; border-bottom: 1px solid rgba(201,162,39,.35);
+      cursor: pointer; font: inherit; font-size: 13px; color: var(--gris); padding: 0 0 2px;
+      margin-top: 12px; }
+    .h-demies:hover { color: var(--texte); border-color: var(--or); }
+    .h-note { margin: 12px 0 0; font-size: 13px; color: var(--gris); font-style: italic;
+      font-family: 'Cormorant Garamond', Georgia, serif; }
 
-    .h-verdict { margin-top: 14px; border-top: 1px solid rgba(58,46,40,.12); padding-top: 13px;
-      display: flex; align-items: center; gap: 12px; min-height: 58px; flex-wrap: wrap; }
-    .h-verdict .dit { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 21px;
-      line-height: 1.22; color: var(--texte); flex: 1; min-width: 190px; }
-    .h-verdict .dit em { font-style: italic; font-size: 16px; color: var(--gris); }
-    .h-verdict .dit small { display: block; font-family: inherit; font-size: 12.5px;
-      color: var(--gris); margin-top: 3px; line-height: 1.4; font-style: normal; }
-    .h-verdict .combien { flex: none; font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
-      color: var(--or); font-weight: 600; font-variant-numeric: tabular-nums; }
-    /* Sous 430 px, le combien-de-libre mange la moitie du ruban : le ruban gagne. */
+    /* Le registre : ce qui est retenu, retirable d'un seul signe. */
+    .h-registre { margin-top: 20px; border-top: 1px solid rgba(201,162,39,.35); padding-top: 16px; }
+    .h-registre .etiq { font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--or); margin: 0 0 6px; }
+    .h-registre ul { list-style: none; margin: 0; padding: 0; }
+    .h-registre li { display: flex; align-items: center; gap: 10px; padding: 11px 2px;
+      border-bottom: 1px solid rgba(201,162,39,.2); }
+    .h-registre li:last-child { border-bottom: 0; }
+    .h-registre li .q { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 19px;
+      color: var(--texte); flex: 1; line-height: 1.25; text-transform: capitalize; }
+    .h-registre li .q small { display: block; font-family: inherit; font-size: 11px;
+      letter-spacing: 1.5px; text-transform: uppercase; color: var(--or); margin-top: 2px; }
+    .h-registre li .x { background: none; border: 0; cursor: pointer; color: var(--gris);
+      font-size: 19px; line-height: 1; min-width: 44px; min-height: 44px; flex: none; }
+    .h-registre li .x:hover { color: var(--texte); }
+    .h-registre .vide { font-family: 'Cormorant Garamond', Georgia, serif; font-style: italic;
+      font-size: 17px; color: var(--gris); margin: 0; }
+
+    .h-verdict { margin-top: 14px; display: flex; align-items: center; gap: 12px;
+      min-height: 52px; flex-wrap: wrap; }
+    .h-verdict .combien { flex: 1; font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+      color: var(--or); font-weight: 600; font-variant-numeric: tabular-nums; min-width: 150px; }
     @media (max-width: 430px) {
-      .h-jour { gap: 10px; }
-      .h-jour .quand { width: 82px; }
-      .h-jour .libres { display: none; }
-      .h-regle { width: 48px; }
+      .h-ligne { gap: 7px; }
+      .h-date { width: 54px; }
+      .h-date b { font-size: 19px; }
+      .h-secs { gap: 6px; }
+      .h-sec { padding: 8px 5px 7px; }
+      .h-sec .nom { font-size: 13.5px; }
+      .h-sec .dit { font-size: 9px; letter-spacing: .8px; }
+      .h-heures { grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); }
     }
     /* Le champ de code vit hors des cartes, pour rester atteignable quel que soit l'écran
        affiché. Il s'aligne sur elles et garde le même retrait latéral. */
@@ -443,8 +513,8 @@
             jamais par qui ni pourquoi.
          ⛔ Aucun carré aligné, aucune légende à apprendre : chaque plage écrit elle-même
             de quand à quand elle va. -->
-    <p class="aide-ami" data-fr>Glisse sur les lignes pour prendre plusieurs jours de suite. Touche un jour pour l'ouvrir et choisir les heures.</p>
-    <p class="aide-ami" data-en>Slide across the rows to take several days in a row. Tap a day to open it and pick the hours.</p>
+    <p class="aide-ami" data-fr>Touche une date pour prendre la journée. Touche un bout de journée pour l'ouvrir et dire de quelle heure à quelle heure. Tu peux en prendre plusieurs.</p>
+    <p class="aide-ami" data-en>Tap a date to take the whole day. Tap a part of a day to open it and set from when to when. You can take several.</p>
     <div class="h-nav">
       <button type="button" id="gr-prec" aria-label="Avant">‹</button>
       <div class="h-titre" id="gr-titre"></div>
@@ -452,10 +522,10 @@
     </div>
     <div id="grille-ami"></div>
     <div id="gr-attente" class="attente" hidden><span class="pt"></span><span class="pt"></span><span class="pt"></span></div>
+    <div class="h-registre" id="registre-ami"></div>
     <div class="h-verdict">
-      <div class="dit" id="ami-verdict"></div>
       <div class="combien" id="ami-combien"></div>
-      <button type="button" class="valider" id="ami-suite" hidden><span data-fr>C'est ce moment</span><span data-en>That is the moment</span></button>
+      <button type="button" class="valider" id="ami-suite" hidden><span data-fr>C'est ce que je prends</span><span data-en>That is what I take</span></button>
     </div>
 
     <!-- L'heure de départ d'un séjour : calculée par le calendrier, gardée ici pour l'envoi. -->
@@ -613,13 +683,21 @@ function T(fr, en) { return currentLang === 'en' ? en : fr; }
 /* ─── ÉTAT ─── */
 var etat = { personnes: [], jour: null, heure: null, dispo: {}, ouverts: [], colles: {}, semaine: 0, chargement: false, vueMois: false, mois: 0,
   ami: false, dureeAmi: null, grille: [], grOffset: 0,
+  // Ce qui est retenu : une LISTE de moments, jamais un seul. Chacun partira en demande
+  // separee — c'est ce qui permet a Kevin d'en accepter deux et d'en refuser un.
+  // Les moments sont classes par DATE, jamais par indice : la fenetre se recharge a chaque
+  // page de l'horaire, et les indices, eux, ne survivraient pas.
+  momAmi: [],        // [{d:'2026-09-21', a: tranche, n: nb tranches, tout: journee entiere}]
+  secOuverte: null,  // {d, z} : le bout de journee dont le detail est ouvert
+  borne: null,       // 'deb' | 'fin' : quelle borne montre sa liste — jamais les deux
+  demiesAmi: false,  // les demi-heures, une fois demandees, restent offertes
+  avisAmi: '',       // le mot qui explique un choix rogne (journee a trou, maximum atteint)
+  blocsAmi: null,    // les moments mis en forme pour l'ecran, au moment de valider
+  envoiAmi: null,    // les memes, reduits a ce que le serveur lit
   // ⛔ `zonesAmi` reste, TOUJOURS VIDE : le calendrier exprime tout en jour + heure + durée,
   //    et plusieurs branches de la page testent encore `zonesAmi.length`. Les laisser fausses
   //    est plus sûr que de les réécrire une à une.
-  zonesAmi: [],
-  selJours: null,    // {a,b} : des journées entières, de suite
-  selHeures: null,   // {j,a,b} : des heures dans une journée ouverte
-  grOuvert: null };
+  zonesAmi: [] };
 var $ = function(id) { return document.getElementById(id); };
 
 function dureeTotale() {
@@ -662,8 +740,9 @@ function libDureeAmi(min) {
   var j = Math.floor(min / 1440), r = min % 1440, h = Math.floor(r / 60), m = r % 60;
   var bouts = [];
   if (j) bouts.push(j + (j > 1 ? T(' jours', ' days') : T(' jour', ' day')));
-  if (h) bouts.push(h + ' h' + (m && !j ? ' ' + (m < 10 ? '0' : '') + m : ''));
-  if (m && (j || !h)) bouts.push(m + ' min');
+  // Les minutes se collent aux heures : « 1 jour 18 h 30 », jamais « 1 jour 18 h 30 min ».
+  if (h) bouts.push(h + ' h' + (m ? ' ' + (m < 10 ? '0' : '') + m : ''));
+  else if (m) bouts.push(m + ' min');
   return bouts.join(' ') || '0 min';
 }
 /** Combien de minutes couvrent les zones cochées : du début de la première à la fin de la dernière. */
@@ -690,7 +769,8 @@ function basculerAmi(actif) {
   $('c-ami').hidden = !actif;
   $('bloc-envie').hidden = !actif;
   $('bloc-fin-ami').hidden = true;
-  etat.selJours = null; etat.selHeures = null; etat.grOuvert = null;
+  etat.momAmi = []; etat.secOuverte = null; etat.borne = null; etat.avisAmi = '';
+  etat.blocsAmi = null; etat.envoiAmi = null;
   // ⛔ Quand le code est entré, TOUT ce qui parle de massothérapie s'efface (Kevin, 2026-09-17 :
   //    « faudrait enlever tout ce qui n'a pas rapport à la cédule pour le temps entre amis »).
   //    Ce sont cinq endroits, et aucun n'était couvert avant.
@@ -737,18 +817,27 @@ function rangerMassotherapie(ami) {
   });
 }
 
-/* ═══ L'HORAIRE — le jour s'ouvre ═══════════════════════════════════════════
-   Deux grains, un seul geste (Kevin, 2026-09-17) :
-     · glisser sur les LIGNES prend des journées entières, à la file ;
-     · glisser DANS une journée ouverte prend des heures, au fil du temps.
-   ⛔ Aucun carré, aucune légende : chaque plage écrit elle-même de quand à quand elle va.
+/* ═══ L'HORAIRE ══════════════════════════════════════════════════════════════
+   Trois cibles, aucun mode, tout au toucher :
+     · la DATE prend la journée entière ;
+     · une SECTION prend ce bout de journée, et ouvre son détail dans la foulée ;
+     · DANS le détail, on dit de quelle heure à quelle heure.
+   ⛔ Aucun carré aligné : une suite de tranches identiques forme une plage, et la plage
+      écrit elle-même de quand à quand elle va. Aucune légende à apprendre.
    ⛔ La sélection bute net sur ce qui est pris — jamais de plage qui saute par-dessus. */
 
 var TR_DEBUT = 390, TR_PAS = 30, TR_N = 35;   // 6 h 30 → minuit, par tranches de 30 min
 var TR_ZONES = { matin: [0, 10], apresmidi: [11, 20], soiree: [21, 32] };
+var TR_SECTIONS = [
+  { id: 'matin',     a: 0,  b: 10, fr: 'Avant-midi', en: 'Morning',   cfr: 'Matin', cen: 'Morn.' },
+  { id: 'apresmidi', a: 11, b: 20, fr: 'Après-midi', en: 'Afternoon', cfr: 'Aprèm', cen: 'Aft.' },
+  { id: 'soiree',    a: 21, b: 32, fr: 'Soirée',     en: 'Evening',   cfr: 'Soir',  cen: 'Eve.' }
+];
+// Au-delà, c'est un appel, pas un formulaire. Le serveur applique la même borne.
+var TR_MAX_MOMENTS = 6;
 
-/** Les 35 tranches d'un jour. ⚠️ REPLI : tant que le programme n'est pas redéployé, il ne
- *  renvoie que les trois zones — on les étale alors sur les tranches, et la page marche pareil. */
+/** Les 35 tranches d'un jour. ⚠️ REPLI : si le programme ne renvoie que les trois zones, on les
+ *  étale sur les tranches — la page marche avec l'ancien comme avec le nouveau. */
 function tranchesDe(ligne) {
   if (ligne && ligne.t && ligne.t.length === TR_N) return ligne.t;
   var t = new Array(TR_N), z = (ligne && ligne.z) || {};
@@ -762,16 +851,6 @@ function tranchesDe(ligne) {
 }
 function ouvertT(e) { return e === 'libre' || e === 'mou'; }
 function libreDuJour(t) { return t.filter(ouvertT).length; }
-/** Les tranches identiques qui se suivent forment UNE plage : c'est ce qui permet d'écrire dessus. */
-function plagesDe(t) {
-  var out = [], i = 0;
-  while (i < t.length) {
-    var j = i; while (j + 1 < t.length && t[j + 1] === t[i]) j++;
-    out.push({ e: t[i], a: i, b: j, n: j - i + 1 });
-    i = j + 1;
-  }
-  return out;
-}
 function hhmmT(i) { var m = TR_DEBUT + i * TR_PAS; return (m >= 1440 ? '00' : String(Math.floor(m / 60)).padStart(2, '0')) + ':' + String(m % 60).padStart(2, '0'); }
 function libT(i) {
   var m = TR_DEBUT + i * TR_PAS;
@@ -782,10 +861,109 @@ function libT(i) {
 function libHeureFin(hhmm) {
   return hhmm === '00:00' ? T('minuit', 'midnight') : libHeure(hhmm);
 }
-function libLibre(n) {
-  var m = n * TR_PAS, tete = m >= 60 ? Math.floor(m / 60) : m;
-  return libDureeAmi(m) + (tete > 1 ? T(' libres', ' free') : T(' libre', ' free'));
+function jourSuivant(k) {
+  var p = k.split('-').map(Number), d = new Date(p[0], p[1] - 1, p[2] + 1);
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 }
+function ligneDuJour(d) {
+  var J = etat.grille || [];
+  for (var i = 0; i < J.length; i++) if (J[i].d === d) return J[i];
+  return null;
+}
+function tranchesDuJour(d) { var l = ligneDuJour(d); return l ? tranchesDe(l) : null; }
+
+/** Le plus long morceau libre d'un seul tenant entre `a` et `b`. Jamais de plage à trous. */
+function plusLongLibre(t, a, b) {
+  var best = null, deb = -1;
+  for (var i = a; i <= b + 1; i++) {
+    var ok = i <= b && ouvertT(t[i]);
+    if (ok && deb < 0) deb = i;
+    if (!ok && deb >= 0) {
+      var n = i - deb;
+      if (!best || n > best.n) best = { a: deb, n: n };
+      deb = -1;
+    }
+  }
+  return best;
+}
+
+/* ─── Ce qui est retenu : une liste de moments ─────────────────────────────── */
+
+/** Ajoute un morceau et fond ensemble ce qui se touche le même jour. */
+function ajouterMoment(d, a, n, tout) {
+  etat.momAmi.push({ d: d, a: a, n: n, tout: !!tout });
+  etat.momAmi.sort(function (x, y) { return x.d < y.d ? -1 : (x.d > y.d ? 1 : x.a - y.a); });
+  var out = [];
+  etat.momAmi.forEach(function (m) {
+    var p = out[out.length - 1];
+    if (p && p.d === m.d && m.a <= p.a + p.n) {
+      p.n = Math.max(p.n, m.a + m.n - p.a);
+      p.tout = p.tout || m.tout;   // ce qui avale une journée entière reste une journée entière
+    } else out.push({ d: m.d, a: m.a, n: m.n, tout: m.tout });
+  });
+  etat.momAmi = out;
+}
+/** Comme ajouterMoment, mais refuse d'aller au-delà du maximum et le dit. */
+function ajouterMomentBorne(d, a, n, tout) {
+  var avant = etat.momAmi.slice();
+  ajouterMoment(d, a, n, tout);
+  if (etat.momAmi.length > TR_MAX_MOMENTS) {
+    etat.momAmi = avant;
+    etat.avisAmi = T('Six moments d\'un coup, c\'est le maximum. Retires-en un avant d\'en ajouter.',
+                     'Six moments at once is the maximum. Remove one before adding another.');
+    return false;
+  }
+  return true;
+}
+function retirerTranches(d, a, b) {
+  var out = [];
+  etat.momAmi.forEach(function (m) {
+    if (m.d !== d || m.a + m.n <= a || b < m.a) { out.push(m); return; }
+    // Ce qui reste d'un morceau coupé n'est plus une journée entière.
+    if (m.a < a) out.push({ d: m.d, a: m.a, n: a - m.a, tout: false });
+    if (b < m.a + m.n - 1) out.push({ d: m.d, a: b + 1, n: m.a + m.n - 1 - b, tout: false });
+  });
+  etat.momAmi = out;
+}
+function prisDans(d, a, b) {
+  return etat.momAmi.some(function (m) { return m.d === d && m.a <= b && a <= m.a + m.n - 1; });
+}
+function morceauDe(d, i) {
+  return etat.momAmi.filter(function (m) { return m.d === d && m.a <= i && i < m.a + m.n; })[0] || null;
+}
+
+/**
+ * Le ruban d'une section : ce qui est libre et ce qui est pris, à LEUR PLACE.
+ * Kevin, 2026-09-17, en voyant la jauge pleine : « les lignes qui sont apparues, je ne les veux
+ * pas — à la limite, si la ligne est rayée, avec le libre et le pris, ça pourrait être
+ * intéressant ». Une jauge remplie à 45 % ne dit pas si les 55 % restants se suivent.
+ */
+function rubanDe(t, s) {
+  var out = [], i = s.a;
+  while (i <= s.b) {
+    var j = i;
+    while (j + 1 <= s.b && t[j + 1] === t[i]) j++;
+    out.push('<i class="r-' + t[i] + '" style="flex:' + (j - i + 1) + '"></i>');
+    i = j + 1;
+  }
+  return out.join('');
+}
+
+/** Ce que dit une section : son état, et à quel point elle est prise. */
+function etatSection(t, s) {
+  var bout = t.slice(s.a, s.b + 1);
+  var pris = bout.filter(function (e) { return e === 'dur'; }).length;
+  var passe = bout.filter(function (e) { return e === 'passe'; }).length;
+  var spa = bout.some(function (e) { return e === 'mou'; });
+  return {
+    etat: passe === bout.length ? 'passe'
+        : (pris + passe === bout.length ? 'complet' : (spa ? 'spa' : 'ouverte')),
+    taux: Math.round(100 * (pris + passe) / bout.length),
+    spa: spa
+  };
+}
+
+/* ─── L'affichage ──────────────────────────────────────────────────────────── */
 
 function chargerGrille() {
   if (!etat.ami) return;
@@ -796,7 +974,9 @@ function chargerGrille() {
     $('gr-attente').hidden = true;
     if (!d || !d.ok) { $('grille-ami').innerHTML = '<div class="vide">' + T('L\'horaire ne se charge pas. Réessaie dans une minute.', 'The schedule is not loading. Try again in a minute.') + '</div>'; return; }
     etat.grille = d.jours || [];
-    etat.selJours = null; etat.selHeures = null; etat.grOuvert = null;
+    // ⛔ Changer de page ne DÉFAIT rien : les moments sont classés par date, pas par indice,
+    //    et le registre les montre même quand leur jour n'est plus à l'écran.
+    etat.secOuverte = null; etat.borne = null; etat.avisAmi = '';
     rendreGrille(); majVerdictAmi();
   };
   if (!SCRIPT_URL) { setTimeout(function () { fini({ ok: true, jours: [] }); }, 300); return; }
@@ -818,201 +998,250 @@ function rendreGrille() {
   $('gr-suiv').disabled = etat.grOffset + AMI.grillePas >= AMI.horizonJours;
 
   var box = $('grille-ami'); box.innerHTML = '';
-  J.forEach(function (ligne, idx) {
-    var t = tranchesDe(ligne), pl = plagesDe(t), libres = libreDuJour(t);
+  J.forEach(function (ligne) {
+    var t = tranchesDe(ligne);
     var p = ligne.d.split('-').map(Number), dd = new Date(p[0], p[1] - 1, p[2]);
-    var sel = etat.selJours && idx >= etat.selJours.a && idx <= etat.selJours.b;
+    var l = document.createElement('div'); l.className = 'h-ligne';
 
-    var b = document.createElement('button');
-    b.type = 'button'; b.className = 'h-jour'; b.dataset.i = idx;
-    b.dataset.sel = sel ? '1' : '0';
-    b.setAttribute('aria-expanded', etat.grOuvert === idx ? 'true' : 'false');
-    b.innerHTML = '<span class="quand"><b>' + dd.toLocaleDateString(loc, { weekday: 'long' }) + '</b>'
-      + '<span>' + dd.toLocaleDateString(loc, { day: 'numeric', month: 'short' }) + '</span></span>'
-      + '<span class="fil">'
-      + pl.map(function (x) { return '<i class="e-' + x.e + '" style="flex:' + x.n + '"></i>'; }).join('')
-      + '</span>'
-      + '<span class="libres">' + (libres ? libLibre(libres) : '—') + '</span>';
-    box.appendChild(b);
-    glisserJoursAmi(b.querySelector('.fil'), idx);
-
-    var tir = document.createElement('div');
-    tir.className = 'h-tiroir' + (etat.grOuvert === idx ? ' ouvert' : '');
-    tir.innerHTML = '<div class="h-horloge"><div class="h-regle"></div>'
-      + '<div class="h-bande" tabindex="0" role="slider" aria-label="' + T('La journée, de 6 h 30 à minuit', 'The day, from 6:30 to midnight') + '">'
-      + '<div class="h-sel"><b></b></div></div></div>';
-    box.appendChild(tir);
-
-    var bande = tir.querySelector('.h-bande'), cur = tir.querySelector('.h-sel');
-    pl.forEach(function (x) {
-      var seg = document.createElement('div');
-      seg.className = 'h-seg e-' + x.e;
-      seg.style.top = (x.a * 100 / TR_N) + '%';
-      seg.style.height = (x.n * 100 / TR_N) + '%';
-      if (x.n >= 3) {
-        var q = document.createElement('span');
-        if (ouvertT(x.e)) q.textContent = T('de ', 'from ') + libT(x.a) + T(' à ', ' to ') + libT(x.b + 1)
-          + (x.n >= 5 ? ' · ' + libLibre(x.n) : '');
-        else if (x.e === 'dur') q.textContent = T('pris', 'taken');
-        seg.appendChild(q);
+    /* La DATE est une cible à elle seule : la toucher prend la journée. */
+    var jour = plusLongLibre(t, 0, TR_N - 1);
+    var toutLeJour = !!(jour && etat.momAmi.some(function (m) {
+      return m.d === ligne.d && m.a === jour.a && m.n === jour.n;
+    }));
+    var db = document.createElement('button');
+    db.type = 'button'; db.className = 'h-date'; db.disabled = !jour;
+    db.setAttribute('aria-pressed', String(toutLeJour));
+    db.setAttribute('aria-label', (toutLeJour ? T('Retirer ', 'Remove ') : T('Prendre ', 'Take ')) + libJour(ligne.d));
+    db.innerHTML = '<b>' + dd.getDate() + '</b><span>'
+      + dd.toLocaleDateString(loc, { weekday: 'short' }).replace(/\.$/, '') + '</span>';
+    db.addEventListener('click', function () {
+      if (!jour) return;
+      if (toutLeJour) { retirerTranches(ligne.d, jour.a, jour.a + jour.n - 1); etat.avisAmi = ''; }
+      else {
+        if (!ajouterMomentBorne(ligne.d, jour.a, jour.n, true)) { rendreGrille(); majVerdictAmi(); return; }
+        etat.avisAmi = jour.n < libreDuJour(t)
+          ? T('Cette journée a un trou : j\'ai pris le plus long morceau d\'un seul tenant.',
+              'This day has a gap: I took the longest unbroken stretch.') : '';
       }
-      bande.insertBefore(seg, cur);
+      etat.secOuverte = null; etat.borne = null;
+      rendreGrille(); majVerdictAmi();
     });
-    var regle = tir.querySelector('.h-regle');
-    for (var h = 0; h < TR_N; h += 4) {
-      var e = document.createElement('i');
-      e.textContent = libT(h); e.style.top = ((h + .5) * 100 / TR_N) + '%'; regle.appendChild(e);
-    }
-    glisserHeuresAmi(bande, cur, idx, t);
+    l.appendChild(db);
 
+    var trois = document.createElement('div'); trois.className = 'h-secs';
+    TR_SECTIONS.forEach(function (s) {
+      var e = etatSection(t, s);
+      var coche = prisDans(ligne.d, s.a, s.b);
+      var ouverte = !!(etat.secOuverte && etat.secOuverte.d === ligne.d && etat.secOuverte.z === s.id);
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'h-sec' + (e.etat === 'ouverte' ? '' : ' ' + e.etat) + (coche || ouverte ? ' choisi' : '');
+      b.disabled = (e.etat === 'complet' || e.etat === 'passe');
+      /* ⛔ Une section hachurée à 0 % ne dit pas « libre » : elle dirait le contraire de ce
+         qu'elle montre. Elle dit ce qu'elle est. */
+      var dit = e.etat === 'passe' ? T('passé', 'past')
+              : e.etat === 'complet' ? T('complet', 'full')
+              : e.taux === 0 ? (e.spa ? T('le spa', 'the spa') : T('libre', 'free'))
+              : e.taux + T(' % pris', '% taken');
+      b.innerHTML = '<span class="nom">' + T(s.cfr, s.cen) + '</span>'
+        + '<span class="ruban">' + rubanDe(t, s) + '</span>'
+        + '<span class="dit">' + dit + '</span>';
+      b.setAttribute('aria-pressed', String(coche));
+      b.addEventListener('click', function () {
+        // Déjà prise ET déjà ouverte : un second toucher la retire.
+        if (coche && ouverte) {
+          retirerTranches(ligne.d, s.a, s.b);
+          etat.secOuverte = null; etat.borne = null; etat.avisAmi = '';
+          rendreGrille(); majVerdictAmi(); return;
+        }
+        if (!coche) {
+          var r = plusLongLibre(t, s.a, s.b); if (!r) return;
+          if (!ajouterMomentBorne(ligne.d, r.a, r.n, false)) { rendreGrille(); majVerdictAmi(); return; }
+          etat.avisAmi = r.n < t.slice(s.a, s.b + 1).filter(ouvertT).length
+            ? T('Ce bout de journée a un trou : j\'ai pris le plus long morceau d\'un seul tenant.',
+                'This part of the day has a gap: I took the longest unbroken stretch.') : '';
+        } else etat.avisAmi = '';
+        etat.secOuverte = { d: ligne.d, z: s.id }; etat.borne = null;
+        rendreGrille(); majVerdictAmi();
+      });
+      trois.appendChild(b);
+    });
+    l.appendChild(trois);
+    box.appendChild(l);
+
+    if (etat.secOuverte && etat.secOuverte.d === ligne.d) {
+      var tir = tiroirAmi(ligne.d, t);
+      if (tir) box.appendChild(tir); else etat.secOuverte = null;
+    }
+  });
+  if (etat.avisAmi) box.insertAdjacentHTML('beforeend', '<p class="h-note">' + etat.avisAmi + '</p>');
+}
+
+/** Le détail : une PHRASE. Les heures ne sortent que si on touche une borne, et jamais
+ *  les deux listes en même temps — c'est exactement ce qui pesait avant. */
+function tiroirAmi(d, t) {
+  var s = TR_SECTIONS.filter(function (x) { return x.id === etat.secOuverte.z; })[0];
+  if (!s) return null;
+  var m = null;
+  for (var i = s.a; i <= s.b && !m; i++) m = morceauDe(d, i);
+  if (!m) return null;
+
+  // Jusqu'où ce morceau peut respirer, des deux côtés, sans toucher ce qui est pris ni ce qui
+  // est déjà retenu ailleurs. Un moment peut déborder de sa section, jamais de la journée.
+  var gauche = m.a;
+  while (gauche - 1 >= 0 && ouvertT(t[gauche - 1]) && !prisDans(d, gauche - 1, gauche - 1)) gauche--;
+  var droite = m.a + m.n - 1;
+  while (droite + 1 < TR_N && ouvertT(t[droite + 1]) && !prisDans(d, droite + 1, droite + 1)) droite++;
+
+  var p = document.createElement('div'); p.className = 'h-tiroir';
+  p.innerHTML = '<p class="chapo">' + libJour(d) + '</p>'
+    + '<p class="sous">' + T(s.fr, s.en) + '</p>'
+    + '<p class="h-phrase"></p>'
+    + '<p class="h-combien">' + libDureeAmi(m.n * TR_PAS) + '</p>'
+    + '<div class="h-liste"></div>';
+
+  var ph = p.querySelector('.h-phrase');
+  var poser = function (quoi, val, mot) {
+    ph.insertAdjacentHTML('beforeend', '<span class="mot">' + mot + '</span>');
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'h-borne'; b.textContent = libT(val);
+    b.setAttribute('aria-expanded', String(etat.borne === quoi));
+    b.setAttribute('aria-label', (quoi === 'deb'
+      ? T('Changer l\'heure de début, présentement ', 'Change the start time, currently ')
+      : T('Changer l\'heure de fin, présentement ', 'Change the end time, currently ')) + libT(val));
     b.addEventListener('click', function () {
-      if (b.querySelector('.fil').dataset.avale === '1') return;   // c'était un glissement
-      etat.grOuvert = (etat.grOuvert === idx) ? null : idx;
-      if (etat.grOuvert !== null) etat.selJours = null;
-      etat.selHeures = null;
+      etat.borne = (etat.borne === quoi) ? null : quoi;
+      rendreGrille(); majVerdictAmi();
+    });
+    ph.appendChild(b);
+  };
+  poser('deb', m.a, T('de', 'from'));
+  poser('fin', m.a + m.n, T('à', 'to'));
+
+  if (etat.borne) {
+    var liste = p.querySelector('.h-liste');
+    var g = document.createElement('div'); g.className = 'h-heures';
+    var de = etat.borne === 'deb' ? gauche : m.a + 1;
+    var a = etat.borne === 'deb' ? droite : droite + 1;
+    for (var k = de; k <= a; k++) {
+      // Des départs trop serrés font hésiter : les heures pleines d'abord, les demies derrière un mot.
+      if (!etat.demiesAmi && ((TR_DEBUT + k * TR_PAS) % 60) !== 0 && k !== a) continue;
+      (function (k) {
+        var h = document.createElement('button');
+        h.type = 'button'; h.className = 'h-heure'; h.textContent = libT(k);
+        h.setAttribute('aria-pressed', String(etat.borne === 'deb' ? k === m.a : k === m.a + m.n));
+        h.addEventListener('click', function () {
+          retirerTranches(d, gauche, droite);
+          if (etat.borne === 'deb') ajouterMoment(d, k, Math.max(1, m.a + m.n - k), false);
+          else ajouterMoment(d, m.a, Math.max(1, k - m.a), false);
+          etat.borne = null; etat.avisAmi = '';
+          rendreGrille(); majVerdictAmi();
+        });
+        g.appendChild(h);
+      })(k);
+    }
+    liste.appendChild(g);
+    if (!etat.demiesAmi) {
+      var td = document.createElement('button');
+      td.type = 'button'; td.className = 'h-demies';
+      td.textContent = T('Aussi aux demi-heures', 'Also at half hours');
+      td.addEventListener('click', function () { etat.demiesAmi = true; rendreGrille(); majVerdictAmi(); });
+      liste.appendChild(td);
+    }
+  }
+  return p;
+}
+
+/**
+ * Ce que dure un bloc, POUR VRAI.
+ * ⛔ Pas la somme de ses tranches : un séjour de deux journées entières couvre 70 tranches —
+ *    35 h — alors que la personne est là de 6 h 30 le premier jour à minuit le second, soit
+ *    41 h 30. La nuit entre les deux compte. Le registre et l'envoi se lisaient autrement
+ *    l'un de l'autre : « 1 jour 11 h » à l'écran, 1 jour 17 h 30 dans la demande.
+ */
+function minutesDuBloc(b) {
+  if (b.dDeb === b.dFin) return b.n * TR_PAS;
+  var p1 = b.dDeb.split('-').map(Number), p2 = b.dFin.split('-').map(Number);
+  var md = TR_DEBUT + b.a * TR_PAS, mf = TR_DEBUT + b.fin * TR_PAS;
+  var deb = new Date(p1[0], p1[1] - 1, p1[2], Math.floor(md / 60), md % 60);
+  var fin = new Date(p2[0], p2[1] - 1, p2[2], Math.floor(mf / 60), mf % 60);
+  return Math.round((fin.getTime() - deb.getTime()) / 60000);
+}
+
+/** Les moments, avec les journées entières qui se suivent réunies en un séjour. */
+function momentsLisibles() {
+  var out = [];
+  etat.momAmi.forEach(function (m) {
+    var t = tranchesDuJour(m.d);
+    // Le jour peut être hors de la fenêtre chargée : on se fie alors au drapeau porté par le moment.
+    var tout = t ? plusLongLibre(t, 0, TR_N - 1) : null;
+    var entier = t ? !!(tout && m.a === tout.a && m.n === tout.n) : !!m.tout;
+    var p = out[out.length - 1];
+    if (entier && p && p.entier && jourSuivant(p.dFin) === m.d) {
+      p.dFin = m.d; p.n += m.n; p.fin = m.a + m.n; p.jours.push(m.d);
+    } else {
+      out.push({ dDeb: m.d, dFin: m.d, a: m.a, fin: m.a + m.n, n: m.n, entier: entier, jours: [m.d] });
+    }
+  });
+  return out;
+}
+
+/** Le registre : ce qui est retenu, en toutes lettres, retirable un par un. */
+function majVerdictAmi() {
+  var box = $('registre-ami'), cb = $('ami-combien'), suite = $('ami-suite');
+  var etiq = '<p class="etiq">' + T('Ce que tu prends', 'What you are taking') + '</p>';
+  var L = momentsLisibles();
+  if (!L.length) {
+    box.innerHTML = etiq + '<p class="vide">'
+      + T('Rien encore. Touche une date, ou un bout de journée.', 'Nothing yet. Tap a date, or a part of a day.')
+      + '</p>';
+    cb.textContent = ''; suite.hidden = true; return;
+  }
+  var tot = 0;
+  var lignes = L.map(function (b, i) {
+    var min = minutesDuBloc(b); tot += min;
+    var titre = b.dDeb === b.dFin ? libJour(b.dDeb)
+      : T('du ', 'from ') + libJourCourt(b.dDeb) + T(' au ', ' to ') + libJour(b.dFin);
+    var detail = b.dDeb === b.dFin
+      ? T('de ', 'from ') + libT(b.a) + T(' à ', ' to ') + libT(b.fin) + ' · ' + libDureeAmi(min)
+      : T('arrivée ', 'arriving ') + libT(b.a) + T(' · départ ', ' · leaving ') + libT(b.fin) + ' · ' + libDureeAmi(min);
+    return '<li><span class="q">' + titre + '<small>' + detail + '</small></span>'
+      + '<button type="button" class="x" data-i="' + i + '" aria-label="'
+      + T('Retirer', 'Remove') + ' ' + titre + '">×</button></li>';
+  }).join('');
+  box.innerHTML = etiq + '<ul>' + lignes + '</ul>';
+  box.querySelectorAll('.x').forEach(function (x) {
+    x.addEventListener('click', function () {
+      var b = L[+x.getAttribute('data-i')];
+      b.jours.forEach(function (d) { retirerTranches(d, 0, TR_N - 1); });
+      etat.secOuverte = null; etat.borne = null; etat.avisAmi = '';
       rendreGrille(); majVerdictAmi();
     });
   });
-}
-
-function majSelJoursAmi() {
-  $('grille-ami').querySelectorAll('.h-jour').forEach(function (el) {
-    var i = +el.dataset.i;
-    el.dataset.sel = (etat.selJours && i >= etat.selJours.a && i <= etat.selJours.b) ? '1' : '0';
-  });
-}
-
-/** Glisser DANS une journée : on prend des heures. */
-function glisserHeuresAmi(bande, cur, idx, t) {
-  var ancre = null;
-  function ou(ev) {
-    var r = bande.getBoundingClientRect();
-    var y = Math.min(Math.max(ev.clientY - r.top, 0), r.height - .01);
-    return Math.floor(y / r.height * TR_N);
-  }
-  function poser(a, b) {
-    cur.style.top = (a * 100 / TR_N) + '%';
-    cur.style.height = ((b - a + 1) * 100 / TR_N) + '%';
-    cur.classList.add('on');
-    cur.firstChild.textContent = libDureeAmi((b - a + 1) * TR_PAS);
-    etat.selHeures = { j: idx, a: a, b: b }; etat.selJours = null;
-    majSelJoursAmi(); majVerdictAmi();
-  }
-  function etirer(i) {
-    var a = Math.min(ancre, i), b = Math.max(ancre, i), k;
-    if (i >= ancre) { for (k = ancre; k <= b; k++) if (!ouvertT(t[k])) { b = k - 1; break; } }
-    else { for (k = ancre; k >= a; k--) if (!ouvertT(t[k])) { a = k + 1; break; } }
-    if (b >= a) poser(a, b);
-  }
-  bande.addEventListener('pointerdown', function (ev) {
-    var i = ou(ev); if (!ouvertT(t[i])) return;
-    ancre = i; bande.setPointerCapture(ev.pointerId); poser(i, i); ev.preventDefault();
-  });
-  bande.addEventListener('pointermove', function (ev) {
-    if (ancre !== null) { etirer(ou(ev)); ev.preventDefault(); } });
-  bande.addEventListener('pointerup', function () { ancre = null; });
-  bande.addEventListener('pointercancel', function () { ancre = null; });
-  bande.addEventListener('keydown', function (ev) {
-    if (ev.key !== 'ArrowDown' && ev.key !== 'ArrowUp') return;
-    if (ancre === null) { for (var i = 0; i < TR_N; i++) if (ouvertT(t[i])) { ancre = i; poser(i, i); break; } }
-    else etirer(Math.min(Math.max(ancre + (ev.key === 'ArrowDown' ? 1 : -1), 0), TR_N - 1));
-    ev.preventDefault();
-  });
-}
-
-/** Glisser SUR les lignes : on prend des journées entières, de suite. */
-function glisserJoursAmi(fil, idx) {
-  var ancre = null, bouge = false, rects = null;
-  var aDuLibre = function (i) { return libreDuJour(tranchesDe(etat.grille[i])) > 0; };
-  function quel(ev) {
-    for (var k = 0; k < rects.length; k++)
-      if (ev.clientY >= rects[k].h && ev.clientY <= rects[k].bas) return rects[k].i;
-    return null;
-  }
-  fil.addEventListener('pointerdown', function (ev) {
-    if (!aDuLibre(idx)) return;
-    ancre = idx; bouge = false;
-    rects = [].map.call($('grille-ami').querySelectorAll('.h-jour'), function (el) {
-      var r = el.getBoundingClientRect(); return { i: +el.dataset.i, h: r.top, bas: r.bottom };
-    });
-    fil.setPointerCapture(ev.pointerId);
-    etat.selJours = { a: idx, b: idx }; etat.selHeures = null;
-    majSelJoursAmi(); majVerdictAmi();
-    ev.preventDefault(); ev.stopPropagation();
-  });
-  fil.addEventListener('pointermove', function (ev) {
-    if (ancre === null) return;
-    var c = quel(ev); if (c === null) return;
-    if (c !== ancre) bouge = true;
-    var a = Math.min(ancre, c), b = Math.max(ancre, c), k;
-    if (c >= ancre) { for (k = ancre; k <= b; k++) if (!aDuLibre(k)) { b = k - 1; break; } }
-    else { for (k = ancre; k >= a; k--) if (!aDuLibre(k)) { a = k + 1; break; } }
-    if (b < a) return;
-    etat.selJours = { a: a, b: b }; majSelJoursAmi(); majVerdictAmi();
-    ev.preventDefault();
-  });
-  function fini() {
-    if (ancre === null) return;
-    ancre = null;
-    if (bouge) { fil.dataset.avale = '1'; setTimeout(function () { fil.dataset.avale = ''; }, 260); }
-  }
-  fil.addEventListener('pointerup', fini);
-  fil.addEventListener('pointercancel', fini);
-}
-
-/** Ce que la sélection vaut, en clair : jour, heure de début, durée en minutes. */
-function momentAmi() {
-  var J = etat.grille || [];
-  if (etat.selHeures) {
-    var l = J[etat.selHeures.j]; if (!l) return null;
-    return { jour: l.d, heure: hhmmT(etat.selHeures.a),
-             duree: (etat.selHeures.b - etat.selHeures.a + 1) * TR_PAS, fin: null, jours: 1 };
-  }
-  if (etat.selJours) {
-    var a = J[etat.selJours.a], b = J[etat.selJours.b]; if (!a || !b) return null;
-    var ta = tranchesDe(a), tb = tranchesDe(b), d1 = -1, f2 = -1, k;
-    for (k = 0; k < TR_N; k++) if (ouvertT(ta[k])) { d1 = k; break; }
-    for (k = TR_N - 1; k >= 0; k--) if (ouvertT(tb[k])) { f2 = k; break; }
-    if (d1 < 0 || f2 < 0) return null;
-    var pa = a.d.split('-').map(Number), pb = b.d.split('-').map(Number);
-    var deb = new Date(pa[0], pa[1] - 1, pa[2], Math.floor((TR_DEBUT + d1 * TR_PAS) / 60), (TR_DEBUT + d1 * TR_PAS) % 60);
-    var mf = TR_DEBUT + (f2 + 1) * TR_PAS;
-    var fin = new Date(pb[0], pb[1] - 1, pb[2], Math.floor(mf / 60), mf % 60);
-    return { jour: a.d, heure: hhmmT(d1), duree: Math.round((fin - deb) / 60000),
-             fin: hhmmT(f2 + 1), jours: etat.selJours.b - etat.selJours.a + 1 };
-  }
-  return null;
-}
-
-function majVerdictAmi() {
-  var m = momentAmi(), dit = $('ami-verdict'), cb = $('ami-combien'), suite = $('ami-suite');
-  if (!m) {
-    dit.innerHTML = '<em>' + (etat.grOuvert !== null
-      ? T('Glisse ton doigt dans la journée.', 'Slide your finger inside the day.')
-      : T('Touche un jour, ou glisse sur les lignes.', 'Tap a day, or slide across the rows.')) + '</em>';
-    cb.textContent = ''; suite.hidden = true; return;
-  }
+  cb.textContent = L.length + (L.length > 1 ? T(' moments', ' moments') : T(' moment', ' moment'))
+    + ' · ' + libDureeAmi(tot) + T(' en tout', ' in all');
   suite.hidden = false;
-  if (m.jours > 1) {
-    dit.innerHTML = '<b>' + T('du ', 'from ') + libJour(etat.grille[etat.selJours.a].d) + T(' au ', ' to ')
-      + libJour(etat.grille[etat.selJours.b].d) + '</b>'
-      + '<small>' + T('arrivée ', 'arriving ') + libHeure(m.heure) + T(' · départ ', ' · leaving ') + libHeureFin(m.fin)
-      + T(' — ouvre le premier ou le dernier jour pour ajuster', ' — open the first or last day to adjust') + '</small>';
-    cb.textContent = m.jours + T(' jours', ' days');
-  } else {
-    var fin = etat.selHeures ? libT(etat.selHeures.b + 1) : libHeureFin(m.fin);
-    dit.innerHTML = '<b>' + libJour(m.jour) + '</b><br>' + T('de ', 'from ') + libHeure(m.heure) + T(' à ', ' to ') + fin
-      + (etat.selJours ? '<small>' + T('ouvre la journée pour ajuster', 'open the day to adjust') + '</small>' : '');
-    cb.textContent = libDureeAmi(m.duree);
-  }
 }
 
-/** On retient le moment : il devient jour + heure + durée, ce que le serveur attend déjà. */
+/** On retient ce qui est choisi : chaque moment devient jour + heure + durée, ce que le
+ *  serveur attend déjà. ⛔ Chacun part en demande SÉPARÉE — c'est ce qui permet à Kevin d'en
+ *  accepter deux et d'en refuser un. Un seul envoi, un seul courriel de son côté. */
 function validerMomentAmi() {
-  var m = momentAmi(); if (!m) return;
-  etat.jour = m.jour; etat.heure = m.heure; etat.dureeAmi = m.duree; etat.zonesAmi = [];
-  $('bloc-fin-ami').hidden = m.duree < 1440;
-  if (m.fin) $('fin-heure-ami').value = m.fin;
+  if (!etat.momAmi.length) return;
+  // Les blocs servent à l'écran ; l'envoi, lui, ne porte que ce que le serveur lit.
+  etat.blocsAmi = momentsLisibles();
+  etat.envoiAmi = etat.blocsAmi.map(function (b) {
+    var o = { jour: b.dDeb, heure: hhmmT(b.a), duree: minutesDuBloc(b) };
+    // ⛔ Minuit ne s'envoie pas comme heure de départ : « 00:00 » se lit comme le début du
+    //    dernier jour, donc avant l'arrivée. La durée, elle, porte déjà la bonne fin.
+    if (b.dDeb !== b.dFin && b.fin < TR_N) o.fin_heure = hhmmT(b.fin);
+    return o;
+  });
+  etat.jour = etat.envoiAmi[0].jour;
+  etat.heure = etat.envoiAmi[0].heure;
+  etat.dureeAmi = etat.envoiAmi.reduce(function (a, o) { return a + o.duree; }, 0);
+  etat.zonesAmi = [];
+  $('bloc-fin-ami').hidden = true;
   rendreRecap(); allerPas(4);
 }
 
@@ -1063,7 +1292,12 @@ function libDuree(m) { var h = Math.floor(m / 60), r = m % 60; return h ? (h + '
 /* ─── PAS ─── */
 function allerPas(n) {
   document.querySelectorAll('#pas span[data-pas]').forEach(function(s) { var k = +s.getAttribute('data-pas'); s.classList.toggle('actif', k === n); s.classList.toggle('fait', k < n); });
-  $('c-jour').hidden = n < 2; $('c-heure').hidden = n < 3; $('c-toi').hidden = n < 4; $('c-fin').hidden = true;
+  // ⛔ Le calendrier fait le jour ET l'heure : ces deux cartes-là n'ont plus rien à dire ici.
+  //    Leurs ONGLETS étaient bien cachés, mais pas les cartes — et à l'étape IV, `n < 2` et
+  //    `n < 3` devenaient faux : elles reparaissaient toutes les deux sous le calendrier.
+  $('c-jour').hidden = etat.ami || n < 2;
+  $('c-heure').hidden = etat.ami || n < 3;
+  $('c-toi').hidden = n < 4; $('c-fin').hidden = true;
   // L'étape I est alors la carte du temps, pas celle des soins — les deux ne coexistent jamais.
   if (etat.ami) { $('c-soin').hidden = true; $('c-ami').hidden = false; }
   var cible = { 2: 'c-jour', 3: 'c-heure', 4: 'c-toi' }[n];
@@ -1221,6 +1455,21 @@ function rendreRecap() {
         ' · ' + o[0].de + ' – ' + o[o.length - 1].a + T(' avec Kevin.', ' with Kevin.');
       return;
     }
+    // Les moments se lisent l'un sous l'autre, dans les mêmes mots que le registre.
+    if (etat.blocsAmi && etat.blocsAmi.length) {
+      var lus = etat.blocsAmi.map(function (b) {
+        var min = libDureeAmi(minutesDuBloc(b));
+        return b.dDeb === b.dFin
+          ? '<b>' + libJour(b.dDeb) + '</b> · ' + T('de ', 'from ') + libT(b.a) + T(' à ', ' to ') + libT(b.fin) + ' · ' + min
+          : '<b>' + T('du ', 'from ') + libJourCourt(b.dDeb) + T(' au ', ' to ') + libJour(b.dFin) + '</b> · '
+            + T('arrivée ', 'arriving ') + libT(b.a) + T(' · départ ', ' · leaving ') + libT(b.fin) + ' · ' + min;
+      });
+      $('recap').innerHTML = lus.join('<br>') + (lus.length > 1
+        ? '<br>' + T('Total : ', 'Total: ') + '<b>' + libDureeAmi(dureeTotale()) + '</b>'
+          + T(' avec Kevin. Il répond à chacun séparément.', ' with Kevin. He answers each one separately.')
+        : T(' avec Kevin.', ' with Kevin.'));
+      return;
+    }
     $('recap').innerHTML = '<b>' + libJour(etat.jour) + ' · ' + libHeure(etat.heure) + '</b><br>' +
       libDureeAmi(dureeTotale()) + T(' avec Kevin.', ' with Kevin.') +
       (dureeTotale() >= 1440 ? '<br>' + T('Départ vers ', 'Leaving around ') + libHeureFin($('fin-heure-ami').value || '11:00') : '');
@@ -1333,6 +1582,8 @@ $('promo').addEventListener('input', function() {
 });
 function quitterAmi(viderLeChamp) {
   if (viderLeChamp) $('promo').value = '';
+  etat.momAmi = []; etat.secOuverte = null; etat.borne = null; etat.avisAmi = '';
+  etat.blocsAmi = null; etat.envoiAmi = null;
   basculerAmi(false);
 }
 $('btn-quitter-ami').addEventListener('click', function() { quitterAmi(true); });
@@ -1396,13 +1647,19 @@ $('form').addEventListener('submit', function(e) {
     if (etat.zonesAmi.length) demande.zones = etat.zonesAmi.join(',');
     demande.envie = $('envie').value.trim();
     if (dureeTotale() >= 1440) demande.fin_heure = $('fin-heure-ami').value || '11:00';
+    // Un seul envoi porte tous les moments ; le serveur en fait autant de demandes distinctes,
+    // et n'ecrit qu'un seul courriel. Les champs a plat au-dessus restent remplis avec le
+    // premier moment : un serveur plus ancien continuerait de comprendre, au lieu d'echouer.
+    if (etat.envoiAmi && etat.envoiAmi.length) demande.moments = etat.envoiAmi;
   }
   f.hidden = true; $('attente-envoi').hidden = false;
   var fini = function(data) {
     $('attente-envoi').hidden = true;
     if (data && data.ok) {
       $('c-toi').hidden = true; $('c-fin').hidden = false;
-      $('fin-detail').innerHTML = (etat.ami && etat.zonesAmi.length)
+      $('fin-detail').innerHTML = (etat.ami && etat.envoiAmi && etat.envoiAmi.length > 1)
+        ? '<b>' + etat.envoiAmi.length + T(' moments', ' moments') + '</b> · ' + libDureeAmi(dureeTotale())
+        : (etat.ami && etat.zonesAmi.length)
         ? '<b>' + libJour(etat.jour) + '</b> · ' + libZonesEcran()
         : '<b>' + libJour(etat.jour) + ' · ' + libHeure(etat.heure) + '</b> · ' + (etat.ami ? libDureeAmi(dureeTotale()) : libDuree(dureeTotale()));
       document.querySelectorAll('#pas span[data-pas]').forEach(function(s){ s.classList.add('fait'); s.classList.remove('actif'); });
@@ -1422,6 +1679,8 @@ $('form').addEventListener('submit', function(e) {
       else if (code === 'promo_perime') { err.innerHTML = T('Ce code n\'est pas valide à cette date. Retire-le, et le rendez-vous passe.', 'This code is not valid on this date. Remove it and the booking goes through.'); $('promo').focus(); }
       else if (code === 'promo_epuise') { err.innerHTML = T('Ce code a atteint son nombre d\'utilisations. Retire-le, et le rendez-vous passe.', 'This code has reached its number of uses. Remove it and the booking goes through.'); $('promo').focus(); }
       else if (code === 'promo_soin_liste') { err.innerHTML = T('Ce code ne s\'applique pas au soin choisi. Change de soin, ou retire le code.', 'This code does not apply to the chosen treatment. Change the treatment, or remove the code.'); }
+      else if (code === 'trop_de_moments') { err.innerHTML = T('Six moments d\'un coup, c\'est le maximum. Retires-en, ou appelle Kevin au <a href="tel:+14383683282">' + TEL + '</a>.', 'Six moments at once is the maximum. Remove some, or call Kevin at <a href="tel:+14383683282">' + TEL + '</a>.'); allerPas(1); }
+      else if (code === 'moments_croises') { err.innerHTML = T('Deux des moments choisis se chevauchent. Reprends la sélection.', 'Two of the chosen moments overlap. Pick them again.'); allerPas(1); }
       else if (code === 'deja_en_attente') { err.innerHTML = T('Une demande est déjà en attente avec ce courriel ou ce téléphone. Kevin y répond sous 24 h. Pour en ajouter une autre, appelle-le.', 'A request is already pending with this email or phone. Kevin answers within 24 hours. To add another, call him.'); }
       // ⚠️ Ces codes-là ne se règlent PAS en réessayant : réessayer donnerait exactement
       // la même réponse. On dit donc quoi faire, pas « réessaie ».
