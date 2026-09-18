@@ -79,28 +79,28 @@ var servicesData = {
       titre: 'Relaxation Suédoise',
       tag: 'Détente & douceur',
       desc: `Le massage relaxation est une invitation à lâcher prise. Des mouvements lents, fluides et enveloppants sur l'ensemble du corps libèrent les tensions accumulées, calment le système nerveux et invitent à une profonde tranquillité.`,
-      bienfaits: `<strong>Bienfaits :</strong> réduction du stress et de l'anxiété, amélioration du sommeil, relâchement musculaire, bien-être général.`
+      bienfaits: `<strong>Ce qu'on vient souvent y chercher :</strong> déposer le stress, un corps plus détendu, un meilleur repos. Les effets varient d'une personne à l'autre, et la massothérapie ne remplace pas un avis médical.`
     },
     en: {
       titre: 'Swedish Relaxation',
       tag: 'Relaxation & softness',
       desc: 'The relaxation massage is an invitation to let go. Slow, fluid and enveloping movements over the entire body release accumulated tension, calm the nervous system and invite a state of deep tranquility.',
-      bienfaits: '<strong>Benefits:</strong> stress and anxiety reduction, improved sleep, muscle relaxation, general sense of wellbeing.'
+      bienfaits: '<strong>What people usually come for:</strong> letting go of stress, a more relaxed body, better rest. Effects vary from person to person, and massage therapy does not replace medical advice.'
     }
   },
   therapeutique: {
     icon: '💆',
     fr: {
       titre: 'Massage Thérapeutique',
-      tag: 'Ciblé & efficace',
+      tag: 'Ciblé & personnalisé',
       desc: `Le massage thérapeutique s'adresse aux douleurs musculaires, aux tensions chroniques et aux inconforts physiques. Chaque séance est personnalisée avec des techniques spécifiques pour cibler les zones problématiques.`,
-      bienfaits: '<strong>Bienfaits :</strong> soulagement des douleurs, amélioration de la mobilité, réduction des tensions chroniques, récupération accélérée.'
+      bienfaits: "<strong>Ce qu'on vient souvent y chercher :</strong> soulagement des tensions, plus d'aisance dans le mouvement, un corps qui récupère mieux. Les effets varient d'une personne à l'autre, et la massothérapie ne remplace pas un avis médical."
     },
     en: {
       titre: 'Therapeutic Massage',
-      tag: 'Targeted & effective',
+      tag: 'Targeted & personalised',
       desc: 'The therapeutic massage addresses muscle pain, chronic tension and physical discomfort. Each session is personalized using specific techniques to target problem areas and promote recovery.',
-      bienfaits: '<strong>Benefits:</strong> pain relief, improved mobility, reduced chronic tension, accelerated recovery.'
+      bienfaits: '<strong>What people usually come for:</strong> tension relief, easier movement, a body that recovers better. Effects vary from person to person, and massage therapy does not replace medical advice.'
     }
   },
   signature: {

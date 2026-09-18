@@ -720,6 +720,14 @@ function soumettreFormulaire(e) {
   };
 
   // PDF
+  // ⚠️ jsPDF vient d'un CDN : s'il n'a pas chargé (réseau, bloqueur, panne du CDN),
+  //    la ligne suivante levait une TypeError et le bouton ne faisait RIEN, sans un mot.
+  if (!window.jspdf || !window.jspdf.jsPDF) {
+    alert(isEn
+      ? 'The form could not finish loading. Please refresh the page and try again.'
+      : "Le formulaire n'a pas pu se préparer complètement. Recharge la page et réessaie.");
+    return;
+  }
   var jsPDF = window.jspdf.jsPDF;
   var doc = new jsPDF({ unit: 'pt', format: 'a4' });
   var pageW = doc.internal.pageSize.getWidth();
