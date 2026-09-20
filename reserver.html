@@ -1550,6 +1550,13 @@ $('pourqui').addEventListener('change', function(){
    Les codes listés ici sont déjà publics — ils vivent dans les posts et les courriels de Kevin.
    Un code ami, lui, n'est jamais écrit : seule son empreinte l'est, plus haut. */
 var CODES_SOIN = { 'BOHEME90': 'suedois90', 'PARRAIN': 'suedois90' };
+/* Les deux codes dont l'effet sur le PRIX est écrit noir sur blanc ailleurs dans le dossier :
+   BOHEME90 (encart « Première visite » du site et de la page de liens) et PARRAIN (récompense
+   du parrain, 2026-09-10). Les deux disent la même chose — le 90 min au prix du 60 — et la
+   valeur pointe le soin dont on emprunte le prix, jamais un montant recopié à la main.
+   ⛔ Un code de parrainage personnel (numéro de téléphone, VB-…) n'est PAS ici : rien dans le
+      dossier ne dit ce qu'il fait au prix, et un prix, ça ne se devine pas. */
+var CODES_PRIX = { 'BOHEME90': 'suedois60', 'PARRAIN': 'suedois60' };
 function soinDuCode(v) {
   if (CODES_SOIN[v]) return CODES_SOIN[v];
   // Un numéro de téléphone, ou le code personnel d'un client : parrainage, donc 90 min.
@@ -1569,12 +1576,24 @@ $('promo').addEventListener('input', function() {
     }
     if (etat.ami) { AMI.saisi = ''; quitterAmi(false); }
     var sid = soinDuCode(v);
-    if (sid && (!etat.personnes.length || etat.personnes[0].id !== sid)) {
+    if (sid) {
       var s = soinParId(sid);
-      choisirSoin(sid);
-      echo.hidden = false;
-      echo.innerHTML = T('Ce code vaut pour le ' + s.min + ' min : je l\'ai choisi pour toi.',
-                         'This code applies to the ' + s.min + ' min: it is now selected.');
+      var neuf = (!etat.personnes.length || etat.personnes[0].id !== sid);
+      if (neuf) choisirSoin(sid);
+      var mot = neuf ? T('Ce code vaut pour le ' + s.min + ' min : je l\'ai choisi pour toi.',
+                         'This code applies to the ' + s.min + ' min: it is now selected.') : '';
+      // Le total, plus bas, reste le prix courant : le programme a le dernier mot sur le
+      // montant, et la page ne le recalcule pas. Quelqu'un qui arrive d'une offre à 100 $ ne
+      // doit donc pas lire 145 $ sans un mot d'explication — c'est ce mot-là.
+      var ref = CODES_PRIX[v] ? soinParId(CODES_PRIX[v]) : null;
+      if (ref) {
+        var tarif = T(' — ' + ref.prix + ' $ + tx. Le total affiché plus bas reste le prix courant : Kevin confirme le montant avec ton rendez-vous.',
+                      ' — ' + ref.prix + ' $ + tx. The total shown below stays the regular price: Kevin confirms the amount with your booking.');
+        mot += mot
+          ? T(' Il le met au prix du ' + ref.min, ' It puts it at the ' + ref.min + ' min price') + tarif
+          : T('Ce code met le ' + s.min + ' min au prix du ' + ref.min, 'This code puts the ' + s.min + ' min at the ' + ref.min + ' min price') + tarif;
+      }
+      if (mot) { echo.hidden = false; echo.innerHTML = mot; }
     } else if (!v) {
       echo.hidden = true;
     }
@@ -1721,6 +1740,20 @@ function finOk(h, duree) { var p = h.split(':'); return (+p[0] * 60 + +p[1] + du
   $('encart-deplace').hidden = url.get('deplace') !== '1';
   var saved = ''; try { saved = localStorage.getItem('vb-lang') || ''; } catch(e) {}
   applyLang(url.get('lang') === 'en' ? 'en' : (saved === 'en' ? 'en' : 'fr'));
+
+  /* Un lien d'offre peut nommer son code : …/reserver.html?code=BOHEME90. On le DÉPOSE dans le
+     champ, et la mécanique habituelle fait le reste — exactement le même chemin que si la
+     personne l'avait tapé, donc le soin se choisit tout de suite (Kevin, 2026-09-17) et l'écho
+     l'annonce à l'écran. Rien ne s'applique dans le dos du client : le code reste visible, et
+     effaçable.
+     ⛔ Seuls les codes publics (CODES_SOIN) passent par l'adresse. Un code ami ou un numéro de
+        téléphone n'a rien à faire dans un lien : une adresse se partage, se copie, se colle et
+        se journalise — ces deux-là ne doivent vivre nulle part ailleurs que dans le champ. */
+  var codeUrl = (url.get('code') || '').trim().toUpperCase().replace(/\s+/g, '');
+  if (CODES_SOIN[codeUrl]) {
+    $('promo').value = codeUrl;
+    $('promo').dispatchEvent(new Event('input'));
+  }
 })();
 </script>
 </body>
