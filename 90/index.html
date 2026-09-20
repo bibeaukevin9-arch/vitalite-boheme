@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, follow">
+<title>Vitalité Bohème — Première visite</title>
+<!--
+  L'ADRESSE COURTE — pourquoi cette page existe.
+
+  L'offre de première visite vit à reserver.html?code=BOHEME90. Cette adresse-là ne se dit
+  pas à voix haute dans une vidéo, ne s'écrit pas dans une biographie Instagram et ne se
+  recopie pas de mémoire. « vitaliteboheme.ca/90 », oui.
+
+  Elle ne fait rien d'autre que reconduire vers la réservation en gardant le code. Le code
+  reste visible dans le champ une fois arrivé : rien ne s'applique dans le dos du client.
+
+  ⛔ LA REDIRECTION EST EN JAVASCRIPT, comme dans r.html, et pour la même raison de
+     cohérence : un robot de courriel qui ouvre les liens avant la personne ne doit jamais
+     avancer à sa place. Ici il n'y a rien à déclencher — la page de réservation ne réserve
+     rien toute seule — mais la maison a une règle, et une exception ne se justifie pas par
+     « ça ne fait rien de grave cette fois-ci ».
+  ⛔ noindex : Google connaît déjà l'accueil et la page de réservation. Une troisième porte
+     vers la même chose diviserait le signal au lieu de l'ajouter.
+-->
+<style>
+  :root { --or:#cfa96a; --noir:#1c1208; --blanc:#fdfaf6; --texte:#3a2e28; --gris:#7a6a58; }
+  * { box-sizing:border-box }
+  body { margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
+         background:var(--blanc); color:var(--texte); padding:24px; font-family:Georgia,serif; }
+  .boite { max-width:400px; text-align:center }
+  h1 { font-family:Georgia,'Times New Roman',serif; font-weight:400; font-size:27px;
+       margin:0 0 10px; color:var(--noir) }
+  p { margin:0 0 22px; color:var(--gris); font-size:15px; line-height:1.6 }
+  a { display:inline-block; text-decoration:none; background:var(--or); border-radius:30px;
+      padding:13px 30px; color:var(--noir); font-size:15px; letter-spacing:1px; font-weight:bold }
+  a:hover { background:#e8c98a }
+  .pt { display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--or);
+        margin:0 3px; animation:b 1.2s infinite ease-in-out }
+  .pt:nth-child(2) { animation-delay:.15s } .pt:nth-child(3) { animation-delay:.3s }
+  @keyframes b { 0%,80%,100% { opacity:.25 } 40% { opacity:1 } }
+  @media (prefers-reduced-motion:reduce) { .pt { animation:none; opacity:.6 } }
+</style>
+</head>
+<body>
+  <div class="boite">
+    <h1>Vitalité Bohème</h1>
+    <p id="dit"><span class="pt"></span><span class="pt"></span><span class="pt"></span><br>
+      Un instant, on t'amène à la réservation. Le code de première visite est déjà avec toi.</p>
+    <a id="suite" href="../reserver.html?code=BOHEME90">Continuer</a>
+  </div>
+<script>
+(function () {
+  var VERS = '../reserver.html?code=BOHEME90';
+  // `replace` plutôt que `href` : le bouton « précédent » ne ramène pas sur cette page,
+  // sinon on repart en boucle vers la réservation.
+  setTimeout(function () { window.location.replace(VERS); }, 60);
+  // Si la redirection est bloquée, la phrase doit cesser de promettre.
+  setTimeout(function () {
+    var d = document.getElementById('dit');
+    if (d) d.textContent = 'Touche « Continuer » pour poursuivre.';
+  }, 2500);
+}());
+</script>
+</body>
+</html>
