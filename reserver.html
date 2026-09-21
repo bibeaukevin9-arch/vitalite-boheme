@@ -23,7 +23,9 @@
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { overflow-x: clip; scroll-behavior: smooth; }
-    body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; color: var(--texte); overflow-x: clip; max-width: 100vw; position: relative; background: var(--beige); padding-bottom: 0; }
+    /* Le fond est celui du thème « Pierre et or ». Il vivait plus bas dans une règle SANS
+       sélecteur, donc il ne s'appliquait jamais ; le remettre ici évite un second `body`. */
+    body { font-family: 'Inter', 'Segoe UI', system-ui, sans-serif; color: var(--texte); overflow-x: clip; max-width: 100vw; position: relative; background: #f4ebdd; padding-bottom: 0; }
     body::before { content: ''; position: fixed; inset: 0; background: url('images/fiche-bg.jpg') center center / cover; z-index: -1; opacity: 1; }
     h1, h2, h3 { font-family: 'Cormorant Garamond', Georgia, serif; }
     [hidden] { display: none !important; }
@@ -110,10 +112,15 @@
     .erreur { background: #fbeeea; border: 1px solid rgba(154,74,58,0.4); color: var(--rouge); border-radius: 10px; padding: 12px 14px; font-size: 14px; line-height: 1.5; margin-top: 12px; }
     .resume { display: none; }
     .retour-etape { display: none; }
-    @media (max-width: 560px) { .champs { grid-template-columns: 1fr; } .r-header h1 { font-size: 30px; } .jour .d { font-size: 18px; } .carte { padding: 20px 16px; } }
+    /* ⛔ Une 2e media query mobile vivait ICI, avec 154 règles de base derrière elle : trois de
+       ses quatre réglages étaient écrasés en silence (titre 40 px au lieu de 30, chiffre du jour
+       24 au lieu de 18, rembourrage de la carte). Retirée le 2026-09-21 ; ce qui était mort a
+       rejoint le bloc mobile de la fin, le seul qui gagne. Ne pas en réintroduire une ici. */
 
     /* ═══════════════ C — PIERRE ET OR ═══════════════ */
-    { background: #f4ebdd; }
+    /* ⛔ Une règle SANS sélecteur vivait ici — `{ background: #f4ebdd; }` — donc le fond du
+       thème n'était jamais appliqué et la page gardait le beige d'origine. La couleur est
+       remontée dans la règle `body` du haut : un seul endroit, aucun sélecteur en double. */
     body::before { opacity: .9; }
     .r-header { background: var(--noir); padding: 40px 24px 34px; border-bottom: 1px solid rgba(201,162,39,.4); }
     .r-header::after { content: ''; display: block; width: 60px; height: 1px; background: var(--or); margin: 18px auto 0; }
@@ -133,7 +140,13 @@
     .soin .duree { color: var(--or); font-weight: 400; font-size: 34px; }
     .soin.choisi { background: var(--noir); border-color: var(--noir); box-shadow: none; }
     .soin.choisi .nom, .soin.choisi .prix, .soin.choisi .prix b { color: var(--creme); }
-    .jour { background: transparent; border: 1px solid rgba(201,162,39,.25); border-radius: 2px; }
+    /* ⛔ Une case de jour est un <button>, et un bouton CENTRE son contenu verticalement.
+       Comme la grille étire toutes les cases à la même hauteur, une note qui passe sur deux
+       lignes (« ✦ 10 libres ») remontait son chiffre de 6,5 px : la rangée de chiffres faisait
+       une vague. Mesuré à l'écran le 2026-09-21, pas déduit. En colonne alignée en haut, tous
+       les chiffres sont sur la même ligne, que la note tienne sur une ou deux lignes. */
+    .jour { background: transparent; border: 1px solid rgba(201,162,39,.25); border-radius: 2px;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
     .jour .d { font-weight: 400; font-size: 24px; color: var(--noir); }
     .jour.choisi { background: var(--noir); border-color: var(--noir); box-shadow: none; }
     .jour.choisi .d { color: var(--or); } .jour.choisi .j, .jour.choisi .n { color: var(--creme); }
@@ -418,6 +431,12 @@
     @media (max-width: 560px) {
       .r-body { padding-left: 14px; padding-right: 14px; }
       .carte { padding-left: 14px; padding-right: 14px; }
+      /* ⭐ Repris du bloc enterré à la ligne 113 (2026-09-21), où ils ne s'appliquaient pas.
+         ⛔ Le `.carte { padding: 20px 16px }` qui les accompagnait n'est PAS repris : le
+            raccourci écraserait les deux lignes ci-dessus, et avec elles les cases de 42 px. */
+      .champs { grid-template-columns: 1fr; }
+      .r-header h1 { font-size: 30px; }
+      .jour .d { font-size: 18px; }
       .jours { gap: 4px; }
       .jour { padding: 12px 1px 10px; }
       .mois-grille, .entete-jours { gap: 3px; }
@@ -506,7 +525,7 @@
     <p class="sous" data-fr>Pas un massage : un moment. Voici mon horaire — prends ce qui te va.</p>
     <p class="sous" data-en>Not a massage: a moment. Here is my schedule — take what suits you.</p>
 
-    <!-- ⭐ L'HORAIRE EN PREMIER, côté amis seulement. Il EST le sélecteur.
+    <!-- ⭐ L'HORAIRE EN PREMIER. Il EST le sélecteur.
          Deux grains, un seul geste : glisser sur les lignes prend des JOURNÉES entières,
          glisser dans une journée ouverte prend des HEURES.
          ⛔ Aucun titre d'événement ne sort du serveur : on voit QUAND Kevin est pris,
@@ -709,10 +728,12 @@ function prixTotal() { return etat.personnes.reduce(function(a, s){ return a + s
 function soinParId(id) { return SOINS.filter(function(s){ return s.id === id; })[0]; }
 
 /* ─── Réservation de temps ───
-   ⛔ Cette page est publique : son code source se lit d'un clic droit. Le code d'accès n'y est
-   donc écrit NULLE PART — seule son empreinte SHA-256 l'est, et une empreinte ne se remonte pas.
-   Le serveur, lui, reçoit ce que la personne a tapé et reste seul juge.
-   Ne jamais réintroduire le code en clair ici, ni dans un commentaire. */
+   ⛔ Cette page est publique : son code source se lit d'un clic droit. Le code n'y est donc
+   écrit NULLE PART, ni dans un commentaire. Seule son empreinte SHA-256 l'est — et elle ne
+   protège PAS grand-chose : un code de six caractères se retrouve à partir de son empreinte en
+   quelques minutes (constat du 2026-09-21 ; la version précédente de ce commentaire affirmait
+   le contraire, c'était faux). Ce qui protège vraiment, c'est que le serveur reçoit ce que la
+   personne a tapé et reste seul juge. */
 var AMI = {
   empreinte: '1ffd41070a00500e8637c82a74219c8e2c876a660a09e522959cdc3244374f90',
   saisi: '',
@@ -760,7 +781,7 @@ function libZonesEcran() {
              : o.map(function(z){ return T(z.fr, z.en); }).join(' + ');
   return quoi + ' · ' + o[0].de + ' – ' + o[o.length - 1].a;
 }
-/** Entre et sort du mode ami. Tout ce qui appartient à l'autre parcours est remis à zéro. */
+/** Bascule d'un parcours à l'autre : l'état du précédent est remis à zéro. */
 function basculerAmi(actif) {
   etat.ami = actif;
   etat.personnes = []; etat.jour = null; etat.heure = null; etat.dispo = {}; etat.ouverts = []; etat.colles = {};
@@ -771,9 +792,7 @@ function basculerAmi(actif) {
   $('bloc-fin-ami').hidden = true;
   etat.momAmi = []; etat.secOuverte = null; etat.borne = null; etat.avisAmi = '';
   etat.blocsAmi = null; etat.envoiAmi = null;
-  // ⛔ Quand le code est entré, TOUT ce qui parle de massothérapie s'efface (Kevin, 2026-09-17 :
-  //    « faudrait enlever tout ce qui n'a pas rapport à la cédule pour le temps entre amis »).
-  //    Ce sont cinq endroits, et aucun n'était couvert avant.
+  // Cinq endroits à tenir ensemble : en oublier un laissait l'écran incohérent.
   rangerMassotherapie(actif);
   // L'étape « Soin » devient « Temps » : c'est ce qu'on y choisit maintenant.
   var onglet = document.querySelector('#pas span[data-pas="1"]');
@@ -795,7 +814,7 @@ function basculerAmi(actif) {
   $('c-ami').hidden = !actif;
   if (actif) setTimeout(function(){ $('c-ami').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 60);
 }
-/** Ce qui n'a rien à voir avec un temps entre amis disparaît — et revient si on quitte le code. */
+/** Masque ce qui n'appartient pas à ce parcours — et le rétablit au retour. */
 function rangerMassotherapie(ami) {
   var mettre = function (id, fr, en) {
     var el = $(id); if (!el) return;
@@ -1311,11 +1330,19 @@ function allerPas(n) {
 
 /* ─── 2. JOURS ─── */
 function cleJour(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+/* ⛔ Chaque chargement porte un numéro (2026-09-21). Une lecture froide prend jusqu'à 4 s et une
+   lecture chaude moins d'une seconde : en changeant de durée, la réponse de la SECONDE pouvait
+   arriver avant celle de la première et se faire écraser par elle. La page affichait alors les
+   heures d'une autre durée, et le dépôt répondait « quelqu'un vient de prendre cette plage »
+   — un message faux, sur une plage jamais prise. */
+var _numDispo = 0;
 function chargerDispo() {
   if (etat.ami ? (!etat.dureeAmi && !etat.zonesAmi.length) : !etat.personnes.length) return;
   etat.chargement = true; $('attente-jours').hidden = false; $('erreur-jours').hidden = true; $('jours').innerHTML = '';
   var duree = dureeTotale();
+  var mien = ++_numDispo;
   var fini = function(data) {
+    if (mien !== _numDispo) return;   // une réponse plus ancienne, arrivée trop tard : on la jette
     etat.chargement = false; $('attente-jours').hidden = true;
     if (!data || !data.ok) { montrerErreurJours(); return; }
     etat.dispo = data.dispo || {}; etat.ouverts = data.ouverts || []; etat.colles = data.colles || {}; etat.semaine = premiereSemaineLibre(); etat.mois = 0; rendreSuggestions(); rendreJours();
@@ -1325,7 +1352,11 @@ function chargerDispo() {
   var url = etat.ami
     ? SCRIPT_URL + '?action=dispo_ami&duree=' + duree + '&zo=' + encodeURIComponent(etat.zonesAmi.join(',')) + '&code=' + encodeURIComponent(AMI.saisi) + '&_=' + Date.now()
     : SCRIPT_URL + '?action=dispo&duree=' + duree + '&jours=' + REGLES.horizonJours + '&_=' + Date.now();
-  fetch(url, { method: 'GET', redirect: 'follow' }).then(function(r){ return r.json(); }).then(fini).catch(function(){ etat.chargement = false; $('attente-jours').hidden = true; montrerErreurJours(); });
+  fetch(url, { method: 'GET', redirect: 'follow' }).then(function(r){ return r.json(); }).then(fini)
+    // ⛔ Le même garde qu'en haut, et pour la même raison : sans lui, la requête LENTE qui
+    //    échoue après que la rapide a réussi affichait « les plages ne se chargent pas » par
+    //    dessus des jours parfaitement valides. Le correctif du matin ne couvrait que le succès.
+    .catch(function(){ if (mien !== _numDispo) return; etat.chargement = false; $('attente-jours').hidden = true; montrerErreurJours(); });
 }
 function montrerErreurJours() {
   $('erreur-jours').hidden = false;
@@ -1359,7 +1390,10 @@ function rendreJours() {
   var mois = currentLang === 'en' ? moisEn : moisFr;
   $('mois').textContent = debut.getMonth() === fin.getMonth() ? mois[debut.getMonth()] + ' ' + debut.getFullYear() : mois[debut.getMonth()] + ' · ' + mois[fin.getMonth()];
   $('prec').disabled = etat.semaine === 0;
-  $('suiv').disabled = etat.semaine >= Math.ceil(REGLES.horizonJours / 7) - 1;
+  // ⛔ L'horizon se compte depuis AUJOURD'HUI, la grille depuis le LUNDI de cette semaine
+  //    (2026-09-21). Sans le décalage, un samedi perdait les six derniers jours servis : ils
+  //    existaient côté serveur et n'étaient atteignables qu'en vue mois.
+  $('suiv').disabled = etat.semaine >= Math.ceil((((auj.getDay() + 6) % 7) + REGLES.horizonJours + 1) / 7) - 1;
   var jFr = ['lun','mar','mer','jeu','ven','sam','dim'], jEn = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   var html = '';
   for (var i = 0; i < 7; i++) {
@@ -1445,7 +1479,7 @@ function rendreHeures() {
 /* ─── 4. RÉCAP + ENVOI ─── */
 function rendreRecap() {
   if (!etat.jour || !etat.heure) return;
-  // ⛔ Aucun prix, aucun soin, aucune mention d'adresse en mode ami.
+  // Le récap ne montre que ce que le parcours courant a réellement renseigné.
   if (etat.ami) {
     if (etat.zonesAmi.length) {
       var o = AMI.zones.filter(function(z){ return etat.zonesAmi.indexOf(z.id) >= 0; });
@@ -1548,7 +1582,7 @@ $('pourqui').addEventListener('change', function(){
    de suite »). Ça évite l'aller-retour : sans ça, le serveur renvoyait `promo_soin` et la
    personne devait deviner qu'il fallait revenir changer son soin.
    Les codes listés ici sont déjà publics — ils vivent dans les posts et les courriels de Kevin.
-   Un code ami, lui, n'est jamais écrit : seule son empreinte l'est, plus haut. */
+   Tout code qui n'est pas public ne s'écrit jamais ici, sous aucune forme. */
 var CODES_SOIN = { 'BOHEME90': 'suedois90', 'PARRAIN': 'suedois90' };
 function soinDuCode(v) {
   if (CODES_SOIN[v]) return CODES_SOIN[v];
