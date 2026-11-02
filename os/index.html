@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Les os — Vitalité Bohème</title>
+<style>
+  :root { --papier:#D6D2C8; --encre:#2b2520; --doux:#6b6155; --trait:#c4bcae; --vert:#4f7a4c; --terre:#9a5b3a; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+    --papier:#20201d; --encre:#e8e2d6; --doux:#9d9484; --trait:#3c3a34; --vert:#8bb088; --terre:#d39a76; } }
+  :root[data-theme="dark"] { --papier:#20201d; --encre:#e8e2d6; --doux:#9d9484; --trait:#3c3a34; --vert:#8bb088; --terre:#d39a76; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--papier); color: var(--encre);
+         font-family: Georgia, 'Times New Roman', serif; -webkit-text-size-adjust: 100%; }
+  main { max-width: 1000px; margin: 0 auto; padding: 20px 16px 48px; }
+  h1 { font-weight: 400; font-size: clamp(24px, 6vw, 32px); margin: 0 0 4px; }
+  .sous { color: var(--doux); margin: 0 0 20px; line-height: 1.5; }
+  .grille { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+  .carte { display: flex; flex-direction: column; text-decoration: none; color: inherit;
+           border: 1px solid var(--trait); border-radius: 6px; overflow: hidden; background: rgba(255,255,255,.18); }
+  .carte:active { transform: scale(.98); }
+  .carte img { width: 100%; height: auto; aspect-ratio: 1; display: block; background: #D6D2C8; }
+  .nom { font-size: 16px; padding: 8px 10px 0; line-height: 1.3; }
+  .ancien { font-size: 13px; color: var(--doux); padding: 2px 10px 0; }
+  .etat { font-size: 12px; padding: 6px 10px 10px; margin-top: auto; font-family: -apple-system, 'Segoe UI', sans-serif; }
+  .etat.refait { color: var(--vert); }
+  .etat.aout { color: var(--terre); }
+  footer { margin-top: 28px; font-size: 13px; color: var(--doux); line-height: 1.6; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Les os</h1>
+  <p class="sous">Touche un os pour l'ouvrir en 3D et le tourner au doigt.
+    1 sur 25 sont déjà redessinés d'après l'atlas de Gray.</p>
+  <div class="grille">
+    <a class="carte" href="01_atlas.html"><img src="vignettes/01_atlas.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Atlas (C1)</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="02_axis.html"><img src="vignettes/02_axis.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Axis (C2)</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="03_cartilages-costaux.html"><img src="vignettes/03_cartilages-costaux.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Cartilages costaux</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="04_clavicule.html"><img src="vignettes/04_clavicule.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Clavicule</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="05_cotes.html"><img src="vignettes/05_cotes.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Côtes</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="06_crane.html"><img src="vignettes/06_crane.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Crâne</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="07_femur.html"><img src="vignettes/07_femur.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Fémur</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="08_fibula.html"><img src="vignettes/08_fibula.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Fibula</span><span class="ancien">autrefois : péroné</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="09_humerus.html"><img src="vignettes/09_humerus.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Humérus</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="10_hyoide.html"><img src="vignettes/10_hyoide.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Os hyoïde</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="11_mandibule.html"><img src="vignettes/11_mandibule.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Mandibule</span><span class="ancien">autrefois : maxillaire inférieur</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="12_metacarpiens-et-doigts.html"><img src="vignettes/12_metacarpiens-et-doigts.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Métacarpiens et phalanges de la main</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="13_metatarsiens-et-orteils.html"><img src="vignettes/13_metatarsiens-et-orteils.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Métatarsiens et phalanges du pied</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="14_os-coxal.html"><img src="vignettes/14_os-coxal.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Os coxal</span><span class="ancien">autrefois : os iliaque</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="15_os-du-carpe.html"><img src="vignettes/15_os-du-carpe.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Os du carpe</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="16_os-du-tarse.html"><img src="vignettes/16_os-du-tarse.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Os du tarse</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="17_patella.html"><img src="vignettes/17_patella.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Patella</span><span class="ancien">autrefois : rotule</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="18_radius.html"><img src="vignettes/18_radius.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Radius</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="19_scapula.html"><img src="vignettes/19_scapula.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Scapula</span><span class="ancien">autrefois : omoplate</span><span class="etat refait">Redessiné d'après l'atlas de Gray</span></a>
+    <a class="carte" href="20_sternum.html"><img src="vignettes/20_sternum.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Sternum</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="21_tibia.html"><img src="vignettes/21_tibia.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Tibia</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="22_ulna.html"><img src="vignettes/22_ulna.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Ulna</span><span class="ancien">autrefois : cubitus</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="23_vertebres-cervicales.html"><img src="vignettes/23_vertebres-cervicales.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Vertèbres cervicales (C3 à C7)</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="24_vertebres-lombaires.html"><img src="vignettes/24_vertebres-lombaires.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Vertèbres lombaires (L1 à L5)</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+    <a class="carte" href="25_vertebres-thoraciques.html"><img src="vignettes/25_vertebres-thoraciques.webp" alt="" loading="lazy" width="360" height="360"><span class="nom">Vertèbres thoraciques (T1 à T12)</span><span class="ancien">autrefois : vertèbres dorsales</span><span class="etat aout">Version d'août, pas encore refaite</span></a>
+  </div>
+  <footer>Modèles : BodyParts3D, © The Database Center for Life Science, licence CC BY 4.0.<br>
+    Zones d'attache redessinées d'après le Gray's Anatomy (1918), domaine public. Vitalité Bohème.</footer>
+</main>
+</body>
+</html>
