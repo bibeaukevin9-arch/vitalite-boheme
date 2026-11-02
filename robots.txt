@@ -1,7 +1,7 @@
 User-agent: *
 Allow: /
 
-# /test-muscles.html : outil de travail interne, partagé par lien seulement.
+# /test-muscles.html, /test-os.html et /os/ : outils de travail internes, partagés par lien seulement.
 # Il n'est lié depuis aucune page et porte un meta noindex. Le bloc « * »
 # ci-dessus ne l'interdit PAS volontairement : un moteur doit pouvoir lire la
 # page pour voir son noindex et donc ne pas l'indexer. Le bloquer ici ferait
@@ -12,46 +12,64 @@ Allow: /
 # --- Crawlers des moteurs IA : autorisés sur le site, sauf l'outil interne ---
 User-agent: GPTBot
 Disallow: /test-muscles.html
+Disallow: /test-os.html
+Disallow: /os/
 Disallow: /styles-reservation.html
 Allow: /
 
 User-agent: OAI-SearchBot
 Disallow: /test-muscles.html
+Disallow: /test-os.html
+Disallow: /os/
 Disallow: /styles-reservation.html
 Allow: /
 
 User-agent: ChatGPT-User
 Disallow: /test-muscles.html
+Disallow: /test-os.html
+Disallow: /os/
 Disallow: /styles-reservation.html
 Allow: /
 
 User-agent: PerplexityBot
 Disallow: /test-muscles.html
+Disallow: /test-os.html
+Disallow: /os/
 Disallow: /styles-reservation.html
 Allow: /
 
 User-agent: Perplexity-User
 Disallow: /test-muscles.html
+Disallow: /test-os.html
+Disallow: /os/
 Disallow: /styles-reservation.html
 Allow: /
 
 User-agent: ClaudeBot
 Disallow: /test-muscles.html
+Disallow: /test-os.html
+Disallow: /os/
 Disallow: /styles-reservation.html
 Allow: /
 
 User-agent: Claude-User
 Disallow: /test-muscles.html
+Disallow: /test-os.html
+Disallow: /os/
 Disallow: /styles-reservation.html
 Allow: /
 
 User-agent: Google-Extended
 Disallow: /test-muscles.html
+Disallow: /test-os.html
+Disallow: /os/
 Disallow: /styles-reservation.html
 Allow: /
 
 User-agent: Applebot-Extended
 Disallow: /test-muscles.html
+Disallow: /test-os.html
+Disallow: /os/
 Disallow: /styles-reservation.html
 Allow: /
 
