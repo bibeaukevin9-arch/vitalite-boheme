@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="robots" content="noindex" />
+  <title>Revalider ton questionnaire — Vitalité Bohème</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <!--
+    La revalidation du questionnaire de santé (décision de Kevin, 2026-11-02) : à chaque
+    rendez-vous, peu importe d'où arrive le client, il signe que sa santé n'a pas changé, ou il
+    écrit ce qui a changé ou s'est ajouté. Le courriel de confirmation y mène quand un
+    questionnaire est déjà au dossier ; Kevin l'ouvre aussi sur son téléphone à l'arrivée.
+    ⛔ Cette page ENVOIE, elle ne lit jamais le dossier : sans compte protégé, n'importe qui
+       pourrait taper un numéro et voir la fiche de quelqu'un d'autre (Loi 25).
+    ⚠️ Elle parle à l'action « revalidation » du programme Google : DÉPLOYER LE PROGRAMME
+       D'ABORD, puis pousser cette page. L'inverse donne « action_inconnue » au client.
+  -->
+  <style>
+    :root {
+      --noir: #1c1208; --or: #c9a227; --or-clair: #e8c98a;
+      --blanc: #fdfaf6; --texte: #3a2e28; --gris: #7a6a58;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { overflow-x: clip; }
+    body { font-family: Georgia, serif; color: var(--texte); background: #efe4d2; overflow-x: clip; }
+    body::before { content: ''; position: fixed; inset: 0; background: url('images/fiche-bg.jpg') center center / cover; z-index: -1; }
+
+    .lang-btn {
+      position: absolute; top: 20px; left: 16px; z-index: 1100;
+      background: rgba(30,22,14,0.82); color: #c8b89a; border: 1px solid rgba(201,169,110,0.35);
+      padding: 7px 16px; border-radius: 20px; cursor: pointer;
+      font-size: 12px; letter-spacing: 1px; font-family: Georgia, serif;
+    }
+    .lang-btn .actif { color: var(--or); font-weight: bold; }
+    [data-en] { display: none; }
+    body.en [data-fr] { display: none; }
+    body.en [data-en] { display: block; }
+    body.en span[data-en] { display: inline; }
+
+    .entete {
+      background: url('images/hero-bg.jpg') center center / cover no-repeat;
+      padding: 64px 16px 36px; text-align: center; position: relative; overflow: hidden;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+    }
+    .entete::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,5,1,0.55), rgba(15,8,2,0.38) 50%, rgba(10,5,1,0.5)); }
+    .entete > * { position: relative; }
+    .logo { width: 68px; height: 68px; border-radius: 50%; border: 2px solid var(--or); overflow: hidden; margin: 0 auto 16px; }
+    .logo img { width: 100%; height: 100%; object-fit: cover; }
+    .badge {
+      display: inline-block; border: 1px solid rgba(201,169,110,0.8); color: var(--or-clair);
+      padding: 5px 20px; border-radius: 20px; font-size: 10px; letter-spacing: 3px;
+      text-transform: uppercase; margin-bottom: 14px; background: rgba(0,0,0,0.25);
+    }
+    .entete h1 { font-size: 27px; color: #fff; line-height: 1.3; margin-bottom: 10px; text-shadow: 0 2px 12px rgba(0,0,0,0.8); }
+    .entete h1 em { color: var(--or-clair); }
+    .entete p { font-size: 14px; color: #f0e4d0; max-width: 460px; margin: 0 auto; line-height: 1.8; text-shadow: 0 1px 6px rgba(0,0,0,0.8); }
+
+    main { max-width: 620px; margin: 0 auto; padding: 32px 16px 64px; }
+    .bloc {
+      background: #fbf7f0; border-radius: 4px; padding: 24px 20px; margin-bottom: 20px;
+      border: 1px solid rgba(201,162,39,0.45);
+      box-shadow: inset 0 0 0 4px #fbf7f0, inset 0 0 0 5px rgba(201,162,39,0.25), 0 10px 30px rgba(60,40,20,0.12);
+    }
+    .bloc h2 {
+      font-family: 'Cormorant Garamond', Georgia, serif; font-size: 24px; font-weight: 400; color: #14100d;
+      margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid rgba(201,162,39,0.30);
+    }
+    label.etiquette {
+      font-size: 11px; color: var(--gris); margin-bottom: 5px; display: block; letter-spacing: 0.6px;
+      text-transform: uppercase; font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+    input[type=text], input[type=email], input[type=tel], textarea {
+      width: 100%; padding: 11px 12px; border: 1.5px solid rgba(201,162,39,0.40); border-radius: 2px;
+      font-size: 16px; font-family: Georgia, serif; background: #fff; color: var(--texte);
+    }
+    input:focus, textarea:focus { outline: none; border-color: var(--or); box-shadow: 0 0 0 3px rgba(201,162,39,0.20); }
+    textarea { height: 110px; resize: vertical; }
+    .deux { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .champ { margin-bottom: 14px; }
+    .aide { font-size: 13px; color: var(--gris); line-height: 1.6; margin-top: -4px; margin-bottom: 4px; }
+
+    .choix { display: block; border: 1.5px solid rgba(201,162,39,0.40); border-radius: 4px; padding: 14px 14px 14px 46px;
+      margin-bottom: 10px; cursor: pointer; position: relative; background: #fff; font-size: 16px; line-height: 1.4; }
+    .choix input { position: absolute; left: 16px; top: 17px; width: 18px; height: 18px; accent-color: var(--or); }
+    .choix:has(input:checked) { border-color: var(--or); box-shadow: 0 0 0 3px rgba(201,162,39,0.20); }
+    #zone-changement { display: none; margin-top: 6px; }
+    #zone-changement.ouverte { display: block; }
+    .lien-complet { font-size: 14px; color: var(--gris); margin-top: 10px; line-height: 1.6; }
+    .lien-complet a { color: #8a6a1c; }
+
+    .signature { border: 1.5px solid #d8ccbe; border-radius: 10px; width: 100%; height: 120px; background: var(--blanc); touch-action: none; cursor: crosshair; display: block; }
+    .petit-btn { margin-top: 8px; padding: 6px 14px; border-radius: 16px; border: 1.5px solid #a09080; background: transparent; color: #7a6a58; font-family: Georgia, serif; font-size: 13px; cursor: pointer; }
+    .piege { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+    .envoyer {
+      background: var(--or); color: var(--noir); border: none; padding: 16px 24px; border-radius: 30px;
+      font-size: 17px; cursor: pointer; font-family: Georgia, serif; letter-spacing: 1px; width: 100%; font-weight: bold;
+    }
+    .envoyer:disabled { opacity: 0.6; cursor: not-allowed; }
+    #erreur { display: none; color: #a33; font-size: 14px; line-height: 1.6; margin-bottom: 12px; }
+    #merci { display: none; text-align: center; padding: 36px 20px; }
+    #merci h2 { border: 0; padding: 0; }
+    #merci p { line-height: 1.8; }
+
+    @media (max-width: 520px) { .deux { grid-template-columns: 1fr; gap: 0; } .entete h1 { font-size: 23px; } }
+  </style>
+</head>
+<body>
+
+<button class="lang-btn" type="button" onclick="changerLangue()"><span id="l-fr" class="actif">FR</span> | <span id="l-en">EN</span></button>
+
+<header class="entete">
+  <div class="logo"><img src="images/logo-vb-rond-plein.png" alt="Vitalité Bohème" /></div>
+  <div class="badge"><span data-fr>Avant ta séance</span><span data-en>Before your session</span></div>
+  <h1 data-fr>Ta santé, <em>toujours pareille ?</em></h1>
+  <h1 data-en>Your health, <em>still the same?</em></h1>
+  <p data-fr>Ton questionnaire de santé est déjà au dossier. Une minute pour dire s'il est encore vrai aujourd'hui.</p>
+  <p data-en>Your health form is already on file. One minute to tell Kevin if it is still true today.</p>
+</header>
+
+<main>
+  <form id="formulaire" novalidate>
+
+    <section class="bloc">
+      <h2><span data-fr>Toi</span><span data-en>You</span></h2>
+      <div class="deux">
+        <div class="champ">
+          <label class="etiquette" for="prenom"><span data-fr>Prénom</span><span data-en>First name</span></label>
+          <input type="text" id="prenom" autocomplete="off" maxlength="60" required />
+        </div>
+        <div class="champ">
+          <label class="etiquette" for="nom"><span data-fr>Nom</span><span data-en>Last name</span></label>
+          <input type="text" id="nom" autocomplete="off" maxlength="60" required />
+        </div>
+      </div>
+      <p class="aide"><span data-fr>Le courriel ou le téléphone de ton questionnaire, pour que Kevin le retrouve.</span><span data-en>The email or phone from your form, so Kevin can find it.</span></p>
+      <div class="deux">
+        <div class="champ">
+          <label class="etiquette" for="courriel"><span data-fr>Courriel</span><span data-en>Email</span></label>
+          <input type="email" id="courriel" autocomplete="off" maxlength="120" />
+        </div>
+        <div class="champ">
+          <label class="etiquette" for="tel"><span data-fr>Téléphone</span><span data-en>Phone</span></label>
+          <input type="tel" id="tel" autocomplete="off" maxlength="30" />
+        </div>
+      </div>
+      <div class="piege" aria-hidden="true"><input type="text" id="site_web" tabindex="-1" autocomplete="off" /></div>
+    </section>
+
+    <section class="bloc">
+      <h2><span data-fr>Depuis ton dernier questionnaire</span><span data-en>Since your last form</span></h2>
+      <label class="choix"><input type="radio" name="choix" value="rien" /><span data-fr>Rien n'a changé.</span><span data-en>Nothing has changed.</span></label>
+      <label class="choix"><input type="radio" name="choix" value="change" /><span data-fr>Quelque chose a changé ou s'est ajouté.</span><span data-en>Something has changed or is new.</span></label>
+      <div id="zone-changement">
+        <label class="etiquette" for="changements"><span data-fr>Qu'est-ce qui a changé ?</span><span data-en>What has changed?</span></label>
+        <p class="aide"><span data-fr>Un nouveau médicament, une blessure, une opération, une grossesse, une allergie, une douleur nouvelle…</span><span data-en>A new medication, an injury, surgery, pregnancy, an allergy, a new pain…</span></p>
+        <textarea id="changements" maxlength="3000"></textarea>
+        <p class="lien-complet"><span data-fr>Beaucoup de changements ? Tu peux aussi <a href="fiche.html">refaire le questionnaire au complet</a>.</span><span data-en>A lot has changed? You can also <a href="fiche.html">fill out the full form again</a>.</span></p>
+      </div>
+    </section>
+
+    <section class="bloc">
+      <h2><span data-fr>Ta signature</span><span data-en>Your signature</span></h2>
+      <p class="aide"><span data-fr>En signant, tu confirmes que ces renseignements sont exacts aujourd'hui.</span><span data-en>By signing, you confirm this information is accurate today.</span></p>
+      <canvas class="signature" id="signature" width="800" height="200"></canvas>
+      <button type="button" class="petit-btn" onclick="effacer()"><span data-fr>Effacer</span><span data-en>Clear</span></button>
+    </section>
+
+    <p id="erreur" role="alert"></p>
+    <button type="submit" class="envoyer" id="btn"><span data-fr>Envoyer à Kevin</span><span data-en>Send to Kevin</span></button>
+  </form>
+
+  <section class="bloc" id="merci" aria-live="polite">
+    <h2><span data-fr>C'est reçu.</span><span data-en>Received.</span></h2>
+    <p data-fr>Kevin le lit avant ta séance. À bientôt.</p>
+    <p data-en>Kevin reads it before your session. See you soon.</p>
+  </section>
+</main>
+
+<script>
+  // ⚠️ Même adresse que BANQUE_URL dans fiche-script.js : si le programme change d'adresse, changer les deux.
+  var PROGRAMME = 'https://script.google.com/macros/s/AKfycby217WbbU_K_cAUy9L1H96Yseh376VTAyT8eYxd2dCNl8Gw6pMmQEO8pi2P0rud6FLG/exec';
+  var TEL_KEVIN = '438 368-3282';
+  var langue = /[?&]lang=en\b/.test(location.search) ? 'en' : 'fr';
+
+  function changerLangue(l) {
+    langue = l || (langue === 'fr' ? 'en' : 'fr');
+    document.body.classList.toggle('en', langue === 'en');
+    document.documentElement.lang = langue;
+    document.getElementById('l-fr').className = langue === 'fr' ? 'actif' : '';
+    document.getElementById('l-en').className = langue === 'en' ? 'actif' : '';
+  }
+  changerLangue(langue);
+
+  // ─── Le choix : le champ « qu'est-ce qui a changé » n'apparaît que s'il sert ───
+  document.querySelectorAll('input[name=choix]').forEach(function (r) {
+    r.addEventListener('change', function () {
+      document.getElementById('zone-changement').classList.toggle('ouverte', r.value === 'change' && r.checked);
+    });
+  });
+
+  // ─── Signature ───
+  var toile = document.getElementById('signature'), ctx = toile.getContext('2d'), trace = false, signe = false;
+  ctx.strokeStyle = '#3a2e28'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+  function pos(e) {
+    var r = toile.getBoundingClientRect(), s = e.touches ? e.touches[0] : e;
+    return { x: (s.clientX - r.left) * (toile.width / r.width), y: (s.clientY - r.top) * (toile.height / r.height) };
+  }
+  function debut(e) { e.preventDefault(); trace = true; var p = pos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }
+  function ligne(e) { if (!trace) return; e.preventDefault(); var p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); signe = true; }
+  function fin() { trace = false; }
+  toile.addEventListener('mousedown', debut); toile.addEventListener('mousemove', ligne); window.addEventListener('mouseup', fin);
+  toile.addEventListener('touchstart', debut, { passive: false }); toile.addEventListener('touchmove', ligne, { passive: false }); toile.addEventListener('touchend', fin);
+  function effacer() { ctx.clearRect(0, 0, toile.width, toile.height); signe = false; }
+
+  // Le JPEG n'a pas de transparence : sans fond blanc, le trait foncé finirait sur du noir.
+  function signatureJpeg() {
+    var mini = document.createElement('canvas');
+    mini.width = 520; mini.height = Math.round(toile.height * 520 / toile.width);
+    var m = mini.getContext('2d');
+    m.fillStyle = '#ffffff'; m.fillRect(0, 0, mini.width, mini.height);
+    m.drawImage(toile, 0, 0, mini.width, mini.height);
+    return mini.toDataURL('image/jpeg', 0.6);
+  }
+
+  function aujourdhui() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  function erreur(fr, en) {
+    var el = document.getElementById('erreur');
+    el.textContent = langue === 'en' ? en : fr;
+    el.style.display = 'block';
+  }
+
+  // ─── Envoi ───
+  document.getElementById('formulaire').addEventListener('submit', function (e) {
+    e.preventDefault();
+    document.getElementById('erreur').style.display = 'none';
+    var val = function (id) { return document.getElementById(id).value.trim(); };
+    var choix = (document.querySelector('input[name=choix]:checked') || {}).value || '';
+    var courriel = val('courriel'), tel = val('tel');
+
+    if (!val('prenom') || !val('nom')) return erreur('Écris ton prénom et ton nom.', 'Write your first and last name.');
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(courriel) && tel.replace(/\D/g, '').length < 10)
+      return erreur('Écris ton courriel ou ton téléphone (10 chiffres).', 'Write your email or your phone (10 digits).');
+    if (!choix) return erreur('Choisis : rien n\'a changé, ou quelque chose a changé.', 'Choose: nothing has changed, or something has.');
+    if (choix === 'change' && !val('changements')) return erreur('Écris ce qui a changé.', 'Write what has changed.');
+    if (!signe) return erreur('Signe dans le cadre avant d\'envoyer.', 'Sign in the box before sending.');
+
+    var btn = document.getElementById('btn');
+    btn.disabled = true;
+    var paquet = {
+      action: 'revalidation', prenom: val('prenom'), nom: val('nom'), courriel: courriel, tel: tel,
+      choix: choix, changements: choix === 'change' ? val('changements') : '',
+      signature_image: signatureJpeg(), date_signature: aujourdhui(), lang: langue,
+      site_web: document.getElementById('site_web').value   // case piège : vide chez un vrai client
+    };
+
+    // Une seule nouvelle tentative, et seulement si le réseau a coupé : un refus du programme
+    // échouerait pareil au deuxième essai (même règle que fiche-script.js).
+    (function envoyer(essai) {
+      fetch(PROGRAMME, { method: 'POST', redirect: 'follow', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(paquet) })
+        .then(function (r) { return r.json().catch(function () { return { ok: false, erreur: 'reponse_illisible' }; }); })
+        .then(function (rep) {
+          if (rep && rep.ok) {
+            document.getElementById('formulaire').style.display = 'none';
+            document.getElementById('merci').style.display = 'block';
+            window.scrollTo(0, 0);
+            return;
+          }
+          btn.disabled = false;
+          erreur('L\'envoi n\'a pas passé. Réessaie, ou appelle Kevin au ' + TEL_KEVIN + '.',
+                 'Sending failed. Try again, or call Kevin at ' + TEL_KEVIN + '.');
+        })
+        .catch(function () {
+          if (essai < 2) { setTimeout(function () { envoyer(essai + 1); }, 1500); return; }
+          btn.disabled = false;
+          erreur('Pas de connexion. Réessaie, ou appelle Kevin au ' + TEL_KEVIN + '.',
+                 'No connection. Try again, or call Kevin at ' + TEL_KEVIN + '.');
+        });
+    })(1);
+  });
+</script>
+</body>
+</html>
