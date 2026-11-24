@@ -176,6 +176,18 @@
     .sugg button:hover { background: var(--brun-fonce); color: var(--creme); }
     .jour .n .etoile, .heure .etoile { color: var(--or); }
     .heure.collee { border-color: var(--or); box-shadow: 0 0 0 1px rgba(201,162,39,0.22) inset; }
+    /* ⭐ Le carré priorisé, version « B6 — le coin plié » choisie par Kevin le 2026-11-24 : carré, fond doré pâle,
+       étiquette « ✦ idéal » posée au centre du haut, petit coin doré plié en haut à droite. Seuls ces carrés-là
+       changent ; le reste du design ne bouge pas. Maquettes : claude.ai/artifact/TAKqhmR1RMPjdUswanHkQt */
+    .heures { row-gap: 16px; padding-top: 6px; }
+    .sugg .liste { row-gap: 16px; padding-top: 8px; }
+    .heure.collee, .sugg button { position: relative; border: 1.5px solid var(--or); border-radius: 2px; background: #f6ead0; font-weight: 700; box-shadow: none; }
+    .heure.collee::before, .sugg button::before { content: ""; position: absolute; top: 0; right: 0; border-style: solid;
+      border-width: 0 14px 14px 0; border-color: transparent var(--or) transparent transparent; }
+    .tag-ideal { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); white-space: nowrap; background: var(--noir);
+      color: var(--or-clair); font-family: Georgia, serif; font-size: 9px; font-weight: 400; letter-spacing: 1.5px; text-transform: uppercase;
+      line-height: 1; padding: 3px 7px; pointer-events: none; }
+    .heure.collee.choisi, .sugg button:hover { background: var(--noir); color: var(--or); border-color: var(--noir); }
     .vue-btn { background: none; border: 1px solid rgba(201,162,39,0.5); color: var(--brun-fonce); font: inherit; font-size: 11px;
       letter-spacing: 2px; text-transform: uppercase; padding: 7px 12px; border-radius: 20px; cursor: pointer; }
     .vue-btn:hover { border-color: var(--or); }
@@ -1364,16 +1376,24 @@ function montrerErreurJours() {
                                   'Time slots are not loading right now. Try again in a minute, or call Kevin at <a href="tel:+14383683282">' + TEL + '</a>.');
 }
 function rendreSuggestions() {
-  // Journées pleines (Kevin, 2026-11-24 : « les choix, je veux qu'ils soient le plus pointus […]
-  // quitte à en mettre plus ») : jusqu'à 6 moments, 2 par jour au plus, pour couvrir plusieurs jours.
-  var out = [], cles = Object.keys(etat.colles).sort();
+  // Journées pleines, semaine par semaine (Kevin, 2026-11-24 : « on essaie de remplir ma semaine
+  // actuelle […] puis l'autre semaine le plus possible »). On prend la semaine la plus proche d'abord ;
+  // dans la semaine, les journées déjà commencées (heures collées à un soin, 2 au plus) passent avant
+  // les journées vides (une heure d'ouverture, 10 h). Jusqu'à 6 moments en tout.
+  function lundiDe(k) { var p = k.split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]); d.setDate(d.getDate() - ((d.getDay() + 6) % 7)); return cleJour(d); }
+  var cles = Object.keys(etat.colles).sort(function (a, b) {
+    var sa = lundiDe(a), sb = lundiDe(b); if (sa !== sb) return sa < sb ? -1 : 1;
+    var oa = etat.ouverts.indexOf(a) >= 0 ? 0 : 1, ob = etat.ouverts.indexOf(b) >= 0 ? 0 : 1; if (oa !== ob) return oa - ob;
+    return a < b ? -1 : a > b ? 1 : 0;
+  });
+  var out = [];
   for (var i = 0; i < cles.length && out.length < 6; i++) { var hs = etat.colles[cles[i]]; for (var k = 0; k < hs.length && k < 2 && out.length < 6; k++) out.push([cles[i], hs[k]]); }
   $('sugg').hidden = !out.length;
   // Le titre s'accorde au nombre de plages proposées : une seule, c'est « le meilleur moment ».
   $('sugg-titre').textContent = out.length > 1
     ? T('✦ Les meilleurs moments pour moi', '✦ Best times for me')
     : T('✦ Le meilleur moment pour moi', '✦ Best time for me');
-  $('sugg-liste').innerHTML = out.map(function (o) { return '<button type="button" data-k="' + o[0] + '" data-h="' + o[1] + '">' + libJourCourt(o[0]) + '<b>' + libHeure(o[1]) + '</b></button>'; }).join('');
+  $('sugg-liste').innerHTML = out.map(function (o) { return '<button type="button" data-k="' + o[0] + '" data-h="' + o[1] + '"><span class="tag-ideal">' + T('✦ idéal', '✦ best') + '</span>' + libJourCourt(o[0]) + '<b>' + libHeure(o[1]) + '</b></button>'; }).join('');
   $('sugg-liste').querySelectorAll('button').forEach(function (b) { b.addEventListener('click', function () { etat.jour = b.getAttribute('data-k'); etat.heure = b.getAttribute('data-h'); rendreJours(); rendreHeures(); rendreRecap(); allerPas(4); }); });
 }
 function libJourCourt(k) { var p = k.split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]); return d.toLocaleDateString(currentLang === 'en' ? 'en-CA' : 'fr-CA', { weekday: 'short', day: 'numeric', month: 'short' }); }
@@ -1471,7 +1491,7 @@ function rendreHeures() {
                                   libJour(etat.jour) + ', for ' + duree + '. The time you pick is the start time.');
   var collees = etat.colles[etat.jour] || [];
   var ordre = heures.filter(function (h) { return collees.indexOf(h) >= 0; }).concat(heures.filter(function (h) { return collees.indexOf(h) < 0; }));
-  $('heures').innerHTML = heures.length ? ordre.map(function(h){ var c = collees.indexOf(h) >= 0; return '<button type="button" class="heure' + (c ? ' collee' : '') + (etat.heure === h ? ' choisi' : '') + '" data-h="' + h + '">' + (c ? '<span class="etoile">✦ </span>' : '') + libHeure(h) + '</button>'; }).join('')
+  $('heures').innerHTML = heures.length ? ordre.map(function(h){ var c = collees.indexOf(h) >= 0; return '<button type="button" class="heure' + (c ? ' collee' : '') + (etat.heure === h ? ' choisi' : '') + '" data-h="' + h + '">' + (c ? '<span class="tag-ideal">' + T('✦ idéal', '✦ best') + '</span>' : '') + libHeure(h) + '</button>'; }).join('')
                                         : '<div class="vide">' + T('Plus rien de libre ce jour-là.', 'Nothing left that day.') + '</div>';
   $('heures').querySelectorAll('.heure').forEach(function(b) { b.addEventListener('click', function(){ etat.heure = b.getAttribute('data-h'); rendreHeures(); rendreRecap(); allerPas(4); }); });
   var p = etat.jour.split('-'), debut = new Date(+p[0], +p[1] - 1, +p[2], 12);
