@@ -221,7 +221,7 @@
 
     /* ─── réglages propres à la page finale ─── */
     /* En-tête : la même pierre de fond que le reste du site, voilée, avec le filet or */
-    .r-header { background: url('images/hero-bg.jpg') center center / cover no-repeat; position: relative; overflow: hidden; }
+    .r-header { background: #1c1208 url('images/hero-bg.jpg') center center / cover no-repeat; position: relative; overflow: hidden; }
     .r-header::before { content: ''; position: absolute; inset: 0; z-index: 0;
       background: linear-gradient(180deg, rgba(10,5,1,0.66) 0%, rgba(15,8,2,0.52) 50%, rgba(10,5,1,0.62) 100%); }
     .r-header > *, .r-header::after { position: relative; z-index: 1; }
@@ -1364,8 +1364,10 @@ function montrerErreurJours() {
                                   'Time slots are not loading right now. Try again in a minute, or call Kevin at <a href="tel:+14383683282">' + TEL + '</a>.');
 }
 function rendreSuggestions() {
+  // Journées pleines (Kevin, 2026-11-24 : « les choix, je veux qu'ils soient le plus pointus […]
+  // quitte à en mettre plus ») : jusqu'à 6 moments, 2 par jour au plus, pour couvrir plusieurs jours.
   var out = [], cles = Object.keys(etat.colles).sort();
-  for (var i = 0; i < cles.length && out.length < 3; i++) { var hs = etat.colles[cles[i]]; for (var k = 0; k < hs.length && out.length < 3; k++) out.push([cles[i], hs[k]]); }
+  for (var i = 0; i < cles.length && out.length < 6; i++) { var hs = etat.colles[cles[i]]; for (var k = 0; k < hs.length && k < 2 && out.length < 6; k++) out.push([cles[i], hs[k]]); }
   $('sugg').hidden = !out.length;
   // Le titre s'accorde au nombre de plages proposées : une seule, c'est « le meilleur moment ».
   $('sugg-titre').textContent = out.length > 1
