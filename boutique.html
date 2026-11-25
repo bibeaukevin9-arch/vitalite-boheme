@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La boutique · Vitalité Bohème</title>
+<meta name="description" content="Les suppléments d'ATP Lab, une entreprise de Granby, avec 15 % de rabais grâce au code VB15. Mes choix, des ensembles par entraînement et toute la gamme.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://vitaliteboheme.ca/boutique.html">
+<link rel="icon" href="images/favicon-vb5.png" type="image/png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pierre: #14100d; --pierre-2: #1e1915; --trait-sombre: #3a2f26;
+    --or: #c9a227; --or-clair: #e3c77a; --or-encre: #8a6a1c; --encre-tampon: #3b2615;
+    --creme: #f2ebe2; --papier: #f7f2ea; --papier-2: #efe6d9; --trait: #ddd1bf;
+    --encre: #1f1914; --encre-2: #5a4b3e; --encre-3: #7d6c5c; --sur-pierre: #b8a894;
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Jost', 'Segoe UI', system-ui, sans-serif;
+    --sortie: cubic-bezier(.16, 1, .3, 1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: 130px; scrollbar-color: #c8b79c var(--papier); }
+  body { font-family: var(--sans); color: var(--encre); background: var(--papier); -webkit-font-smoothing: antialiased; }
+  body.fige { overflow: hidden; }
+  img { display: block; max-width: 100%; }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  a { color: inherit; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+  ::selection { background: var(--or-clair); color: var(--pierre); }
+  :focus-visible { outline: 2px solid var(--or); outline-offset: 3px; border-radius: 2px; }
+  svg.ic { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+  .large { max-width: 1280px; margin: 0 auto; padding-left: 40px; padding-right: 40px; }
+
+  /* ---------- Barre ---------- */
+  .barre { position: sticky; top: 0; z-index: 40; background: rgba(20,16,13,.96); backdrop-filter: saturate(1.2) blur(10px); color: var(--creme); }
+  .barre-in { height: 64px; display: flex; align-items: center; gap: 28px; }
+  .marque { font-family: var(--serif); font-size: 22px; font-weight: 500; text-decoration: none; white-space: nowrap; }
+  .marque i { color: var(--or-clair); }
+  .btn-panier { margin-left: auto; display: flex; align-items: center; gap: 8px; padding: 9px 14px; border: 1px solid var(--trait-sombre); border-radius: 40px; font-size: 13.5px; transition: border-color .2s; }
+  .btn-panier:hover { border-color: var(--or); }
+  .pastille-n { min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; background: var(--or); color: var(--pierre); font-size: 12px; font-weight: 600; display: grid; place-items: center; font-variant-numeric: tabular-nums; }
+  .pastille-n.saut { animation: saut .5s var(--sortie); }
+  @keyframes saut { 35% { transform: scale(1.35); } }
+
+  /* ---------- Vitrine ---------- */
+  .vitrine { display: grid; grid-template-columns: 1fr 1fr; min-height: 560px; }
+  .vitrine .gauche { padding: 72px 56px 48px max(40px, calc((100vw - 1280px) / 2 + 40px)); display: flex; flex-direction: column; justify-content: center; }
+  .vitrine .haut { font-size: 15px; color: var(--encre-3); }
+  .vitrine h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(48px, 5.6vw, 88px); line-height: .95; letter-spacing: -.02em; margin-top: 12px; text-wrap: balance; }
+  .vitrine h1 i { color: var(--or-encre); }
+  .rang { display: flex; flex-wrap: wrap; align-items: center; gap: 22px; margin-top: 30px; }
+  .cta { display: inline-flex; align-items: center; gap: 10px; padding: 16px 30px; border-radius: 40px; background: var(--pierre); color: var(--creme); font-size: 15px; text-decoration: none; transition: background .25s, transform .25s var(--sortie); white-space: nowrap; }
+  .cta:hover { background: #2c231b; transform: translateY(-1px); }
+  .cta .ic { color: var(--or-clair); }
+  .tampon { margin-left: auto; width: 150px; height: 150px; flex: none; }
+  .tampon svg { display: block; width: 100%; height: 100%; overflow: visible; transform: rotate(-12deg); }
+  .collage { position: relative; background: var(--pierre); overflow: hidden; }
+  .collage .p { position: absolute; width: 44%; aspect-ratio: 4/5; border-radius: 6px; overflow: hidden; box-shadow: 0 30px 60px -20px rgba(0,0,0,.7); transition: transform .9s var(--sortie); }
+  .collage .p img { width: 100%; height: 100%; object-fit: contain; }
+  .collage .p1 { left: 7%; top: 13%; transform: rotate(-6deg); } .collage .p2 { left: 29%; top: 21%; z-index: 2; transform: rotate(1deg); } .collage .p3 { right: 6%; top: 10%; transform: rotate(7deg); }
+  .collage:hover .p1 { transform: rotate(-8deg) translateX(-8px); } .collage:hover .p3 { transform: rotate(9deg) translateX(8px); }
+  .mention { background: var(--pierre-2); color: #b5a693; font-size: 13px; line-height: 1.6; }
+  .mention .large { padding-top: 14px; padding-bottom: 14px; }
+
+  /* ---------- Onglets ---------- */
+  .onglets { position: sticky; top: 64px; z-index: 30; background: rgba(242,235,226,.95); backdrop-filter: blur(8px); border-bottom: 1px solid var(--trait); }
+  .onglets .large { display: flex; gap: 8px; padding-top: 14px; padding-bottom: 14px; overflow-x: auto; scrollbar-width: none; }
+  .onglets .large::-webkit-scrollbar { display: none; }
+  .onglets a { padding: 9px 18px; border-radius: 30px; border: 1px solid var(--trait); font-size: 14px; color: var(--encre-2); text-decoration: none; white-space: nowrap; transition: all .2s; }
+  .onglets a:hover { border-color: var(--encre-3); color: var(--encre); }
+  .onglets a.actif { background: var(--encre); border-color: var(--encre); color: var(--creme); }
+
+  /* ---------- Sections ---------- */
+  .section { padding-top: 88px; padding-bottom: 16px; }
+  .sec-tete { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 32px; padding-bottom: 18px; margin-bottom: 30px; border-bottom: 1px solid var(--trait); }
+  .sec-tete h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(40px, 4.4vw, 60px); line-height: 1; letter-spacing: -.015em; }
+  .sec-tete h2 i { color: var(--or-encre); }
+  .sec-tete p { font-size: 15.5px; color: var(--encre-2); line-height: 1.65; max-width: 48ch; }
+  .rangee { display: grid; grid-template-columns: repeat(4, 1fr); gap: 36px 24px; }
+  .rangee.cinq { grid-template-columns: repeat(5, 1fr); }
+
+  /* ---------- Tuile ---------- */
+  .tuile { display: flex; flex-direction: column; min-width: 0; }
+  .socle { position: relative; display: block; width: 100%; aspect-ratio: 4 / 5; overflow: hidden; border-radius: 4px; background: var(--papier-2); transition: background-color .6s, box-shadow .5s var(--sortie); }
+  .socle img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: transform 1.1s var(--sortie); }
+  .tuile:hover .socle img { transform: scale(1.06); }
+  .tuile:hover .socle { box-shadow: 0 18px 40px -18px rgba(20,16,13,.45); }
+  .badge { position: absolute; left: 12px; top: 12px; z-index: 1; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px 6px 10px; border-radius: 30px; background: var(--pierre); color: var(--or-clair); font-size: 12px; letter-spacing: .06em; }
+  .badge svg { width: 13px; height: 13px; fill: var(--or-clair); }
+  .socle .epuise { position: absolute; right: 12px; top: 12px; background: var(--creme); color: var(--encre); font-size: 12px; padding: 5px 11px; border-radius: 30px; }
+  .socle .voir { position: absolute; right: 12px; bottom: 12px; display: flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 30px; background: rgba(247,242,234,.92); color: var(--encre); font-size: 12.5px; opacity: 0; transform: translateY(6px); transition: opacity .35s, transform .45s var(--sortie); }
+  .socle .voir .ic { width: 15px; height: 15px; }
+  .tuile:hover .socle .voir, .socle:focus-visible .voir { opacity: 1; transform: none; }
+  .tuile h3 { font-family: var(--serif); font-weight: 500; font-size: 24px; line-height: 1.1; margin-top: 16px; }
+  .tuile h3 button { text-align: left; }
+  .tuile h3 button:hover { color: var(--or-encre); }
+  .quoi { font-size: 14px; color: var(--encre-2); margin-top: 5px; line-height: 1.55; }
+  .achat { margin-top: auto; padding-top: 14px; display: grid; gap: 12px; }
+
+  .option .nomopt { font-size: 12.5px; color: var(--encre-3); margin-bottom: 7px; }
+  .option .nomopt b { color: var(--encre); font-weight: 500; }
+  .pastilles { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pastille { position: relative; width: 26px; height: 26px; border-radius: 50%; background: var(--c); box-shadow: inset 0 0 0 1px rgba(31,25,20,.15); transition: transform .25s var(--sortie); }
+  .pastille::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 1.5px solid transparent; transition: border-color .2s; }
+  .pastille:hover { transform: scale(1.1); }
+  .pastille[aria-pressed="true"]::after { border-color: var(--encre); }
+  .pastille:disabled { cursor: not-allowed; opacity: .35; }
+  .pastille:disabled::before { content: ''; position: absolute; left: 50%; top: 2px; bottom: 2px; width: 1.5px; background: var(--encre); transform: rotate(45deg); }
+  .pilule { padding: 5px 11px; border-radius: 30px; border: 1px solid var(--trait); font-size: 13px; color: var(--encre-2); transition: all .2s; }
+  .pilule:hover { border-color: var(--encre-3); }
+  .pilule[aria-pressed="true"] { border-color: var(--encre); color: var(--encre); background: var(--papier-2); }
+  .pilule:disabled { opacity: .4; text-decoration: line-through; cursor: not-allowed; }
+  .ligne-prix { display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+  .prix { display: flex; flex-direction: column; }
+  .prix .vb { font-family: var(--serif); font-size: 26px; line-height: 1; color: var(--or-encre); font-weight: 600; font-variant-numeric: lining-nums tabular-nums; }
+  .prix .vb s { font-family: var(--sans); font-size: 13.5px; font-weight: 400; color: var(--encre-3); margin-left: 8px; font-variant-numeric: tabular-nums; }
+  .prix .etiq { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--encre-3); margin-top: 5px; }
+  .btn-ajout { display: flex; align-items: center; justify-content: center; gap: 7px; padding: 10px 16px; border-radius: 30px; border: 1px solid var(--encre); font-size: 14px; transition: background .25s, color .25s, border-color .25s; white-space: nowrap; }
+  .btn-ajout:hover { background: var(--encre); color: var(--creme); }
+  .btn-ajout.fait { background: var(--or); border-color: var(--or); color: var(--pierre); }
+  .btn-ajout:disabled { opacity: .45; cursor: not-allowed; background: none; color: var(--encre); }
+
+  /* ---------- Ensembles conseil ---------- */
+  .ensembles { background: var(--creme); border-top: 1px solid var(--trait); border-bottom: 1px solid var(--trait); margin-top: 88px; }
+  .ensembles .section { padding-bottom: 80px; }
+  .ens-onglets { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; }
+  .ens-onglets button { padding: 11px 22px; border-radius: 30px; border: 1px solid var(--trait); font-size: 15px; background: var(--papier); transition: all .2s; }
+  .ens-onglets button:hover { border-color: var(--encre-3); }
+  .ens-onglets button[aria-selected="true"] { background: var(--pierre); color: var(--creme); border-color: var(--pierre); }
+  .conseil { display: grid; grid-template-columns: .95fr 2.05fr; gap: 48px; align-items: start; animation: entree .6s var(--sortie); }
+  @keyframes entree { from { opacity: 0; transform: translateY(10px); } }
+  .conseil h3 { font-family: var(--serif); font-weight: 400; font-size: clamp(40px, 4vw, 56px); line-height: 1; }
+  .conseil h3 i { color: var(--or-encre); }
+  .conseil .pourquoi { font-size: 16px; line-height: 1.7; color: var(--encre-2); margin-top: 16px; }
+  .roles { display: grid; gap: 12px; margin-top: 22px; }
+  .roles div { display: grid; grid-template-columns: 100px 1fr; gap: 12px; font-size: 14px; line-height: 1.5; color: var(--encre-2); }
+  .roles b { font-weight: 500; color: var(--or-encre); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; padding-top: 3px; }
+  .ens-total { margin-top: 26px; padding-top: 20px; border-top: 1px solid var(--trait); display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+  .ens-total .prix .vb { font-size: 32px; }
+  .btn-sombre { display: inline-flex; align-items: center; gap: 10px; padding: 14px 24px; border-radius: 40px; background: var(--pierre); color: var(--creme); font-size: 14.5px; transition: background .25s; }
+  .btn-sombre:hover { background: #2c231b; }
+  .btn-sombre .ic { color: var(--or-clair); }
+  .btn-sombre.fait { background: var(--or-encre); }
+  .trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+  /* ---------- Toute la gamme ---------- */
+  .filtres { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 34px; }
+  .filtres button { padding: 9px 18px; border-radius: 30px; border: 1px solid var(--trait); font-size: 14px; color: var(--encre-2); transition: all .2s; }
+  .filtres button:hover { border-color: var(--encre-3); color: var(--encre); }
+  .filtres button[aria-pressed="true"] { background: var(--encre); border-color: var(--encre); color: var(--creme); }
+  .filtres .n { font-variant-numeric: tabular-nums; opacity: .6; margin-left: 5px; }
+  .grille { display: grid; grid-template-columns: repeat(4, 1fr); gap: 44px 24px; }
+  .grille .tuile h3 { font-size: 21px; margin-top: 14px; }
+  .grille .quoi { font-size: 13.5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .grille .prix .vb { font-size: 22px; }
+  .grille .btn-ajout { padding: 9px 13px; font-size: 13.5px; }
+  .grille .pastille { width: 22px; height: 22px; }
+  .attente { grid-column: 1 / -1; text-align: center; color: var(--encre-3); font-size: 15px; padding: 40px 0; }
+
+  /* ---------- Pied ---------- */
+  .pied { background: var(--pierre); color: var(--creme); margin-top: 110px; }
+  .pied .large { padding-top: 88px; padding-bottom: 52px; }
+  .pied h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(38px, 4vw, 54px); line-height: 1; }
+  .etapes { list-style: none; counter-reset: e; display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin-top: 44px; }
+  .etapes li { counter-increment: e; border-top: 1px solid var(--trait-sombre); padding-top: 20px; font-size: 15px; line-height: 1.7; color: #d4c8b8; }
+  .etapes li::before { content: counter(e); display: block; font-family: var(--serif); font-size: 40px; line-height: 1; color: var(--or-clair); margin-bottom: 14px; }
+  .pied .fin { margin-top: 64px; padding-top: 26px; border-top: 1px solid var(--trait-sombre); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px 40px; font-size: 13.5px; line-height: 1.7; color: var(--sur-pierre); }
+  .pied .fin p { max-width: 70ch; }
+  .pied .fin a { color: var(--creme); }
+
+  /* ---------- Panneaux ---------- */
+  .voile { position: fixed; inset: 0; z-index: 60; background: rgba(20,16,13,.5); opacity: 0; pointer-events: none; transition: opacity .45s var(--sortie); }
+  .voile.ouvert { opacity: 1; pointer-events: auto; }
+  .panneau { position: fixed; z-index: 61; top: 0; right: 0; bottom: 0; background: var(--papier); display: flex; flex-direction: column; transform: translateX(100%); transition: transform .6s var(--sortie), visibility 0s .6s; box-shadow: -24px 0 60px rgba(20,16,13,.22); visibility: hidden; }
+  .panneau.ouvert { transform: none; visibility: visible; transition: transform .6s var(--sortie); }
+  .panneau-tete { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; background: var(--pierre); color: var(--creme); }
+  .panneau-tete h2 { font-family: var(--serif); font-weight: 400; font-size: 30px; }
+  .fermer { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--trait-sombre); transition: border-color .2s; }
+  .fermer:hover { border-color: var(--or); }
+  .fiche { width: min(620px, 100vw); }
+  .fiche .defile { flex: 1; overflow-y: auto; }
+  .fiche .socle { aspect-ratio: 1; border-radius: 0; }
+  .fiche .contenu { padding: 30px 32px 40px; }
+  .fiche h3 { font-family: var(--serif); font-weight: 400; font-size: 44px; line-height: 1; }
+  .fiche .quoi { font-size: 16.5px; margin-top: 12px; line-height: 1.65; }
+  .usage { margin-top: 22px; padding-top: 16px; border-top: 1px solid var(--trait); }
+  .usage .qui { font-size: 12px; letter-spacing: .06em; color: var(--or-encre); }
+  .usage ul { list-style: none; margin-top: 6px; }
+  .usage li { font-size: 15px; line-height: 1.55; color: var(--encre-2); padding-left: 14px; position: relative; margin-top: 5px; }
+  .usage li::before { content: ''; position: absolute; left: 0; top: .72em; width: 6px; height: 1px; background: var(--or); }
+  .fiche .achat { padding-top: 26px; }
+  .fiche .pastille { width: 34px; height: 34px; }
+  .fiche .complete { display: inline-flex; align-items: center; gap: 8px; margin-top: 24px; font-size: 14px; color: var(--encre-2); }
+  .fiche .complete .ic { width: 16px; height: 16px; }
+  .fiche .fiche-pied { font-size: 12.5px; color: var(--encre-3); margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--trait); line-height: 1.6; }
+  .tiroir { width: min(440px, 100vw); }
+  .articles { flex: 1; overflow-y: auto; padding: 8px 24px; }
+  .article { display: grid; grid-template-columns: 76px 1fr auto; gap: 14px; padding: 18px 0; border-bottom: 1px solid var(--trait); align-items: start; }
+  .article .vign { width: 76px; height: 76px; border-radius: 3px; overflow: hidden; background: var(--papier-2); }
+  .article .vign img { width: 100%; height: 100%; object-fit: contain; }
+  .article .nom { font-family: var(--serif); font-size: 20px; line-height: 1.15; }
+  .article .var { font-size: 13px; color: var(--encre-3); margin-top: 3px; }
+  .qte { display: inline-flex; align-items: center; margin-top: 10px; border: 1px solid var(--trait); border-radius: 30px; }
+  .qte button { width: 32px; height: 30px; display: grid; place-items: center; color: var(--encre-2); }
+  .qte svg.ic { width: 14px; height: 14px; }
+  .qte span { min-width: 22px; text-align: center; font-size: 14px; font-variant-numeric: tabular-nums; }
+  .article .p { font-size: 15px; font-variant-numeric: tabular-nums; text-align: right; }
+  .article .retirer { display: block; margin: 10px 0 0 auto; font-size: 12.5px; color: var(--encre-3); text-decoration: underline; text-underline-offset: 3px; }
+  .vide { text-align: center; padding: 70px 10px; color: var(--encre-3); }
+  .vide p.grand { font-family: var(--serif); font-size: 26px; color: var(--encre); margin-bottom: 8px; }
+  .tiroir-bas { padding: 20px 24px 24px; border-top: 1px solid var(--trait); }
+  .ligne-total { display: flex; justify-content: space-between; align-items: baseline; font-size: 14.5px; color: var(--encre-2); }
+  .ligne-total + .ligne-total { margin-top: 6px; }
+  .ligne-total.fort { color: var(--encre); }
+  .ligne-total.fort .m { font-family: var(--serif); font-size: 30px; color: var(--or-encre); font-weight: 600; font-variant-numeric: lining-nums tabular-nums; }
+  .tiroir-bas .note { font-size: 12.5px; color: var(--encre-3); line-height: 1.55; margin-top: 8px; }
+  .caisse { width: 100%; margin-top: 16px; display: flex; align-items: center; justify-content: center; gap: 10px; padding: 17px; border-radius: 40px; background: var(--or); color: var(--pierre); font-weight: 500; font-size: 15px; transition: filter .2s, transform .25s var(--sortie); }
+  .caisse:hover { filter: brightness(1.06); transform: translateY(-1px); }
+  .caisse:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+  .tiroir-bas .quitte { font-size: 12.5px; color: var(--encre-3); text-align: center; margin-top: 10px; }
+
+  .rangee.cinq .ligne-prix { flex-direction: column; align-items: stretch; gap: 10px; }
+
+  /* ---------- Écrans plus étroits ---------- */
+  @media (max-width: 1100px) {
+    .rangee.cinq { grid-template-columns: repeat(3, 1fr); }
+    .conseil { grid-template-columns: 1fr; gap: 30px; }
+    .grille { grid-template-columns: repeat(3, 1fr); }
+    .etapes { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .large { padding-left: 16px; padding-right: 16px; }
+    .vitrine { grid-template-columns: 1fr; min-height: 0; }
+    .vitrine .gauche { padding: 48px 16px 34px; }
+    .tampon { width: 116px; height: 116px; }
+    .collage { min-height: 340px; }
+    .section { padding-top: 64px; }
+    .rangee, .rangee.cinq, .grille { grid-template-columns: repeat(2, 1fr); gap: 32px 14px; }
+    .tuile h3, .grille .tuile h3 { font-size: 19px; }
+    .ligne-prix { flex-direction: column; align-items: stretch; gap: 10px; }
+    .trio { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 78%; overflow-x: auto; scroll-snap-type: x mandatory; gap: 16px; padding-bottom: 8px; scrollbar-width: none; }
+    .trio .tuile { scroll-snap-align: start; }
+    .ens-onglets button { padding: 9px 16px; font-size: 14px; }
+    .etapes { grid-template-columns: 1fr; gap: 24px; }
+    .pied .large { padding-top: 64px; }
+    .fiche .contenu { padding: 24px 18px 34px; }
+    .fiche h3 { font-size: 36px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="encre-tampon"><feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="2" seed="9" result="b"/><feDisplacementMap in="SourceGraphic" in2="b" scale="3" result="d"/>
+      <feTurbulence type="fractalNoise" baseFrequency="2.2" numOctaves="1" seed="2" result="t"/><feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -0.55 1.3" result="m"/><feComposite in="d" in2="m" operator="in"/></filter>
+  </defs>
+  <symbol id="i-sac" viewBox="0 0 24 24"><path d="M5.5 8h13l-1 12.5h-11z"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-moins" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-fleche" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-bas" viewBox="0 0 24 24"><path d="M12 5v14M6 13l6 6 6-6"/></symbol>
+  <symbol id="i-ok" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-oeil" viewBox="0 0 24 24"><path d="M2.5 12s3.5-6.5 9.5-6.5 9.5 6.5 9.5 6.5-3.5 6.5-9.5 6.5S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.6"/></symbol>
+  <symbol id="i-sortie" viewBox="0 0 24 24"><path d="M14 5h5v5M19 5l-8 8M17 14v5H5V7h5"/></symbol>
+  <symbol id="i-etoile" viewBox="0 0 24 24"><path d="M12 2.8l2.7 5.9 6.4.7-4.8 4.3 1.3 6.3L12 16.8 6.4 20l1.3-6.3L2.9 9.4l6.4-.7z"/></symbol>
+</svg>
+
+<div class="barre"><div class="large barre-in">
+  <a class="marque" href="index.html">Vitalité <i>Bohème</i></a>
+  <button class="btn-panier" id="ouvrir-panier" aria-label="Ouvrir le panier"><svg class="ic"><use href="#i-sac"/></svg><span>Panier</span><span class="pastille-n" id="compte">0</span></button>
+</div></div>
+
+<header class="vitrine">
+  <div class="gauche">
+    <span class="haut">Les suppléments d’ATP Lab, une entreprise de Granby</span>
+    <h1>Ton entraînement a un but. <i>Ton panier aussi.</i></h1>
+    <div class="rang">
+      <a class="cta" href="#choix">Magasiner mes choix <svg class="ic"><use href="#i-bas"/></svg></a>
+      <span class="tampon" role="img" aria-label="15 % de rabais avec le code VB15">
+        <svg viewBox="0 0 200 200"><defs><path id="anneau" d="M100,100 m-70,0 a70,70 0 1,1 140,0 a70,70 0 1,1 -140,0"/></defs>
+          <g filter="url(#encre-tampon)" fill="none" stroke="#3b2615"><circle cx="100" cy="100" r="92" stroke-width="3.6"/><circle cx="100" cy="100" r="83" stroke-width="1.2"/><circle cx="100" cy="100" r="56" stroke-width="1.7"/></g>
+          <g filter="url(#encre-tampon)"><text style="font-family:Jost,Segoe UI,sans-serif;font-size:11px;letter-spacing:3.4px;font-weight:600" fill="#3b2615"><textPath href="#anneau">VITALITÉ BOHÈME · CODE VB15 · VITALITÉ BOHÈME · CODE VB15 ·</textPath></text>
+          <text x="100" y="110" text-anchor="middle" style="font-family:Cormorant Garamond,Georgia,serif;font-size:50px;font-weight:700" fill="#3b2615">15 %</text></g></svg>
+      </span>
+    </div>
+  </div>
+  <div class="collage" id="collage" aria-hidden="true"></div>
+</header>
+<div class="mention"><p class="large">En tant qu’Affilié atplab, je perçois une commission sur les achats éligibles. La vente, le paiement, la livraison et les retours se font chez ATP Lab, selon leurs conditions. Les prix affichés incluent ton code VB15, avant les taxes et la livraison.</p></div>
+
+<nav class="onglets" aria-label="Sections de la boutique"><div class="large" id="onglets"></div></nav>
+
+<main id="contenu"><p class="attente large" style="padding:80px 0">Chargement des produits d’ATP Lab…</p></main>
+
+<footer class="pied"><div class="large">
+  <h2>Comment ça se passe</h2>
+  <ol class="etapes">
+    <li>Tu remplis ton panier ici, avec ta saveur et ton format.</li>
+    <li>Tu touches Passer à la caisse. Ton panier s’ouvre chez ATP Lab, avec le code VB15 déjà appliqué.</li>
+    <li>Tu paies chez eux. Les taxes et la livraison s’ajoutent à leur caisse.</li>
+    <li>Une question sur une commande, une livraison ou un retour se pose à ATP Lab.</li>
+  </ol>
+  <div class="fin">
+    <p>En tant qu’Affilié atplab, je perçois une commission sur les achats éligibles. Les prix et la disponibilité viennent du site d’ATP Lab au moment où tu ouvres la page. Le prix Vitalité Bohème est le prix d’ATP moins 15 %, calculé comme à leur caisse. Les usages cités sont ceux qu’ATP Lab indique pour chaque produit. Lis l’étiquette et suis le mode d’emploi.</p>
+    <p>Cette page ne recueille rien sur toi. Chez ATP Lab, c’est <a href="https://ca.atplab.com/pages/privacy-policy" target="_blank" rel="noopener">leur politique de confidentialité</a> qui s’applique.<br><a href="index.html">Retour au site de Vitalité Bohème</a></p>
+  </div>
+</div></footer>
+
+<div class="voile" id="voile"></div>
+<aside class="panneau fiche" id="fiche" role="dialog" aria-modal="true" aria-labelledby="fiche-titre" aria-hidden="true">
+  <div class="panneau-tete"><h2>La fiche</h2><button class="fermer" data-fermer aria-label="Fermer la fiche"><svg class="ic"><use href="#i-x"/></svg></button></div>
+  <div class="defile" id="fiche-corps"></div>
+</aside>
+<aside class="panneau tiroir" id="tiroir" role="dialog" aria-modal="true" aria-labelledby="titre-panier" aria-hidden="true">
+  <div class="panneau-tete"><h2 id="titre-panier">Ton panier</h2><button class="fermer" data-fermer aria-label="Fermer le panier"><svg class="ic"><use href="#i-x"/></svg></button></div>
+  <div class="articles" id="articles"></div>
+  <div class="tiroir-bas">
+    <div class="ligne-total"><span>Prix chez ATP Lab</span><span id="t-atp">0,00 $</span></div>
+    <div class="ligne-total"><span>Ton code VB15</span><span id="t-rabais">0,00 $</span></div>
+    <div class="ligne-total fort"><span>Ton total</span><span class="m" id="t-vb">0,00 $</span></div>
+    <p class="note">Avant les taxes et la livraison, qui s’ajoutent à la caisse d’ATP Lab.</p>
+    <button class="caisse" id="caisse" disabled>Passer à la caisse chez ATP Lab <svg class="ic"><use href="#i-fleche"/></svg></button>
+    <p class="quitte">Tu quittes vitaliteboheme.ca. La vente se fait chez ATP Lab.</p>
+  </div>
+</aside>
+
+<script>
+(function () {
+  var BOUTIQUE = 'https://fr.atplab.com', RFSN = '9384830.8cb98c', CLE = 'vb-panier-atp';
+
+  /* ================= Contenu ================= */
+  var NOMS = { 'creatine-monohydrate': 'Monohydrate de créatine', 'vitamin-d3k2': 'Vitamine D3K2', 'vitamin-d3': 'Vitamine D3',
+    'omega-3-triglyceride': 'Oméga-3 triglycérides', 'isolate': 'ISO', 'e-nos-330g-citrus': 'E-Nos' };
+  var FAMILLES = { 'Performance': 'Entraînement', 'General Health': 'Au quotidien', 'Digestive Health': 'Digestion' };
+  var GENERIQUE = 'Tous les détails sont sur la fiche d’ATP Lab.';
+  var QUOI = {
+    'creatine-monohydrate': 'De la créatine monohydrate pure, en poudre. 60 portions.',
+    'synermag-plus': 'La formule de magnésium Plus d’ATP Lab.',
+    'ultra-omega-3': 'Des oméga-3 sous forme de monoglycérides, en capsules.',
+    'methyl-syner-b': 'Des vitamines du groupe B.',
+    'total-radiance-collagen': 'Du collagène en poudre, 360 g.',
+    'cool-down': 'Une combinaison de plantes adaptogènes et de cofacteurs.',
+    'grass-fed-whey': 'Un concentré de protéines de lactosérum de vaches nourries à l’herbe.',
+    'syner-c': 'De la vitamine C.',
+    'vitamin-d3k2': 'Les vitamines D3 et K2, réunies.',
+    'synerzinc': 'Du zinc.',
+    'myoprime': 'La formule de créatine avancée d’ATP Lab, aux saveurs biologiques. 30 portions.',
+    'e-nos-330g-citrus': 'Une formule en poudre, saveur agrumes, 330 g.',
+    'synersleep': 'De la mélatonine à libération prolongée.',
+    'alpha-jack-2': 'Une source de polysaccharides de champignons.',
+    'electrolytes-xl': 'Un mélange d’électrolytes en poudre.',
+    'probio7': 'Un probiotique.',
+    'supreme-beef-protein': 'Une protéine de bœuf en poudre.',
+    'prebiofib': 'Une source de fibres.',
+    'eaa': 'Les neuf acides aminés essentiels, en poudre.',
+    'mind-mag': 'Du magnésium sous forme de L-thréonate.',
+    'omega-3-triglyceride': 'Des oméga-3 sous forme de triglycérides, en liquide.',
+    'organic-vegan-blend': 'Un mélange de protéines végétales biologiques, de pois, de riz, de citrouille, de tournesol et de noix de coco.',
+    'green-red-whole-foods-100-organic': 'Un mélange en poudre de 25 aliments biologiques, verts et rouges.',
+    'omega-pure': 'Des oméga-3.',
+    'trans-resveratrol-nmn': 'Du trans-resvératrol et du NMN.',
+    'total-defense': 'Un complexe de vitamines et de minéraux.',
+    'vitamin-d3': 'De la vitamine D3.',
+    'syner_collagen': 'Une formule de collagène.',
+    'enzimatik-control': 'Des enzymes digestives.',
+    'pentacarb': 'Cinq formes de glucides, en poudre.',
+    'isolate': 'Un isolat de protéines de lactosérum.',
+    'glutamed': 'De la glutamine et de la glycine.',
+    'synermag': 'Du magnésium.'
+  };
+  var OMEGA = ['Source d’acides gras oméga-3 pour le maintien d’une bonne santé.', 'Aide à soutenir la santé cognitive et la fonction cérébrale.', 'Aide à maintenir la santé cardiovasculaire.'];
+  var CREATINE = ['Aide à augmenter la performance physique pendant un exercice intense.', 'Augmente la masse musculaire avec un programme d’entraînement en résistance.', 'Améliore la force et la performance lors d’efforts brefs et très intenses répétés, comme les sprints, les sauts ou la musculation.'];
+  var USAGES = {
+    'creatine-monohydrate': CREATINE, 'myoprime': CREATINE,
+    'syner-c': ['Aide l’organisme à métaboliser les gras et les protéines.', 'Aide au développement et au maintien des os, du cartilage, des dents et des gencives.', 'Aide à la formation du tissu conjonctif.'],
+    'vitamin-d3k2': ['Aide au développement et au maintien des os et des dents.', 'Aide à l’absorption et à l’utilisation du calcium et du phosphore.'],
+    'adrenrgyam': ['Aide à soutenir la mémoire.', 'Aide au développement et au maintien des os, du cartilage, des dents et des gencives.', 'Aide à la cicatrisation des plaies.'],
+    'synerzinc': ['Aide à maintenir une peau en santé.', 'Aide l’organisme à métaboliser les glucides, les protéines et les gras.', 'Aide à produire et à réparer le tissu conjonctif.'],
+    'e-nos-330g-citrus': ['Aide à maintenir la santé cardiovasculaire.', 'Antioxydant pour le maintien d’une bonne santé.'],
+    'synersleep': ['Aide à favoriser temporairement la relaxation.', 'Aide à rétablir le cycle veille-sommeil.', 'Mélatonine à libération prolongée, active jusqu’à 7 heures.'],
+    'alpha-jack-2': ['Source de polysaccharides de champignons aux propriétés immunomodulatrices.', 'Fournit des antioxydants.'],
+    'electrolytes-xl': ['Source d’électrolytes pour le maintien d’une bonne santé.', 'Aide à maintenir une fonction musculaire normale.', 'Aide au métabolisme énergétique.'],
+    'supreme-beef-protein': ['Source de protéines qui aide à construire et à réparer les tissus de l’organisme.', 'Source d’acides aminés qui participent à la synthèse des protéines musculaires.', 'Aide à bâtir de la masse maigre, avec un entraînement régulier en musculation et une alimentation saine et équilibrée.'],
+    'prebiofib': ['Utilisé en phytothérapie comme laxatif de masse.', 'Aide à soulager doucement la constipation et l’irrégularité.'],
+    'eaa': ['Source d’acides aminés essentiels qui participent à la synthèse des protéines musculaires.', 'Aide à bâtir de la masse musculaire maigre, avec un entraînement régulier et une alimentation saine et équilibrée.'],
+    'mind-mag': ['Aide à soutenir la fonction cognitive chez les personnes âgées ayant un léger trouble cognitif.', 'Aide à maintenir une fonction musculaire adéquate, y compris celle du cœur.', 'Aide au développement et au maintien des os et des dents.'],
+    'omega-3-triglyceride': OMEGA, 'omega-pure': OMEGA,
+    'gluco-control': ['Aide à soutenir une glycémie saine.', 'Aide à soutenir des taux de lipides sanguins sains.', 'Aide l’organisme à métaboliser les glucides et les gras.'],
+    'trans-resveratrol-nmn': ['Fournit des antioxydants pour le maintien d’une bonne santé.'],
+    'total-defense': ['Aide l’organisme à métaboliser les glucides, les gras et les protéines.', 'Aide à la formation des globules rouges.', 'Aide à la formation des tissus.'],
+    'vitamin-d3': ['Aide au développement et au maintien des os.', 'Aide à l’absorption et à l’utilisation du calcium et du phosphore.'],
+    'syner_collagen': ['Aide à réduire la douleur articulaire associée à l’arthrose.', 'Aide à produire et à réparer le tissu conjonctif.'],
+    'enzimatik-control': ['Enzyme digestive.', 'Aide à digérer les protéines.', 'Aide à réduire les gaz après un repas riche en glucides fermentescibles, comme les légumineuses.'],
+    'hepatik-defense': ['Aide à soutenir la fonction hépatique.', 'Utilisé en phytothérapie pour aider à augmenter le flux biliaire.'],
+    'isolate': ['Source d’acides aminés essentiels qui participent à la synthèse des protéines musculaires.', 'Excellente source de protéines qui aide à construire et à réparer les tissus de l’organisme.'],
+    'neuro-prime': ['Aide à maintenir la fonction cognitive avec l’âge.'],
+    'synermag': ['Aide à maintenir une fonction musculaire adéquate.', 'Aide au développement et au maintien des os et des dents.', 'Aide au métabolisme énergétique et à la formation des tissus.'],
+    'estro-control': ['Aide à soutenir un métabolisme et un équilibre sains des œstrogènes.', 'Fournit des antioxydants pour le maintien d’une bonne santé.']
+  };
+
+  /* Les catégories, avec le choix Vitalité Bohème en premier. */
+  var CATEGORIES = [
+    { id: 'creatine', nom: 'La <i>créatine</i>', onglet: 'Créatine', produits: ['creatine-monohydrate', 'myoprime'],
+      texte: 'La monohydrate est la forme de créatine la plus étudiée, en 60 portions. Myoprime est la formule avancée d’ATP Lab, en 30 portions.' },
+    { id: 'proteines', nom: 'Les <i>protéines</i>', onglet: 'Protéines', produits: ['grass-fed-whey', 'isolate', 'supreme-beef-protein', 'organic-vegan-blend'],
+      texte: 'Lactosérum, isolat, bœuf ou végétal. Le choix se fait au goût et à la digestion.' },
+    { id: 'hydratation', nom: 'Hydratation et <i>énergie</i>', onglet: 'Hydratation', produits: ['electrolytes-xl', 'pentacarb', 'eaa', 'e-nos-330g-citrus'],
+      texte: 'Ce qui se boit pendant et autour de l’effort.' },
+    { id: 'vitamines', nom: 'Vitamines et <i>minéraux</i>', onglet: 'Vitamines', produits: ['vitamin-d3k2', 'total-defense', 'synermag', 'vitamin-d3', 'synerzinc', 'syner-c', 'methyl-syner-b', 'synermag-plus'],
+      texte: 'Les bases de tous les jours, entraînement ou pas.' },
+    { id: 'omega', nom: 'Les <i>oméga-3</i>', onglet: 'Oméga-3', produits: ['omega-pure', 'ultra-omega-3', 'omega-3-triglyceride'],
+      texte: 'En capsules ou en liquide.' }
+  ];
+  var ENSEMBLES = [
+    { id: 'force', nom: 'Force', titre: '<i>Force</i>', produits: ['myoprime', 'eaa', 'isolate'],
+      pourquoi: 'Pour la musculation lourde, les sprints et les sauts. Les efforts courts, qui se gagnent une répétition à la fois.',
+      roles: [['Créatine', 'Myoprime, la formule avancée d’ATP Lab.'], ['Acides aminés', 'Les neuf essentiels, autour de la séance.'], ['Protéine', 'ISO, l’isolat de lactosérum.']] },
+    { id: 'construction', nom: 'Construction musculaire', titre: 'Construction <i>musculaire</i>', produits: ['grass-fed-whey', 'creatine-monohydrate', 'synermag'],
+      pourquoi: 'La protéine pour tes apports, la créatine la plus étudiée et le magnésium, réunis dans un seul panier.',
+      roles: [['Protéine', 'Grass Fed Whey, lactosérum de vaches nourries à l’herbe.'], ['Créatine', 'Augmente la masse musculaire avec un entraînement en résistance, selon ATP.'], ['Magnésium', 'Aide à maintenir une fonction musculaire adéquate, selon ATP.']] },
+    { id: 'hybride', nom: 'Entraînement hybride', titre: 'Entraînement <i>hybride</i>', produits: ['creatine-monohydrate', 'electrolytes-xl', 'isolate'],
+      pourquoi: 'La fonte et le cardio dans la même semaine. La créatine pour l’un, les électrolytes pour l’autre, et la protéine entre les deux.',
+      roles: [['Créatine', 'Pour les séances en force.'], ['Électrolytes', 'Aident à maintenir une fonction musculaire normale, selon ATP.'], ['Protéine', 'ISO, l’isolat de lactosérum.']] },
+    { id: 'endurance', nom: 'Endurance', titre: '<i>Endurance</i>', produits: ['electrolytes-xl', 'pentacarb', 'eaa'],
+      pourquoi: 'Course, vélo, ski de fond. Les sorties longues, du premier kilomètre au dernier.',
+      roles: [['Électrolytes', 'En poudre, dans ta bouteille.'], ['Glucides', 'Pentacarb, cinq formes de glucides.'], ['Acides aminés', 'Les neuf essentiels.']] },
+    { id: 'essentiels', nom: 'Les essentiels', titre: 'Les <i>essentiels</i>', produits: ['vitamin-d3k2', 'omega-pure', 'total-defense'],
+      pourquoi: 'Entraînement ou pas. La vitamine D et la K2, les oméga-3 et un complexe de vitamines et de minéraux.',
+      roles: [['Vitamines D3 et K2', 'Aident au maintien des os et des dents, selon ATP.'], ['Oméga-3', 'Source d’acides gras oméga-3, selon ATP.'], ['Multi', 'Un complexe de vitamines et de minéraux.']] }
+  ];
+
+  var SAVEURS = {
+    'Cherry': ['Cerise', '#b3122e'], 'Peach Mango': ['Pêche mangue', '#f29f3d'], 'Raspberry Lemonade': ['Limonade framboise', '#e8507a'],
+    'Unflavoured': ['Sans saveur', '#eee7db'], 'Chocolate': ['Chocolat', '#5a3622'], 'Vanilla': ['Vanille', '#f0e2b9'],
+    'Pure Natural Vanilla': ['Vanille naturelle', '#f0e2b9'], 'Strawberry': ['Fraise', '#e0314b'], 'Pineapple Coconut': ['Ananas noix de coco', '#f3d36b'],
+    'Raspberry': ['Framboise', '#c2185b'], 'Mixed Berry Lemonade': ['Limonade petits fruits', '#7b3fa0'], 'Strawberry Watermelon': ['Fraise melon d’eau', '#f06272'],
+    'White Peach Pomegranate': ['Pêche blanche grenade', '#f3b8a5'], 'Cherry Punch': ['Punch cerise', '#c0122f'], 'Organic Grape': ['Raisin biologique', '#6b2d73'],
+    'Organic Raspberry': ['Framboise biologique', '#c2185b'], 'Mochaccino': ['Mochaccino', '#8a6347'], 'Salted Caramel': ['Caramel salé', '#c98b45'],
+    'Fruit Delight': ['Fruits', '#f07a5a'], 'Cherry Lime': ['Cerise lime', '#9cc25a'], 'Green Apple': ['Pomme verte', '#9ccc4a'],
+    'Berries': ['Petits fruits', '#6a2c70'], 'Blueberry Acai': ['Bleuet açaï', '#4b3a8c'], 'Mango and pineapple': ['Mangue et ananas', '#f5b335'],
+    'Cherry and raspberry': ['Cerise et framboise', '#b3123e']
+  };
+
+  /* ================= Outils ================= */
+  var catalogue = {}, ordre = [], panier = lire(), enLigne = false, teintes = {};
+  function $(s, r) { return (r || document).querySelector(s); }
+  function argent(c) { return (c / 100).toLocaleString('fr-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' $'; }
+  function cents(s) { return Math.round(parseFloat(s) * 100); }
+  /* ATP arrondit le rabais vers le bas (39,99 $ donne 5,99 $, vérifié à leur caisse le 25 nov. 2026). */
+  function rabais(c) { return Math.floor(c * 15 / 100); }
+  function prixVB(c) { return c - rabais(c); }
+  function nom(h) { return NOMS[h] || (catalogue[h] ? catalogue[h].title : h); }
+  function image(p, w) { return p && p.images && p.images[0] ? p.images[0].src.split('?')[0] + '?width=' + (w || 700) : ''; }
+  function lienATP(h) { return BOUTIQUE + '/discount/VB15?redirect=%2Fproducts%2F' + h + '%3Frfsn%3D' + RFSN; }
+  function lire() { try { return JSON.parse(localStorage.getItem(CLE)) || []; } catch (e) { return []; } }
+  function garder() { try { localStorage.setItem(CLE, JSON.stringify(panier)); } catch (e) {} }
+  function format(v) { return v.replace(/(\d)\.(\d)/, '$1,$2').replace(/(\d)\s*(g|kg|ml)\b/i, function (m, n, u) { return n + ' ' + u.toLowerCase(); }); }
+  function libelle(v) { return SAVEURS[v] ? SAVEURS[v][0] : format(v); }
+  function decrire(v) { return [v.option1, v.option2, v.option3].filter(function (o) { return o && o !== 'Default Title'; }).map(libelle).join(', '); }
+  function existe(h) { return !!catalogue[h]; }
+  function blocPrix(c, etiquette) { return '<div class="prix"><span class="vb">' + argent(prixVB(c)) + '<s>' + argent(c) + '</s></span>' + (etiquette ? '<span class="etiq">Prix Vitalité Bohème</span>' : '') + '</div>'; }
+
+  function teinter(el, p) {
+    var src = image(p, 40); if (!src) return;
+    el.dataset.src = src;
+    if (teintes[src]) { el.style.backgroundColor = teintes[src]; return; }
+    var im = new Image(); im.crossOrigin = 'anonymous';
+    im.onload = function () {
+      try { var c = document.createElement('canvas'); c.width = c.height = 10; var x = c.getContext('2d'); x.drawImage(im, 0, 0, 10, 10);
+        var d = x.getImageData(0, 0, 1, 1).data; teintes[src] = 'rgb(' + d[0] + ',' + d[1] + ',' + d[2] + ')';
+        document.querySelectorAll('[data-src="' + src + '"]').forEach(function (s) { s.style.backgroundColor = teintes[src]; }); } catch (e) {}
+    };
+    im.src = src;
+  }
+  function socle(h, w, voir, choix) {
+    var p = catalogue[h], b = document.createElement(voir ? 'button' : 'div');
+    b.className = 'socle';
+    if (voir) { b.type = 'button'; b.setAttribute('aria-label', 'Voir la fiche de ' + nom(h)); b.addEventListener('click', function () { ouvrirFiche(h); }); }
+    b.innerHTML = (choix ? '<span class="badge"><svg><use href="#i-etoile"/></svg>Choix VB</span>' : '') + '<img loading="lazy" src="' + image(p, w) + '" alt="' + nom(h) + '">' +
+      (voir ? '<span class="voir"><svg class="ic"><use href="#i-oeil"/></svg>Voir la fiche</span>' : '');
+    if (!p.variants.some(function (v) { return v.available; })) b.insertAdjacentHTML('beforeend', '<span class="epuise">Épuisé chez ATP</span>');
+    teinter(b, p);
+    return b;
+  }
+
+  /* ================= Le bloc d'achat ================= */
+  function acheteur(h, onChange) {
+    var p = catalogue[h], box = document.createElement('div');
+    box.className = 'achat';
+    var depart = p.variants.find(function (v) { return v.available; }) || p.variants[0];
+    var choix = (p.options || []).map(function (o, i) { return depart['option' + (i + 1)]; });
+    var html = '';
+    (p.options || []).forEach(function (o, i) {
+      if (o.values.length < 2) return;
+      var couleur = o.values.some(function (v) { return SAVEURS[v]; });
+      html += '<div class="option" data-i="' + i + '"><div class="nomopt">' + (couleur ? 'Saveur' : 'Format') + ' <b></b></div><div class="pastilles">' +
+        o.values.map(function (v) {
+          return couleur
+            ? '<button type="button" class="pastille" style="--c:' + (SAVEURS[v] ? SAVEURS[v][1] : '#ccc') + '" data-v="' + v + '" aria-label="' + libelle(v) + '" title="' + libelle(v) + '"></button>'
+            : '<button type="button" class="pilule" data-v="' + v + '">' + libelle(v) + '</button>';
+        }).join('') + '</div></div>';
+    });
+    html += '<div class="ligne-prix"><span class="zone-prix"></span><button type="button" class="btn-ajout"><svg class="ic"><use href="#i-plus"/></svg><span>Ajouter</span></button></div>';
+    box.innerHTML = html;
+    var btn = $('.btn-ajout', box);
+    function variante() { return p.variants.find(function (v) { return choix.every(function (c, i) { return v['option' + (i + 1)] === c; }); }); }
+    function maj() {
+      box.querySelectorAll('.option').forEach(function (bloc) {
+        var i = +bloc.dataset.i;
+        $('b', bloc).textContent = libelle(choix[i]);
+        bloc.querySelectorAll('[data-v]').forEach(function (b) {
+          var essai = choix.slice(); essai[i] = b.dataset.v;
+          b.disabled = !p.variants.some(function (v) { return v.available && essai.every(function (c, j) { return v['option' + (j + 1)] === c; }); });
+          b.setAttribute('aria-pressed', b.dataset.v === choix[i]);
+        });
+      });
+      var v = variante();
+      $('.zone-prix', box).innerHTML = v ? blocPrix(cents(v.price), true) : '';
+      btn.disabled = !(v && v.available);
+      $('span', btn).textContent = v && v.available ? 'Ajouter' : 'Épuisé';
+      if (onChange) onChange();
+    }
+    box.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-v]'); if (!b || b.disabled) return;
+      var i = +b.closest('.option').dataset.i;
+      choix[i] = b.dataset.v;
+      if (!variante() || !variante().available) {
+        var autre = p.variants.find(function (v) { return v.available && v['option' + (i + 1)] === b.dataset.v; });
+        if (autre) choix = choix.map(function (c, j) { return autre['option' + (j + 1)]; });
+      }
+      maj();
+    });
+    btn.addEventListener('click', function () { var v = variante(); if (v && v.available) { ajouter(h, v); confirmer(btn, 'Ajouter'); } });
+    box._variante = variante;
+    maj();
+    return box;
+  }
+  function confirmer(btn, texte) {
+    btn.classList.add('fait'); $('use', btn).setAttribute('href', '#i-ok'); $('span', btn).textContent = 'Ajouté';
+    clearTimeout(btn._t);
+    btn._t = setTimeout(function () { btn.classList.remove('fait'); $('use', btn).setAttribute('href', btn.classList.contains('btn-sombre') ? '#i-sac' : '#i-plus'); $('span', btn).textContent = texte; }, 1600);
+  }
+  function tuile(h, opts) {
+    opts = opts || {};
+    var el = document.createElement('article');
+    el.className = 'tuile';
+    el.appendChild(socle(h, opts.w || 600, true, opts.choix));
+    var corps = document.createElement('div');
+    corps.innerHTML = '<h3><button type="button">' + nom(h) + '</button></h3><p class="quoi">' + (QUOI[h] || GENERIQUE) + '</p>';
+    $('button', corps).addEventListener('click', function () { ouvrirFiche(h); });
+    el.appendChild(corps);
+    var a = acheteur(h, function () { el.dispatchEvent(new CustomEvent('choix', { bubbles: true })); });
+    el.appendChild(a); el._variante = a._variante;
+    return el;
+  }
+
+  /* ================= Les sections ================= */
+  function section(id, titre, texte, classe) {
+    var s = document.createElement('section');
+    s.className = 'section large' + (classe ? ' ' + classe : ''); s.id = id; s.setAttribute('aria-labelledby', 't-' + id);
+    s.innerHTML = '<div class="sec-tete"><h2 id="t-' + id + '">' + titre + '</h2>' + (texte ? '<p>' + texte + '</p>' : '') + '</div>';
+    return s;
+  }
+  function dessinerChoix(main) {
+    var s = section('choix', 'Mes choix <i>Vitalité Bohème</i>', 'Un produit par catégorie, celui que je mets de l’avant. Touche une photo pour voir sa fiche.');
+    var r = document.createElement('div'); r.className = 'rangee cinq';
+    CATEGORIES.forEach(function (c) { var h = c.produits.filter(existe)[0]; if (h) r.appendChild(tuile(h, { choix: true })); });
+    s.appendChild(r); main.appendChild(s);
+  }
+  function dessinerEnsembles(main) {
+    var bloc = document.createElement('div'); bloc.className = 'ensembles';
+    var s = section('ensembles', 'Les <i>ensembles</i>', 'Trois produits qui vont ensemble, choisis selon ton entraînement. Un geste pour tout mettre dans ton panier.');
+    var onglets = document.createElement('div'); onglets.className = 'ens-onglets'; onglets.setAttribute('role', 'tablist');
+    onglets.innerHTML = ENSEMBLES.map(function (e, i) { return '<button type="button" role="tab" aria-selected="' + (i === 1) + '" data-e="' + i + '">' + e.nom + '</button>'; }).join('');
+    var zone = document.createElement('div'); zone.setAttribute('role', 'tabpanel');
+    s.appendChild(onglets); s.appendChild(zone); bloc.appendChild(s); main.appendChild(bloc);
+    function montrer(i) {
+      var e = ENSEMBLES[i], prods = e.produits.filter(existe);
+      zone.innerHTML = '<div class="conseil"><div><h3>' + e.titre + '</h3><p class="pourquoi">' + e.pourquoi + '</p><div class="roles">' +
+        e.roles.map(function (r) { return '<div><b>' + r[0] + '</b><span>' + r[1] + '</span></div>'; }).join('') + '</div>' +
+        '<div class="ens-total"><span class="zone-total"></span><button type="button" class="btn-sombre"><svg class="ic"><use href="#i-sac"/></svg><span>Ajouter l’ensemble</span></button></div></div><div class="trio"></div></div>';
+      var trio = $('.trio', zone), tuiles = prods.map(function (h) { var t = tuile(h); trio.appendChild(t); return t; });
+      var total = function () { var n = 0; tuiles.forEach(function (t) { var v = t._variante(); if (v && v.available) n += cents(v.price); }); $('.zone-total', zone).innerHTML = blocPrix(n, false); };
+      total(); zone.addEventListener('choix', total);
+      var b = $('.btn-sombre', zone);
+      b.addEventListener('click', function () {
+        tuiles.forEach(function (t, k) { var v = t._variante(); if (v && v.available) ajouter(prods[k], v, true); });
+        dessinerPanier(); sauter(); confirmer(b, 'Ajouter l’ensemble');
+      });
+    }
+    onglets.addEventListener('click', function (ev) {
+      var b = ev.target.closest('button'); if (!b) return;
+      onglets.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-selected', x === b); });
+      montrer(+b.dataset.e);
+    });
+    montrer(1);
+  }
+  function dessinerCategories(main) {
+    CATEGORIES.forEach(function (c) {
+      var prods = c.produits.filter(existe); if (!prods.length) return;
+      /* Un produit épuisé chez ATP passe en fin de section. */
+      var dispo = function (h) { return catalogue[h].variants.some(function (v) { return v.available; }) ? 0 : 1; };
+      prods = prods.slice(0, 1).concat(prods.slice(1).sort(function (a, b) { return dispo(a) - dispo(b); }));
+      var s = section(c.id, c.nom, c.texte);
+      var r = document.createElement('div'); r.className = 'rangee';
+      prods.forEach(function (h, i) { r.appendChild(tuile(h, { choix: i === 0 })); });
+      s.appendChild(r); main.appendChild(s);
+    });
+  }
+  function famille(p) { return FAMILLES[p.product_type] || 'Autres'; }
+  function dessinerGamme(main) {
+    var s = section('gamme', 'Toute la <i>gamme</i>', 'Chaque produit d’ATP Lab, au prix Vitalité Bohème.');
+    var filtres = document.createElement('div'); filtres.className = 'filtres'; filtres.setAttribute('role', 'group'); filtres.setAttribute('aria-label', 'Filtrer les produits');
+    var grille = document.createElement('div'); grille.className = 'grille';
+    var noms = ['Tout', 'Entraînement', 'Au quotidien', 'Digestion', 'Autres'], compte = { 'Tout': ordre.length };
+    ordre.forEach(function (h) { var f = famille(catalogue[h]); compte[f] = (compte[f] || 0) + 1; });
+    filtres.innerHTML = noms.filter(function (n) { return compte[n]; }).map(function (n, i) { return '<button type="button" aria-pressed="' + (i === 0) + '" data-f="' + n + '">' + n + '<span class="n">' + compte[n] + '</span></button>'; }).join('');
+    ordre.slice().sort(function (a, b) { return noms.indexOf(famille(catalogue[a])) - noms.indexOf(famille(catalogue[b])); })
+      .forEach(function (h) { var t = tuile(h, { w: 520 }); t.dataset.f = famille(catalogue[h]); grille.appendChild(t); });
+    filtres.addEventListener('click', function (ev) {
+      var b = ev.target.closest('button'); if (!b) return;
+      filtres.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', x === b); });
+      grille.querySelectorAll('.tuile').forEach(function (t) { t.hidden = !(b.dataset.f === 'Tout' || t.dataset.f === b.dataset.f); });
+    });
+    s.appendChild(filtres); s.appendChild(grille); main.appendChild(s);
+  }
+  function dessinerCollage() {
+    var z = $('#collage');
+    [['grass-fed-whey', 'p1'], ['creatine-monohydrate', 'p2'], ['electrolytes-xl', 'p3']].forEach(function (x) {
+      if (!existe(x[0])) return;
+      var d = document.createElement('div'); d.className = 'p ' + x[1];
+      d.innerHTML = '<img src="' + image(catalogue[x[0]], 760) + '" alt="">';
+      teinter(d, catalogue[x[0]]); z.appendChild(d);
+    });
+  }
+  function dessinerOnglets() {
+    var liens = [['choix', 'Mes choix'], ['ensembles', 'Ensembles']].concat(CATEGORIES.map(function (c) { return [c.id, c.onglet]; })).concat([['gamme', 'Toute la gamme']]);
+    var o = $('#onglets');
+    o.innerHTML = liens.map(function (l) { return '<a href="#' + l[0] + '" data-cible="' + l[0] + '">' + l[1] + '</a>'; }).join('');
+    if (!('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (entrees) {
+      entrees.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        o.querySelectorAll('a').forEach(function (a) { a.classList.toggle('actif', a.dataset.cible === en.target.id); });
+        var actif = o.querySelector('.actif'); if (actif) actif.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+      });
+    }, { rootMargin: '-140px 0px -60% 0px' });
+    liens.forEach(function (l) { var s = document.getElementById(l[0]); if (s) io.observe(s); });
+  }
+
+  /* ================= La fiche ================= */
+  function ouvrirFiche(h) {
+    var p = catalogue[h]; if (!p) return;
+    var corps = $('#fiche-corps'); corps.innerHTML = '';
+    corps.appendChild(socle(h, 1000, false, false));
+    var c = document.createElement('div'); c.className = 'contenu';
+    c.innerHTML = '<h3 id="fiche-titre">' + nom(h) + '</h3><p class="quoi">' + (QUOI[h] || GENERIQUE) + '</p>' +
+      (USAGES[h] ? '<div class="usage"><span class="qui">Usage indiqué par ATP Lab</span><ul>' + USAGES[h].map(function (u) { return '<li>' + u + '</li>'; }).join('') + '</ul></div>' : '');
+    c.appendChild(acheteur(h));
+    c.insertAdjacentHTML('beforeend', '<a class="complete" href="' + lienATP(h) + '" target="_blank" rel="sponsored noopener">Fiche complète, ingrédients et mode d’emploi chez ATP Lab <svg class="ic"><use href="#i-sortie"/></svg></a>' +
+      '<p class="fiche-pied">Le prix Vitalité Bohème est le prix d’ATP moins 15 %, avant les taxes et la livraison. Lis l’étiquette et suis le mode d’emploi.</p>');
+    corps.appendChild(c); corps.scrollTop = 0;
+    ouvrir($('#fiche'));
+  }
+
+  /* ================= Le panier ================= */
+  function ajouter(h, v, silence) {
+    var l = panier.find(function (x) { return x.id === v.id; });
+    if (l) l.q = Math.min(l.q + 1, 20); else panier.push({ id: v.id, h: h, q: 1 });
+    garder();
+    if (!silence) { dessinerPanier(); sauter(); }
+  }
+  function sauter() { var c = $('#compte'); c.classList.remove('saut'); void c.offsetWidth; c.classList.add('saut'); }
+  function trouver(id) { for (var h in catalogue) { var v = catalogue[h].variants.find(function (x) { return x.id === id; }); if (v) return { p: catalogue[h], v: v, h: h }; } return null; }
+  function dessinerPanier() {
+    var zone = $('#articles'), n = 0, total = 0;
+    panier.forEach(function (l) { n += l.q; });
+    $('#compte').textContent = n;
+    if (!panier.length) zone.innerHTML = '<div class="vide"><p class="grand">Ton panier est vide.</p><p>Commence par mes choix ou un ensemble.</p></div>';
+    else zone.innerHTML = panier.map(function (l) {
+      var t = trouver(l.id); if (!t) return '';
+      var c = cents(t.v.price) * l.q; total += c;
+      var src = image(t.p, 40);
+      return '<div class="article" data-id="' + l.id + '"><div class="vign" data-src="' + src + '" style="background:' + (teintes[src] || '') + '"><img src="' + image(t.p, 200) + '" alt=""></div><div><div class="nom">' + nom(t.h) + '</div>' +
+        (decrire(t.v) ? '<div class="var">' + decrire(t.v) + '</div>' : '') +
+        '<div class="qte"><button type="button" data-a="-" aria-label="Retirer un"><svg class="ic"><use href="#i-moins"/></svg></button><span>' + l.q + '</span><button type="button" data-a="+" aria-label="Ajouter un"><svg class="ic"><use href="#i-plus"/></svg></button></div></div>' +
+        '<div><div class="p">' + argent(c) + '</div><button type="button" class="retirer" data-a="x">Retirer</button></div></div>';
+    }).join('');
+    $('#t-atp').textContent = argent(total);
+    $('#t-rabais').textContent = total ? '− ' + argent(rabais(total)) : argent(0);
+    $('#t-vb').textContent = argent(prixVB(total));
+    $('#caisse').disabled = !panier.length;
+  }
+  $('#articles').addEventListener('click', function (ev) {
+    var b = ev.target.closest('button[data-a]'); if (!b) return;
+    var id = +b.closest('.article').dataset.id, l = panier.find(function (x) { return x.id === id; }); if (!l) return;
+    if (b.dataset.a === '+') l.q = Math.min(l.q + 1, 20);
+    if (b.dataset.a === '-') l.q -= 1;
+    if (b.dataset.a === 'x' || l.q < 1) panier = panier.filter(function (x) { return x !== l; });
+    garder(); dessinerPanier();
+  });
+  $('#caisse').addEventListener('click', function () {
+    if (!panier.length) return;
+    window.open(BOUTIQUE + '/cart/' + panier.map(function (l) { return l.id + ':' + l.q; }).join(',') + '?discount=VB15', '_blank', 'noopener');
+  });
+
+  /* ================= Panneaux ================= */
+  var voile = $('#voile'), actif = null, dernier = null;
+  function ouvrir(pan) {
+    if (actif && actif !== pan) fermer(true);
+    dernier = dernier || document.activeElement; actif = pan;
+    pan.classList.add('ouvert'); pan.setAttribute('aria-hidden', 'false'); voile.classList.add('ouvert'); document.body.classList.add('fige');
+    setTimeout(function () { $('[data-fermer]', pan).focus(); }, 60);
+  }
+  function fermer(garderVoile) {
+    if (!actif) return;
+    actif.classList.remove('ouvert'); actif.setAttribute('aria-hidden', 'true'); actif = null;
+    if (!garderVoile) { voile.classList.remove('ouvert'); document.body.classList.remove('fige'); if (dernier) dernier.focus(); dernier = null; }
+  }
+  $('#ouvrir-panier').addEventListener('click', function () { dessinerPanier(); ouvrir($('#tiroir')); });
+  document.querySelectorAll('[data-fermer]').forEach(function (b) { b.addEventListener('click', function () { fermer(); }); });
+  voile.addEventListener('click', function () { fermer(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fermer(); });
+
+  /* ================= Chargement ================= */
+  fetch(BOUTIQUE + '/products.json?limit=250')
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (d) {
+      d.products.forEach(function (p) { if (p.product_type === 'Gift Cards') return; catalogue[p.handle] = p; ordre.push(p.handle); });
+      enLigne = ordre.length > 0;
+      panier = panier.filter(function (l) { var t = trouver(l.id); return t && t.v.available; }); garder();
+    })
+    .catch(function () { enLigne = false; })
+    .then(function () {
+      var main = $('#contenu'); main.innerHTML = '';
+      if (!enLigne) {
+        main.innerHTML = '<p class="attente large" style="padding:80px 16px">Les produits n’ont pas pu être chargés depuis ATP Lab. <a href="' + BOUTIQUE + '/collections/all" target="_blank" rel="sponsored noopener">Voir la boutique chez eux</a>.</p>';
+        $('#ouvrir-panier').disabled = true; return;
+      }
+      dessinerCollage(); dessinerChoix(main); dessinerEnsembles(main); dessinerCategories(main); dessinerGamme(main); dessinerOnglets(); dessinerPanier();
+    });
+})();
+</script>
+</body>
+</html>
