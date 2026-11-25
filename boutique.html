@@ -377,7 +377,8 @@
   var OMEGA = ['Source d’acides gras oméga-3 pour le maintien d’une bonne santé.', 'Aide à soutenir la santé cognitive et la fonction cérébrale.', 'Aide à maintenir la santé cardiovasculaire.'];
   var CREATINE = ['Aide à augmenter la performance physique pendant un exercice intense.', 'Augmente la masse musculaire avec un programme d’entraînement en résistance.', 'Améliore la force et la performance lors d’efforts brefs et très intenses répétés, comme les sprints, les sauts ou la musculation.'];
   var USAGES = {
-    'creatine-monohydrate': CREATINE, 'myoprime': CREATINE,
+    /* Monohydrate : seulement les deux usages de sa licence NPN 80146729 (vérifié dans la base de Santé Canada le 25 nov. 2026). */
+    'creatine-monohydrate': CREATINE.slice(1), 'myoprime': CREATINE,
     'syner-c': ['Aide l’organisme à métaboliser les gras et les protéines.', 'Aide au développement et au maintien des os, du cartilage, des dents et des gencives.', 'Aide à la formation du tissu conjonctif.'],
     'vitamin-d3k2': ['Aide au développement et au maintien des os et des dents.', 'Aide à l’absorption et à l’utilisation du calcium et du phosphore.'],
     'adrenrgyam': ['Aide à soutenir la mémoire.', 'Aide au développement et au maintien des os, du cartilage, des dents et des gencives.', 'Aide à la cicatrisation des plaies.'],
@@ -385,7 +386,8 @@
     'e-nos-330g-citrus': ['Aide à maintenir la santé cardiovasculaire.', 'Antioxydant pour le maintien d’une bonne santé.'],
     'synersleep': ['Aide à favoriser temporairement la relaxation.', 'Aide à rétablir le cycle veille-sommeil.', 'Mélatonine à libération prolongée, active jusqu’à 7 heures.'],
     'alpha-jack-2': ['Source de polysaccharides de champignons aux propriétés immunomodulatrices.', 'Fournit des antioxydants.'],
-    'electrolytes-xl': ['Source d’électrolytes pour le maintien d’une bonne santé.', 'Aide à maintenir une fonction musculaire normale.', 'Aide au métabolisme énergétique.'],
+    /* Electrolytes XL 2.0 : sa licence NPN 80131244 (2024) n'autorise que cet usage. */
+    'electrolytes-xl': ['Source d’électrolytes pour le maintien d’une bonne santé.'],
     'supreme-beef-protein': ['Source de protéines qui aide à construire et à réparer les tissus de l’organisme.', 'Source d’acides aminés qui participent à la synthèse des protéines musculaires.', 'Aide à bâtir de la masse maigre, avec un entraînement régulier en musculation et une alimentation saine et équilibrée.'],
     'prebiofib': ['Utilisé en phytothérapie comme laxatif de masse.', 'Aide à soulager doucement la constipation et l’irrégularité.'],
     'eaa': ['Source d’acides aminés essentiels qui participent à la synthèse des protéines musculaires.', 'Aide à bâtir de la masse musculaire maigre, avec un entraînement régulier et une alimentation saine et équilibrée.'],
@@ -426,7 +428,7 @@
       roles: [['Protéine', 'Grass Fed Whey, lactosérum de vaches nourries à l’herbe.'], ['Créatine', 'Augmente la masse musculaire avec un entraînement en résistance, selon ATP.'], ['Magnésium', 'Aide à maintenir une fonction musculaire adéquate, selon ATP.']] },
     { id: 'hybride', nom: 'Entraînement hybride', titre: 'Entraînement <i>hybride</i>', produits: ['creatine-monohydrate', 'electrolytes-xl', 'isolate'],
       pourquoi: 'La fonte et le cardio dans la même semaine. La créatine pour l’un, les électrolytes pour l’autre, et la protéine entre les deux.',
-      roles: [['Créatine', 'Pour les séances en force.'], ['Électrolytes', 'Aident à maintenir une fonction musculaire normale, selon ATP.'], ['Protéine', 'ISO, l’isolat de lactosérum.']] },
+      roles: [['Créatine', 'Pour les séances en force.'], ['Électrolytes', 'Pour les séances de cardio, en poudre.'], ['Protéine', 'ISO, l’isolat de lactosérum.']] },
     { id: 'endurance', nom: 'Endurance', titre: '<i>Endurance</i>', produits: ['electrolytes-xl', 'pentacarb', 'eaa'],
       pourquoi: 'Course, vélo, ski de fond. Les sorties longues, du premier kilomètre au dernier.',
       roles: [['Électrolytes', 'En poudre, dans ta bouteille.'], ['Glucides', 'Pentacarb, cinq formes de glucides.'], ['Acides aminés', 'Les neuf essentiels.']] },
