@@ -41,15 +41,6 @@
   document.documentElement.addEventListener('mouseleave', function () { point.classList.add('cache'); });
 })();
 
-/* L'or de lingot : chaque bouton doré prend un coin différent du métal, et ce coin change à chaque visite. */
-(function () {
-  var hasard = function (a, b) { return Math.round(a + Math.random() * (b - a)); };
-  document.querySelectorAll('.vb-resa, .vb-b-or, .vb-lingot, .caisse, #btn-dl-pdf, .cta-flottant').forEach(function (e) {
-    e.style.backgroundPosition = hasard(0, 100) + '% ' + hasard(0, 100) + '%';
-    e.style.backgroundSize = hasard(260, 400) + 'px';
-  });
-})();
-
 /* Black Friday d'ATP Lab, jusqu'au 30 novembre 2026 : le code VB15 ne s'ajoute pas à leur rabais. */
 (function () {
   if (Date.now() >= Date.parse('2026-12-01T05:00:00Z')) return;

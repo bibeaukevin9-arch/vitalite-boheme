@@ -19,10 +19,12 @@
 
 /* ---------- La règle : tout au carré, boutons compris ----------
    Seuls restent ronds : le point et les collants du questionnaire, le petit point du curseur, les points
-   d'attente, le sceau de fin de réservation et le point qui bat du bouton flottant. Le tampon est un dessin. */
+   d'attente, le sceau de fin de réservation, le point qui bat du bouton flottant et les saveurs de la
+   boutique (de petits ronds de couleur). Le tampon est un dessin. */
 body.vb *, body.vb *::before, body.vb *::after { border-radius: 0 !important; }
 body.vb .collant-douleur, body.vb .zone-interdit-sticker, body.vb .vb-curseur span:empty,
-body.vb .attente .pt, body.vb .fin .sceau, body.vb .cta-pulse, body.vb .vb-rond { border-radius: 50% !important; }
+body.vb .attente .pt, body.vb .fin .sceau, body.vb .cta-pulse, body.vb .vb-rond,
+body.vb .pastille, body.vb .pastille::after { border-radius: 50% !important; }
 body.vb ::selection { background: var(--vb-or-clair); color: var(--vb-pierre); }
 body.vb :focus-visible { outline: 2px solid var(--vb-or); outline-offset: 3px; }
 
@@ -32,15 +34,9 @@ body.vb :focus-visible { outline: 2px solid var(--vb-or); outline-offset: 3px; }
 /* ---------- Plus de mot en italique doré dans les titres (le tic des sites faits par IA) ---------- */
 body.vb h1 em, body.vb h1 i, body.vb h2 em, body.vb h2 i, body.vb h3 em, body.vb h3 i { font-style: normal; color: inherit; }
 
-/* ---------- L'or de lingot doux ----------
-   Trois lingots différents (poli, rayé, fonte), pour que l'or ne soit jamais pareil d'un bouton à l'autre ;
-   vb.js tire en plus un coin différent du métal à chaque visite.
-   Le lingot ne va que sur les grandes surfaces dorées ; les traits fins et les petits textes gardent l'or uni. */
-.vb-resa, .vb-b-or, .vb-lingot { background-color: var(--vb-or); background-image: url(images/or-lingot-poli.jpg); background-size: 320px; background-position: 30% 40%;
-  color: #1a1206; box-shadow: inset 0 1px 0 rgba(255,244,200,.45), inset 0 -2px 0 rgba(40,28,6,.28); }
-.vb-b-or, .vb-lingot-raye { background-image: url(images/or-lingot-raye.jpg); }
-.vb-lingot-fonte { background-image: url(images/or-lingot-fonte.jpg); }
-.vb-resa:hover, .vb-b-or:hover, .vb-lingot:hover { background-color: var(--vb-or); filter: brightness(1.07); }
+/* ---------- L'or : uni, comme avant ---------- */
+.vb-resa, .vb-b-or { background: var(--vb-or); color: var(--vb-pierre); }
+.vb-resa:hover, .vb-b-or:hover { background: var(--vb-or-clair); }
 
 /* ---------- La barre du haut ---------- */
 .vb-barre { position: sticky; top: 0; z-index: 900; height: var(--vb-barre-h); background: var(--vb-pierre); color: var(--vb-creme);
@@ -106,10 +102,6 @@ body.vb h1 em, body.vb h1 i, body.vb h2 em, body.vb h2 i, body.vb h3 em, body.vb
 /* Les grands boutons propres à chaque page suivent la même règle */
 body.vb .caisse, body.vb .btn-ajout, body.vb .btn-sombre, body.vb .cta, body.vb .btn-submit, body.vb .envoyer, body.vb .cta-flottant, body.vb .btn,
 body.vb #btn-dl-pdf { text-transform: uppercase; letter-spacing: .16em; font-size: 12.5px; }
-body.vb .caisse, body.vb #btn-dl-pdf, body.vb .cta-flottant { background-color: var(--vb-or); background-image: url(images/or-lingot-raye.jpg); background-size: 320px; color: #1a1206;
-  box-shadow: inset 0 1px 0 rgba(255,244,200,.45), inset 0 -2px 0 rgba(40,28,6,.28); }
-
-body.vb .cta-flottant { box-shadow: 0 10px 30px rgba(20,16,13,.28), inset 0 1px 0 rgba(255,244,200,.45); }
 
 /* ---------- Le pied de page commun ---------- */
 .vb-pied { background: var(--vb-pierre); color: var(--vb-sur-pierre); font-family: var(--vb-sans); font-size: 13.5px; }

@@ -512,7 +512,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="vb.css?v=20261126L">
+  <link rel="stylesheet" href="vb.css?v=20261126M">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; scroll-padding-top: var(--vb-barre-h); }
@@ -530,7 +530,7 @@
     .vitrine { display: grid; grid-template-columns: 1.1fr .9fr; min-height: min(calc(100svh - var(--vb-barre-h)), 820px); border-bottom: 1px solid var(--vb-trait); }
     .vitrine-g { display: flex; flex-direction: column; justify-content: center; padding: 64px 56px 64px max(40px, calc((100vw - 1280px) / 2 + 40px)); }
     .badges { display: flex; flex-wrap: wrap; gap: 8px; }
-    .badges span, .badges a { border: 1px solid var(--vb-trait); padding: 7px 12px; font-size: 12px; letter-spacing: .1em; color: var(--vb-encre-2); text-decoration: none; background: #fff; }
+    .badges > span, .badges > a { border: 1px solid var(--vb-trait); padding: 7px 12px; font-size: 12px; letter-spacing: .1em; color: var(--vb-encre-2); text-decoration: none; background: #fff; }
     .badges a:hover { border-color: var(--vb-or); color: var(--vb-encre); }
     .vitrine h1 { font-size: clamp(50px, 6.2vw, 96px); margin-top: 26px; }
     .vitrine h1 em { display: block; }
@@ -652,6 +652,12 @@
     .reseau { display: inline-flex; align-items: center; gap: 9px; padding: 10px 18px; border: 1px solid var(--vb-encre); border-radius: 40px; color: var(--vb-encre); text-decoration: none; font-size: 14px; transition: background .25s, color .25s; }
     .reseau svg { width: 17px; height: 17px; }
     .reseau:hover { background: var(--vb-encre); color: var(--vb-creme); }
+    /* Au téléphone : le titre sur sa ligne, puis les trois réseaux côte à côte, de même largeur */
+    @media (max-width: 560px) {
+      .reseaux { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+      .reseaux .lbl-r { grid-column: 1 / -1; margin: 0 0 4px; }
+      .reseau { justify-content: center; padding: 11px 6px; font-size: 13px; gap: 7px; }
+    }
 
     /* ---------- Le bouton flottant ---------- */
     .cta-flottant { position: fixed; right: 26px; bottom: 26px; z-index: 800; display: inline-flex; align-items: center; gap: 10px; padding: 14px 24px; border-radius: 40px;
@@ -720,6 +726,24 @@
       .modal-box h3 { font-size: 31px; }
       .rang .vb-b-pierre, .rang .vb-b-creux { flex: 1 1 auto; justify-content: center; }
     }
+    /* ─── La devanture : le haut de l'accueil reprend l'image de partage du site
+       (fond pierre, le VB, le nom, un filet d'or, « Massothérapie · Waterville »). ─── */
+    .devanture { background: var(--vb-pierre); color: var(--vb-creme); }
+    .dev-logo { width: 96px; height: auto; display: block; }
+    .dev-nom { font-family: var(--vb-serif); font-weight: 400; font-size: clamp(56px, 7vw, 108px); line-height: .95; letter-spacing: -.01em; margin: 34px 0 0; color: var(--vb-creme); }
+    .dev-nom span { display: block; font-style: italic; color: var(--vb-or-clair); }
+    .dev-filet { display: block; width: 72px; height: 1px; background: var(--vb-or); margin: 34px 0 0; }
+    .dev-lieu { margin: 22px 0 0; font-size: 13px; letter-spacing: .26em; text-transform: uppercase; color: #b9ab98; }
+    .devanture .rang { margin-top: 38px; }
+    .devanture .dev-creux { color: var(--vb-creme); border-color: #6f604f; }
+    .devanture .dev-creux:hover { background: var(--vb-creme); color: var(--vb-pierre); }
+    .vitrine { border-bottom: 0; }
+    @media (max-width: 900px) {
+      .dev-logo { width: 72px; }
+      .dev-nom { margin-top: 24px; }
+      .dev-filet { margin-top: 26px; }
+      .devanture .rang a { width: 100%; justify-content: center; }
+    }
   </style>
 </head>
 <body class="vb">
@@ -750,18 +774,14 @@
 
 <!-- ─── La vitrine ─── -->
 <header class="vitrine" id="hero">
-  <div class="vitrine-g">
-    <div class="badges">
-      <span data-fr>Massothérapie certifiée</span><span data-en>Certified massage therapy</span>
-      <a href="https://rmpq.ca" target="_blank" rel="noopener noreferrer"><span data-fr>✦ Membre RMPQ</span><span data-en>✦ RMPQ member</span></a>
-    </div>
-    <h1 class="titre" data-fr>Découvrez Votre <em>Harmonie Personnelle</em></h1>
-    <h1 class="titre" data-en>Discover Your <em>Personal Harmony</em></h1>
-    <p class="chapo" data-fr>Un refuge de bien-être sur mesure, où chaque instant est dédié à votre ressourcement complet. Explorez un nouvel horizon avec Vitalité Bohème.</p>
-    <p class="chapo" data-en>A bespoke wellness sanctuary where every moment is devoted to your complete renewal. Explore a new horizon with Vitalité Bohème.</p>
+  <div class="vitrine-g devanture">
+    <img class="dev-logo" src="images/vb-monogramme.png" alt="" width="300" height="243">
+    <h1 class="dev-nom">Vitalité <span>Bohème</span></h1>
+    <span class="dev-filet" aria-hidden="true"></span>
+    <p class="dev-lieu"><span data-fr>Massothérapie · Waterville</span><span data-en>Massage therapy · Waterville</span></p>
     <div class="rang">
-      <a href="reserver.html" class="vb-b-pierre"><span data-fr>Réserver en ligne</span><span data-en>Book online</span> <span class="vb-fleche">→</span></a>
-      <a href="#services" class="vb-b-creux"><span data-fr>Voir les services</span><span data-en>See services</span></a>
+      <a href="reserver.html" class="vb-b-or"><span data-fr>Réserver en ligne</span><span data-en>Book online</span> <span class="vb-fleche">→</span></a>
+      <a href="#services" class="vb-b-creux dev-creux"><span data-fr>Voir les services</span><span data-en>See services</span></a>
     </div>
   </div>
   <div class="portrait">
@@ -1000,7 +1020,7 @@
 
 <script>document.body.style.overflow='';document.body.classList.remove('modal-ouvert');</script>
 <script src="script.js?v=20261126d"></script>
-<script src="vb.js?v=20261126L"></script>
+<script src="vb.js?v=20261126M"></script>
 <script>
 /* Les avis : flèches, compteur et glisser à la souris. */
 (function () {

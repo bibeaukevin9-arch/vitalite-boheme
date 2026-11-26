@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="vb.css?v=20261126L">
+<link rel="stylesheet" href="vb.css?v=20261126M">
 <style>
   :root {
     --pierre: #14100d; --pierre-2: #1e1915; --trait-sombre: #3a2f26;
@@ -111,14 +111,13 @@
 
   .option .nomopt { font-size: 12.5px; color: var(--encre-3); margin-bottom: 7px; }
   .option .nomopt b { color: var(--encre); font-weight: 500; }
-  .pastilles { display: flex; flex-wrap: wrap; gap: 4px 14px; }
-  /* Les saveurs : le mot, souligné de sa couleur, plus épais quand il est choisi */
-  .pastille { position: relative; padding: 3px 0 8px; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--encre-3); text-align: left; transition: color .4s; }
-  .pastille::after { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; background: var(--c); box-shadow: inset 0 0 0 1px rgba(31,25,20,.22); opacity: .6; transition: height .5s var(--sortie), opacity .4s; }
-  .pastille:hover { color: var(--encre); }
-  .pastille[aria-pressed="true"] { color: var(--encre); }
-  .pastille[aria-pressed="true"]::after { height: 4px; opacity: 1; }
-  .pastille:disabled { cursor: not-allowed; opacity: .4; text-decoration: line-through; }
+  .pastilles { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pastille { position: relative; width: 26px; height: 26px; border-radius: 50%; background: var(--c); box-shadow: inset 0 0 0 1px rgba(31,25,20,.15); transition: transform .25s var(--sortie); }
+  .pastille::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 1.5px solid transparent; transition: border-color .2s; }
+  .pastille:hover { transform: scale(1.1); }
+  .pastille[aria-pressed="true"]::after { border-color: var(--encre); }
+  .pastille:disabled { cursor: not-allowed; opacity: .35; }
+  .pastille:disabled::before { content: ''; position: absolute; left: 50%; top: 2px; bottom: 2px; width: 1.5px; background: var(--encre); transform: rotate(45deg); }
   .pilule { padding: 5px 11px; border-radius: 30px; border: 1px solid var(--trait); font-size: 13px; color: var(--encre-2); transition: all .2s; }
   .pilule:hover { border-color: var(--encre-3); }
   .pilule[aria-pressed="true"] { border-color: var(--encre); color: var(--encre); background: var(--papier-2); }
@@ -167,7 +166,7 @@
   .grille .quoi { font-size: 13.5px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .grille .prix .vb { font-size: 22px; }
   .grille .btn-ajout { padding: 9px 13px; font-size: 13.5px; }
-  .grille .pastille { font-size: 10px; }
+  .grille .pastille { width: 22px; height: 22px; }
   .attente { grid-column: 1 / -1; text-align: center; color: var(--encre-3); font-size: 15px; padding: 40px 0; }
 
   /* ---------- Pied ---------- */
@@ -202,7 +201,7 @@
   .usage li { font-size: 15px; line-height: 1.55; color: var(--encre-2); padding-left: 14px; position: relative; margin-top: 5px; }
   .usage li::before { content: ''; position: absolute; left: 0; top: .72em; width: 6px; height: 1px; background: var(--or); }
   .fiche .achat { padding-top: 26px; }
-  .fiche .pastille { font-size: 11.5px; }
+  .fiche .pastille { width: 34px; height: 34px; }
   .fiche .complete { display: inline-flex; align-items: center; gap: 8px; margin-top: 24px; font-size: 14px; color: var(--encre-2); }
   .fiche .complete .ic { width: 16px; height: 16px; }
   .fiche .fiche-pied { font-size: 12.5px; color: var(--encre-3); margin-top: 26px; padding-top: 16px; border-top: 1px solid var(--trait); line-height: 1.6; }
@@ -598,7 +597,7 @@
       html += '<div class="option" data-i="' + i + '"><div class="nomopt">' + (couleur ? 'Saveur' : 'Format') + ' <b></b></div><div class="pastilles">' +
         o.values.map(function (v) {
           return couleur
-            ? '<button type="button" class="pastille" style="--c:' + (SAVEURS[v] ? SAVEURS[v][1] : '#ccc') + '" data-v="' + v + '">' + libelle(v) + '</button>'
+            ? '<button type="button" class="pastille" style="--c:' + (SAVEURS[v] ? SAVEURS[v][1] : '#ccc') + '" data-v="' + v + '" aria-label="' + libelle(v) + '" title="' + libelle(v) + '"></button>'
             : '<button type="button" class="pilule" data-v="' + v + '">' + libelle(v) + '</button>';
         }).join('') + '</div></div>';
     });
@@ -869,7 +868,7 @@
     });
 })();
 </script>
-<script src="vb.js?v=20261126L"></script>
+<script src="vb.js?v=20261126M"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "39820f3e66a545a7bb606088d3552fc6"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
