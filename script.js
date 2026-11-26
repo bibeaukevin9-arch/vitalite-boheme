@@ -120,7 +120,8 @@ function ouvrirService(type) {
   document.getElementById('modal-desc').innerHTML = d.desc.replace(/\n\n/g, '<br><br>');
   document.getElementById('modal-bienfaits').innerHTML = d.bienfaits;
   var cta = document.getElementById('modal-cta');
-  cta.textContent = isEn ? 'Health Questionnaire' : 'Questionnaire santé';
+  cta.textContent = isEn ? 'Book' : 'Réserver';
+  cta.setAttribute('href', 'reserver.html?soin=' + encodeURIComponent(type));
   document.getElementById('modal-service').classList.add('ouvert');
   document.body.classList.add('modal-ouvert');
 }

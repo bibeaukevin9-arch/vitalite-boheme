@@ -441,6 +441,8 @@
     /* Le choix : contour foncé fin, fond crème, trait d'or en bas (le même signe que l'étape en cours) */
     .soin.choisi, .jour.choisi, .heure.choisi, .heure.collee.choisi { background: var(--vb-papier); border: 1px solid var(--vb-encre); box-shadow: inset 0 -3px 0 var(--vb-or); }
     .jour.choisi:has(.etoile), .heure.collee.choisi { box-shadow: inset 0 2px 0 var(--vb-or), inset 0 -3px 0 var(--vb-or); }
+    /* Venu de la fiche d'un soin : les durées de ce soin dans un encadré doré, en attendant le choix */
+    .soin.suggere { border: 1px solid var(--vb-or); box-shadow: inset 0 0 0 1px var(--vb-or); }
 
     @media (max-width: 560px) {
       .pas > span { padding-left: 11px; padding-right: 11px; letter-spacing: .12em; }
@@ -1559,6 +1561,18 @@ function finOk(h, duree) { var p = h.split(':'); return (+p[0] * 60 + +p[1] + du
   $('encart-deplace').hidden = url.get('deplace') !== '1';
   var saved = ''; try { saved = localStorage.getItem('vb-lang') || ''; } catch(e) {}
   applyLang(url.get('lang') === 'en' ? 'en' : (saved === 'en' ? 'en' : 'fr'));
+  /* Arrivée depuis la fiche d'un soin de l'accueil : le soin est déjà choisi.
+     Une seule durée possible : on le choisit. Plusieurs durées : on met ces cases en évidence. */
+  var venu = { signature: ['lomi60'], couple: ['couple180'],
+               relaxation: ['suedois60', 'suedois90', 'suedois120'], therapeutique: ['suedois60', 'suedois90', 'suedois120'] }[url.get('soin')];
+  if (venu && !url.get('deplace')) {
+    if (venu.length === 1 && soinParId(venu[0])) { choisirSoin(venu[0]); }
+    else {
+      $('soins').querySelectorAll('.soin').forEach(function (b) {
+        if (venu.indexOf(b.getAttribute('data-id')) > -1) b.classList.add('suggere');
+      });
+    }
+  }
 })();
 </script>
 <script src="vb.js?v=20261126M"></script>
