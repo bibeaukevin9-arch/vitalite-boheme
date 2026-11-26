@@ -74,8 +74,8 @@
     <p data-en>Appointment requests are recorded in Vitalité Bohème's professional calendar and mailbox, and the client list in a spreadsheet of the same account (Google services). The health form lands in that same mailbox. Google may host this data outside Québec. Access is protected by password and two-step verification.</p>
     <p data-fr><b>Les fournisseurs qui interviennent :</b> <b>Google</b> (agenda, courriel, feuille de calcul, et le programme qui reçoit les demandes et les questionnaires) ; <b>ntfy.sh</b>, qui envoie à Kevin l'avis sur son téléphone quand une demande ou un questionnaire arrive — cet avis contient le nom de la personne et, pour un questionnaire, la mention des allergies déclarées ; <b>GitHub</b>, qui héberge les pages du site (GitHub Pages) et qui répond à la vérification de version de l'application. Ces fournisseurs ne font que transporter ou héberger : aucun n'utilise vos renseignements pour son compte. Plusieurs sont situés à l'extérieur du Canada.</p>
     <p data-en><b>Providers involved:</b> <b>Google</b> (calendar, email, spreadsheet, and the program that receives requests and health forms); <b>ntfy.sh</b>, which sends Kevin the alert on his phone when a request or a form arrives — that alert contains the person's name and, for a form, the allergies declared; <b>GitHub</b>, which hosts the site's pages (GitHub Pages) and answers the app's version check. These providers only carry or host: none uses your information for its own purposes. Several are located outside Canada.</p>
-    <p data-fr>Le site lui-même ne pose aucun témoin (cookie) de suivi. Votre langue d'affichage est mémorisée dans votre navigateur, rien d'autre.</p>
-    <p data-en>The website itself sets no tracking cookies. Your display language is remembered in your browser, nothing else.</p>
+    <p data-fr>Le site ne pose aucun témoin (cookie). Pour savoir combien de personnes le visitent, il utilise <b>Cloudflare Web Analytics</b>, un compteur sans témoin et sans identifiant, qui ne suit pas une personne d'une visite à l'autre : il compte les pages vues, la page d'où vous arrivez, le type d'appareil et de navigateur, et le pays. Cloudflare est une entreprise américaine. Votre langue d'affichage est mémorisée dans votre navigateur, rien d'autre.</p>
+    <p data-en>The website sets no cookies. To know how many people visit it, it uses <b>Cloudflare Web Analytics</b>, a counter with no cookie and no identifier, which does not follow a person from one visit to the next: it counts page views, the page you came from, the type of device and browser, and the country. Cloudflare is an American company. Your display language is remembered in your browser, nothing else.</p>
   </section>
 
   <section>
@@ -142,5 +142,6 @@
   function toggleLang() { applyLang(currentLang === 'fr' ? 'en' : 'fr'); }
   (function(){ var s = ''; try { s = localStorage.getItem('vb-lang') || ''; } catch(e) {} applyLang(s === 'en' ? 'en' : 'fr'); })();
 </script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "39820f3e66a545a7bb606088d3552fc6"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
