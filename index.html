@@ -730,9 +730,10 @@
        tombe en léger biais (Kevin, 26 nov.). Au téléphone, la photo est sous le texte : pas de biais. ─── */
     .vitrine { border-bottom: 0; }
     @media (min-width: 901px) {
-      /* La photo fait 507 × 900 : une colonne plus étroite la recadre moins, on voit Kevin presque en entier */
-      .vitrine { grid-template-columns: 1.2fr .8fr; }
-      .portrait img { object-position: center 20%; }
+      /* La photo fait 507 × 900. Elle garde la grandeur que Kevin aimait à 1280 px (environ 665 px de large),
+         sans grossir davantage sur un grand écran, et elle est remontée pour qu'on voie ses bras. */
+      .vitrine { grid-template-columns: 1fr minmax(0, 620px); }
+      .portrait img { object-position: center 60%; }
       .portrait { clip-path: polygon(9% 0, 100% 0, 100% 100%, 0 100%); }
     }
   </style>
