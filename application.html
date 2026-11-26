@@ -4,96 +4,85 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>L'application — Vitalité Bohème</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="L'application — Vitalité Bohème" />
+  <meta property="og:description" content="L'application Vitalité Bohème : garder ses habitudes, bouger, respirer. Gratuite, sur Android. Ce que tu écris reste sur ton téléphone." />
+  <meta property="og:url" content="https://vitaliteboheme.ca/application.html" />
+  <meta property="og:locale" content="fr_CA" />
+  <meta property="og:image" content="https://vitaliteboheme.ca/images/og-vitalite-boheme.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Vitalité Bohème, massothérapie à Waterville" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="description" content="L'application Vitalité Bohème : garder ses habitudes, bouger, respirer. Gratuite, sur Android. Ce que tu écris reste sur ton téléphone." />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://vitaliteboheme.ca/application.html" />
-  <link rel="icon" href="images/favicon-vb5.png" type="image/png">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="icon" href="images/favicon-vb.png" type="image/png">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon-vb.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="vb.css?v=20261126d">
   <style>
-    :root { --or: #cfa96a; --or-clair: #e8c98a; --beige: #f5ede0; --brun: #8a6a50; --brun-fonce: #4a3220; --creme: #f2ebe2; --texte: #3a2e28; --gris: #7a6a58; }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif; color: var(--texte); background: var(--beige); }
-    body::before { content: ''; position: fixed; inset: 0; background: url('images/fiche-bg.jpg') center center / cover; z-index: -1; }
-    h1, h2 { font-family: 'Cormorant Garamond', Georgia, serif; }
-    .lang-btn { position: fixed; top: 20px; left: 24px; z-index: 1100; background: rgba(30,22,14,0.82); color: #c8b89a; border: 1px solid rgba(201,169,110,0.35);
-      padding: 7px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; letter-spacing: 1px; font-family: Georgia, serif; display: flex; gap: 0; }
-    .lang-btn .lbl { padding: 0 6px; } .lang-btn .lbl.actif { color: var(--or); font-weight: bold; } .lang-btn .sep { color: rgba(201,169,110,0.4); }
     [data-en] { display: none; } body.en [data-fr] { display: none; } body.en [data-en] { display: block; }
     body.en span[data-en], body.en a[data-en], body.en b[data-en] { display: inline; }
     body.en span[data-fr], body.en a[data-fr], body.en b[data-fr] { display: none; }
-    header { background: #1c1208 url('images/hero-bg.jpg') center / cover no-repeat; padding: 44px 24px 32px; text-align: center; position: relative; box-shadow: 0 8px 40px rgba(0,0,0,0.35); }
-    header::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,5,1,0.55), rgba(10,5,1,0.5)); }
-    header > * { position: relative; }
-    header h1 { font-size: 32px; color: var(--creme); font-weight: 600; text-shadow: 0 2px 12px rgba(0,0,0,0.8); }
-    header h1 em { color: var(--or-clair); }
-    header p { color: var(--creme); font-size: 14px; margin-top: 8px; text-shadow: 0 1px 6px rgba(0,0,0,0.8); }
-    header a.retour { display: inline-block; color: rgba(201,169,110,0.8); font-size: 12px; letter-spacing: 1px; text-decoration: none; margin-top: 14px; }
-    main { max-width: 720px; margin: 0 auto; padding: 34px 20px 80px; }
-    section { background: #fff; border-radius: 16px; padding: 24px; margin-bottom: 16px; border: 1.5px solid rgba(201,169,110,0.22); box-shadow: 0 4px 24px rgba(60,40,20,0.10); }
-    h2 { font-size: 22px; color: var(--brun-fonce); margin-bottom: 10px; font-weight: 600; }
-    p, li { font-size: 15px; line-height: 1.7; }
-    ul, ol { padding-left: 22px; margin: 8px 0; }
-    li { margin-bottom: 6px; }
-    p + p { margin-top: 8px; }
-    a { color: var(--brun-fonce); }
-    .maj { font-size: 12px; color: var(--gris); text-align: center; }
-
-    /* Le bloc de téléchargement — la seule chose vraiment mise en avant. */
-    /* ⭐ Le renvoi vers le bas. Le bouton est volontairement en dernier : on
-       passe devant les etapes d'installation avant d'y arriver. Encore faut-il
-       le savoir en arrivant. */
-    .vers-le-bas { display: block; text-align: center; text-decoration: none;
-      background: rgba(255,255,255,0.88); border: 1.5px solid rgba(201,169,110,0.45);
-      border-radius: 14px; padding: 13px 18px; margin-bottom: 18px; color: var(--brun-fonce);
-      font-size: 14.5px; box-shadow: 0 3px 14px rgba(60,40,20,0.10); }
-    .vers-le-bas:hover { background: #fff; }
-    .vers-le-bas .fleche { display: block; font-size: 20px; line-height: 1; color: var(--or);
-      margin-top: 5px; animation: descendre 1.9s ease-in-out infinite; }
+    .vers-le-bas { display: block; text-align: center; text-decoration: none; background: #fff; border: 1px solid var(--vb-trait);
+      border-top: 3px solid var(--vb-or); padding: 18px 20px; margin-bottom: 18px; color: var(--vb-encre-2); font-size: 15px; line-height: 1.6; }
+    .vers-le-bas b { color: var(--vb-encre); font-weight: 500; }
+    .vers-le-bas:hover { background: var(--vb-papier-2); }
+    .vers-le-bas .fleche { display: block; font-size: 20px; line-height: 1; color: var(--vb-or-encre); margin-top: 6px; animation: descendre 1.9s ease-in-out infinite; }
     @keyframes descendre { 0%,100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
     @media (prefers-reduced-motion: reduce) { .vers-le-bas .fleche { animation: none; } }
-    .principe { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 21px; line-height: 1.45;
-      color: var(--brun-fonce); border-left: 3px solid var(--or); padding-left: 16px; margin: 4px 0 14px; }
-
-    .telecharger { scroll-margin-top: 20px; text-align: center; background: linear-gradient(160deg, #fffaf2, #f7ecda); }
-    .bouton { display: inline-block; background: linear-gradient(160deg, var(--or-clair), var(--or));
-      color: #2b1d0e; text-decoration: none; font-weight: bold; font-size: 17px; padding: 17px 38px;
-      border-radius: 30px; box-shadow: 0 6px 20px rgba(140,100,40,0.30); margin: 8px 0 6px; }
-    .bouton:hover { filter: brightness(1.05); }
-    .sous-bouton { font-size: 12.5px; color: var(--gris); }
-
-    /* Le compteur d'installations. Masque tant qu'il n'a rien a dire : un
-       chiffre absent vaut mieux qu'un chiffre invente ou qu'un zero. */
-    .compteur { display: none; margin-top: 14px; padding-top: 14px;
-      border-top: 1px solid rgba(201,169,110,0.35); }
+    .principe { font-family: var(--vb-serif) !important; font-size: 24px !important; line-height: 1.4 !important; color: var(--vb-encre) !important;
+      border-left: 3px solid var(--vb-or); padding-left: 18px; margin: 4px 0 16px !important; }
+    .telecharger { scroll-margin-top: calc(var(--vb-barre-h) + 20px); text-align: center; background: var(--vb-pierre); border-color: var(--vb-pierre); }
+    .telecharger h2 { color: var(--vb-creme); border-bottom-color: var(--vb-trait-sombre); }
+    .telecharger p { color: var(--vb-sur-pierre); }
+    .bouton { display: inline-flex; align-items: center; gap: 10px; background: var(--vb-or); color: var(--vb-pierre) !important; text-decoration: none;
+      font-family: var(--vb-sans); font-weight: 500; font-size: 16px; letter-spacing: .03em; padding: 17px 36px; border-radius: 40px; margin: 14px 0 10px;
+      transition: background .25s; }
+    .bouton:hover { background: var(--vb-or-clair); }
+    .sous-bouton { font-size: 12.5px !important; color: var(--vb-sur-pierre) !important; }
+    .compteur { display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--vb-trait-sombre); }
     .compteur.visible { display: block; }
-    .compteur .nombre { font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 34px; font-weight: 600; color: var(--brun-fonce); line-height: 1.1;
-      display: block; }
-    .compteur .quoi { font-size: 13px; color: var(--gris); }
-    /* La variante du haut : une ligne, pas un bloc — elle vit dans le renvoi. */
-    .compteur.en-ligne { border-top: 0; margin-top: 10px; padding-top: 10px;
-      border-top: 1px solid rgba(201,169,110,0.30); }
-    .compteur.en-ligne.visible { display: block; }
-    .compteur.en-ligne .nombre { font-size: 26px; display: inline; }
-    .compteur.en-ligne .quoi { font-size: 12.5px; }
-    .chantier { border-left: 4px solid var(--or); background: #fdf7ec; padding: 16px 18px; border-radius: 0 12px 12px 0; margin-top: 4px; }
-    .chantier p { font-size: 14.5px; }
-    .etape { counter-increment: e; }
-    .note { font-size: 13.5px; color: var(--gris); margin-top: 10px; }
+    .compteur .nombre { font-family: var(--vb-serif); font-size: 36px; font-weight: 500; color: var(--vb-or-clair); line-height: 1.1; display: block; }
+    .compteur .quoi { font-size: 13px; color: var(--vb-sur-pierre); }
+    .compteur.en-ligne { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--vb-trait); }
+    .compteur.en-ligne .nombre { font-size: 28px; display: inline; color: var(--vb-encre); }
+    .compteur.en-ligne .quoi { font-size: 12.5px; color: var(--vb-encre-3); }
+    .chantier { border-left: 3px solid var(--vb-or); background: var(--vb-papier); padding: 18px 20px; }
+    .chantier h2 { border-bottom: 0; padding-bottom: 0; margin-bottom: 10px; }
   </style>
 </head>
-<body>
-<button class="lang-btn" onclick="toggleLang()"><span class="lbl actif" id="lbl-fr">FR</span><span class="sep">|</span><span class="lbl" id="lbl-en">EN</span></button>
+<body class="vb vb-texte">
+<nav class="vb-barre" aria-label="Menu principal">
+  <a class="vb-marque" href="index.html">Vitalité <i>Bohème</i></a>
+  <ul class="vb-liens" id="nav-menu">
+    <li><a href="index.html#services"><span data-fr>Services</span><span data-en>Services</span></a></li>
+    <li><a href="fiche.html"><span data-fr>Questionnaire</span><span data-en>Intake form</span></a></li>
+    <li><a href="application.html"><span data-fr>L’application</span><span data-en>The app</span></a></li>
+    <li><a href="boutique.html"><span data-fr>Boutique</span><span data-en>Shop</span></a></li>
+    <li class="vb-lang-mobile"><button type="button" onclick="toggleLang()"><span data-fr>English</span><span data-en>Français</span></button></li>
+  </ul>
+  <a class="vb-tampon vb-rond" href="boutique.html" aria-label="La boutique, 15 % de rabais avec le code VB15"><svg viewBox="0 0 200 200" aria-hidden="true"><defs><filter id="vb-encre" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="2" seed="9" result="b"/><feDisplacementMap in="SourceGraphic" in2="b" scale="3" result="d"/><feTurbulence type="fractalNoise" baseFrequency="2.2" numOctaves="1" seed="2" result="t"/><feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -0.55 1.3" result="m"/><feComposite in="d" in2="m" operator="in"/></filter><path id="vb-anneau" d="M100,100 m-70,0 a70,70 0 1,1 140,0 a70,70 0 1,1 -140,0"/></defs><g filter="url(#vb-encre)" fill="none" stroke="#e3c77a"><circle cx="100" cy="100" r="92" stroke-width="4"/><circle cx="100" cy="100" r="83" stroke-width="1.3"/><circle cx="100" cy="100" r="56" stroke-width="1.8"/></g><g filter="url(#vb-encre)"><text style="font-family:Jost,sans-serif;font-size:11.5px;letter-spacing:3.2px;font-weight:600" fill="#e3c77a"><textPath href="#vb-anneau">BOUTIQUE · CODE VB15 · BOUTIQUE · CODE VB15 ·</textPath></text><text x="100" y="112" text-anchor="middle" style="font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:700" fill="#e3c77a">15 %</text></g></svg></a>
+  <button class="vb-lang" id="lang-btn" type="button" onclick="toggleLang()" aria-label="Langue / Language">
+    <span class="lbl actif" id="lbl-fr">FR</span><span class="sep">|</span><span class="lbl" id="lbl-en">EN</span>
+  </button>
+  <button class="vb-burger" id="hamburger-btn" type="button" aria-label="Menu" aria-controls="nav-menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  <a class="vb-resa" href="reserver.html"><span data-fr>Réserver</span><span data-en>Book</span> <span class="vb-fleche">→</span></a>
+</nav>
 
-<header>
-  <h1 data-fr>L'<em>application</em></h1>
-  <h1 data-en>The <em>app</em></h1>
-  <p class="sous" data-fr>Bâtir des habitudes qui tiennent. Bouger, respirer, se relire.</p>
-  <p class="sous" data-en>Building habits that last. Move, breathe, look back.</p>
-  <a class="retour" href="index.html"><span data-fr>← Retour au site</span><span data-en>← Back to website</span></a>
+<header class="vb-tete">
+  <div class="vb-tete-in">
+    <span class="vb-sur"><span data-fr>Android · gratuite</span><span data-en>Android · free</span></span>
+    <h1 data-fr>L'<em>application</em></h1>
+    <h1 data-en>The <em>app</em></h1>
+    <p class="vb-chapo" data-fr>Bâtir des habitudes qui tiennent. Bouger, respirer, se relire.</p>
+    <p class="vb-chapo" data-en>Building habits that last. Move, breathe, look back.</p>
+  </div>
 </header>
 
-<main>
+<main class="vb-corps">
 
   <a class="vers-le-bas" href="#telecharger">
     <span data-fr><b>Le téléchargement est au bas de la page.</b><br>Ce qui précède explique l'application et son installation.</span>
@@ -106,7 +95,7 @@
     </span>
   </a>
 
-  <section>
+  <section class="vb-carte">
     <h2 data-fr>Pourquoi elle existe</h2><h2 data-en>Why it exists</h2>
     <p class="principe" data-fr>Nous sommes la somme de nos habitudes. Ce sont elles, bien plus que nos décisions, qui façonnent la personne que nous devenons.</p>
     <p class="principe" data-en>We are the sum of our habits. Far more than our decisions, they shape the person we become.</p>
@@ -116,7 +105,7 @@
     <p data-en>Our intent is different: to offer a system that supports the building of a person. Establishing the habits that serve you, loosening those that weigh on you, and above all lasting over time — because time, and nothing else, turns a gesture into an identity.</p>
   </section>
 
-  <section>
+  <section class="vb-carte">
     <h2 data-fr>Comment elle est pensée</h2><h2 data-en>How it is designed</h2>
     <p data-fr>Trois principes gouvernent l'application. Ils expliquent la plupart des choix qui la distinguent.</p>
     <p data-en>Three principles govern the app. They explain most of the choices that set it apart.</p>
@@ -132,7 +121,7 @@
     </ul>
   </section>
 
-  <section>
+  <section class="vb-carte">
     <h2 data-fr>Ce qu'elle contient</h2><h2 data-en>What it contains</h2>
     <p data-fr><b>Gratuite, sans compte, sans publicité et sans limite.</b> Aucune fonction n'est réservée à une version payante : il n'y a pas de version payante. Le nombre d'habitudes n'est pas plafonné, les statistiques ne sont pas verrouillées, et rien ne se débloque contre un abonnement.</p>
     <p data-en><b>Free, no account, no advertising, no limits.</b> No feature is reserved for a paid tier: there is no paid tier. The number of habits is not capped, statistics are not locked, and nothing unlocks against a subscription.</p>
@@ -156,11 +145,11 @@
       <li><b>A personal portrait</b> and an overall progression, visible at a glance.</li>
       <li><b>One unprompted notification a day</b>, in the morning. The app does not chase you and asks for nothing; habit reminders are the ones you set yourself.</li>
     </ul>
-    <p class="note" data-fr>L'application est un outil de soutien à la constance. Elle ne remplace personne et ne se substitue à aucun accompagnement.</p>
-    <p class="note" data-en>The app is a tool to support consistency. It replaces no one and substitutes for no form of guidance.</p>
+    <p class="vb-note" data-fr>L'application est un outil de soutien à la constance. Elle ne remplace personne et ne se substitue à aucun accompagnement.</p>
+    <p class="vb-note" data-en>The app is a tool to support consistency. It replaces no one and substitutes for no form of guidance.</p>
   </section>
 
-  <section>
+  <section class="vb-carte">
     <div class="chantier">
       <h2 data-fr>Une application en développement</h2>
       <h2 data-en>An app under development</h2>
@@ -171,7 +160,7 @@
     </div>
   </section>
 
-  <section>
+  <section class="vb-carte">
     <h2 data-fr>Ce que tu écris ne quitte pas l'appareil</h2><h2 data-en>What you write does not leave the device</h2>
     <p data-fr>Ton journal, ton carnet, tes réponses au portrait, tes humeurs, tes habitudes et leurs chiffres demeurent sur l'appareil. Aucun compte n'est requis, et rien de ce que tu écris ne part sans un geste de ta part.</p>
     <p data-en>Your journal, your notebook, your portrait answers, your moods, your habits and their numbers remain on the device. No account is required, and nothing you write leaves without an action on your part.</p>
@@ -182,7 +171,7 @@
     <p><a href="confidentialite.html"><span data-fr>Consulter la politique de confidentialité →</span><span data-en>Read the privacy policy →</span></a></p>
   </section>
 
-  <section>
+  <section class="vb-carte">
     <h2 data-fr>Installation</h2><h2 data-en>Installation</h2>
     <p data-fr>L'application n'est pas encore distribuée par Google Play. Android affichera donc deux ou trois avertissements avant l'installation : c'est la procédure normale pour toute application provenant d'un site web.</p>
     <p data-en>The app is not yet distributed through Google Play. Android will therefore display two or three warnings before installing: this is the standard procedure for any app coming from a website.</p>
@@ -200,17 +189,17 @@
       <li>A final screen may say <b>Unknown app</b>. Choose <b>Install anyway</b>.</li>
       <li>Installation is complete. The icon appears among your apps.</li>
     </ol>
-    <p class="note" data-fr><b>Mises à jour :</b> depuis la version 0.73, l'application te propose la nouvelle version et la télécharge elle-même quand tu touches « Mettre à jour ». Tu peux aussi revenir sur cette page. Elle s'installe par-dessus la précédente, sans perte de données.</p>
-    <p class="note" data-en><b>Updates:</b> since version 0.73, the app offers the new version and downloads it itself when you tap “Mettre à jour” (Update). You can also come back to this page. It installs over the previous one, with no loss of data.</p>
+    <p class="vb-note" data-fr><b>Mises à jour :</b> depuis la version 0.73, l'application te propose la nouvelle version et la télécharge elle-même quand tu touches « Mettre à jour ». Tu peux aussi revenir sur cette page. Elle s'installe par-dessus la précédente, sans perte de données.</p>
+    <p class="vb-note" data-en><b>Updates:</b> since version 0.73, the app offers the new version and downloads it itself when you tap “Mettre à jour” (Update). You can also come back to this page. It installs over the previous one, with no loss of data.</p>
   </section>
 
-  <section>
+  <section class="vb-carte">
     <h2 data-fr>iPhone</h2><h2 data-en>iPhone</h2>
     <p data-fr>L'application n'est pas encore disponible sur iPhone. Une version iOS demande un développement distinct et une distribution par l'App Store. Si la demande se manifeste, elle sera envisagée.</p>
     <p data-en>The app is not yet available on iPhone. An iOS version requires separate development and distribution through the App Store. Should the demand arise, it will be considered.</p>
   </section>
 
-  <section class="telecharger" id="telecharger">
+  <section class="vb-carte telecharger" id="telecharger">
     <h2 data-fr>Télécharger</h2><h2 data-en>Download</h2>
     <p data-fr>Pour Android. Gratuite, sans compte et sans publicité.</p>
     <p data-en>For Android. Free, no account, no advertising.</p>
@@ -227,10 +216,22 @@
     </div>
   </section>
 
-  <p class="maj" data-fr>Version 0.83 — mise en ligne le 25 novembre 2026.</p>
-  <p class="maj" data-en>Version 0.83 — published November 25, 2026.</p>
+  <p class="vb-maj" data-fr>Version 0.83 — mise en ligne le 25 novembre 2026.</p>
+  <p class="vb-maj" data-en>Version 0.83 — published November 25, 2026.</p>
 
 </main>
+
+<footer class="vb-pied">
+  <div class="vb-pied-in">
+    <a class="vb-marque" href="index.html">Vitalité <i>Bohème</i></a>
+    <nav aria-label="Pied de page">
+      <a href="tel:4383683282">438-368-3282</a>
+      <a href="mailto:KevinBibeau@vitaliteboheme.ca">KevinBibeau@vitaliteboheme.ca</a>
+      <a href="confidentialite.html"><span data-fr>Confidentialité</span><span data-en>Privacy</span></a>
+    </nav>
+    <span><span data-fr>Massothérapie certifiée · Membre RMPQ</span><span data-en>Certified massage therapy · RMPQ member</span></span>
+  </div>
+</footer>
 
 <script>
   function toggleLang() {
@@ -290,6 +291,7 @@
       .catch(function () { /* silence : le bloc reste masqué */ });
   })();
 </script>
+<script src="vb.js?v=20261126d"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "39820f3e66a545a7bb606088d3552fc6"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

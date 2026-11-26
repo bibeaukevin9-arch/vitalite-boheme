@@ -4,154 +4,71 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Page introuvable — Vitalité Bohème</title>
-  <link rel="icon" href="images/favicon-vb5.png" type="image/png">
+  <link rel="icon" href="/images/favicon-vb.png" type="image/png">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon-vb.png">
   <meta name="robots" content="noindex, follow" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/vb.css?v=20261126d">
 
   <style>
-    :root {
-      --noir: #1c1208;
-      --or: #cfa96a;
-      --or-clair: #e8c98a;
-      --beige: #f5ede0;
-      --brun: #8a6a50;
-      --blanc: #fdfaf6;
-      --texte: #3a2e28;
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 22px;
-      background: linear-gradient(160deg, var(--noir) 0%, #2b1c0e 55%, #3a2714 100%);
-      font-family: Georgia, serif;
-      color: var(--beige);
-      text-align: center;
-    }
-
-    .bloc { max-width: 560px; width: 100%; }
-
-    .logo {
-      width: 96px;
-      height: 96px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--or);
-      margin-bottom: 30px;
-    }
-
-    .ornement {
-      color: var(--or);
-      font-size: 20px;
-      letter-spacing: 10px;
-      margin-bottom: 22px;
-    }
-
-    .surtitre {
-      color: var(--or);
-      font-size: 12px;
-      letter-spacing: 3.5px;
-      text-transform: uppercase;
-      margin-bottom: 16px;
-    }
-
-    h1 {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 40px;
-      font-weight: 600;
-      line-height: 1.25;
-      color: var(--blanc);
-      margin-bottom: 20px;
-    }
-
-    h1 em { color: var(--or-clair); font-style: italic; }
-
-    p {
-      font-size: 16px;
-      line-height: 1.8;
-      color: #ddd0bd;
-      margin-bottom: 14px;
-    }
-
-    p.en { font-size: 14px; color: #b3a48f; font-style: italic; }
-
-    .liens {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 14px;
-      margin-top: 34px;
-    }
-
-    .btn {
-      display: inline-block;
-      padding: 14px 30px;
-      border-radius: 30px;
-      font-size: 15px;
-      font-weight: bold;
-      text-decoration: none;
-      transition: background .25s ease, color .25s ease;
-    }
-
-    .btn-plein { background: var(--or); color: var(--noir); }
-    .btn-plein:hover { background: var(--or-clair); }
-
-    .btn-vide { border: 2px solid var(--or); color: var(--or-clair); }
-    .btn-vide:hover { background: var(--or); color: var(--noir); }
-
-    .contact {
-      margin-top: 40px;
-      padding-top: 26px;
-      border-top: 1px solid rgba(207, 169, 106, .28);
-      font-size: 14px;
-      color: #b3a48f;
-      line-height: 2;
-    }
-
-    .contact a { color: var(--or-clair); text-decoration: none; }
-    .contact a:hover { text-decoration: underline; }
-
-    @media (max-width: 520px) {
-      h1 { font-size: 31px; }
-      .btn { padding: 13px 24px; font-size: 14px; }
-    }
+    .vb-lang-mobile[hidden], .vb-lang[hidden] { display: none !important; }
+    [data-en] { display: none !important; }
+    .vb-perdu { max-width: 760px; min-height: calc(100vh - var(--vb-barre-h) - 120px); padding-top: 90px; }
+    .vb-perdu h1 { font-family: var(--vb-serif); font-weight: 400; font-size: clamp(42px, 6vw, 70px); line-height: 1; letter-spacing: -.015em; margin: 12px 0 0; }
+    .vb-perdu h1 em { color: var(--vb-or-encre); }
+    .vb-perdu .en { font-size: 14.5px; color: var(--vb-encre-3); font-style: italic; margin-top: 8px; }
+    .liens { display: flex; flex-wrap: wrap; gap: 12px; margin: 32px 0 30px; }
+    .contact { font-size: 14px; line-height: 1.9; color: var(--vb-encre-3); }
+    .contact a { color: var(--vb-encre); text-decoration-color: var(--vb-or); text-underline-offset: 3px; }
+    @media (max-width: 900px) { .vb-perdu { padding-top: 48px; } }
   </style>
 </head>
-<body>
+<body class="vb vb-texte">
+<nav class="vb-barre" aria-label="Menu principal">
+  <a class="vb-marque" href="/index.html">Vitalité <i>Bohème</i></a>
+  <ul class="vb-liens" id="nav-menu">
+    <li><a href="/index.html#services"><span data-fr>Services</span><span data-en>Services</span></a></li>
+    <li><a href="/fiche.html"><span data-fr>Questionnaire</span><span data-en>Intake form</span></a></li>
+    <li><a href="/application.html"><span data-fr>L’application</span><span data-en>The app</span></a></li>
+    <li><a href="/boutique.html"><span data-fr>Boutique</span><span data-en>Shop</span></a></li>
+    <li class="vb-lang-mobile" hidden><button type="button" onclick="toggleLang()"><span data-fr>English</span><span data-en>Français</span></button></li>
+  </ul>
+  <a class="vb-tampon vb-rond" href="/boutique.html" aria-label="La boutique, 15 % de rabais avec le code VB15"><svg viewBox="0 0 200 200" aria-hidden="true"><defs><filter id="vb-encre" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="2" seed="9" result="b"/><feDisplacementMap in="SourceGraphic" in2="b" scale="3" result="d"/><feTurbulence type="fractalNoise" baseFrequency="2.2" numOctaves="1" seed="2" result="t"/><feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -0.55 1.3" result="m"/><feComposite in="d" in2="m" operator="in"/></filter><path id="vb-anneau" d="M100,100 m-70,0 a70,70 0 1,1 140,0 a70,70 0 1,1 -140,0"/></defs><g filter="url(#vb-encre)" fill="none" stroke="#e3c77a"><circle cx="100" cy="100" r="92" stroke-width="4"/><circle cx="100" cy="100" r="83" stroke-width="1.3"/><circle cx="100" cy="100" r="56" stroke-width="1.8"/></g><g filter="url(#vb-encre)"><text style="font-family:Jost,sans-serif;font-size:11.5px;letter-spacing:3.2px;font-weight:600" fill="#e3c77a"><textPath href="#vb-anneau">BOUTIQUE · CODE VB15 · BOUTIQUE · CODE VB15 ·</textPath></text><text x="100" y="112" text-anchor="middle" style="font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:700" fill="#e3c77a">15 %</text></g></svg></a>
+  <button class="vb-lang" hidden id="lang-btn" type="button" onclick="toggleLang()" aria-label="Langue / Language">
+    <span class="lbl actif" id="lbl-fr">FR</span><span class="sep">|</span><span class="lbl" id="lbl-en">EN</span>
+  </button>
+  <button class="vb-burger" id="hamburger-btn" type="button" aria-label="Menu" aria-controls="nav-menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  <a class="vb-resa" href="/reserver.html"><span data-fr>Réserver</span><span data-en>Book</span> <span class="vb-fleche">→</span></a>
+</nav>
 
-  <div class="bloc">
-
-    <img src="images/logo-vb-rond-plein.png" alt="Vitalité Bohème" class="logo" />
-
-    <div class="ornement">✦</div>
-
-    <div class="surtitre">Vitalité Bohème</div>
-
-    <h1>Cette page s'est <em>perdue en chemin</em></h1>
-
-    <p>Le lien que vous avez suivi ne mène nulle part. Ça arrive. Reprenons la route ensemble.</p>
-
-    <p class="en">The link you followed doesn't lead anywhere. It happens. Let's get you back on track.</p>
-
-    <div class="liens">
-      <a class="btn btn-plein" href="/fiche.html">Questionnaire de santé</a>
-      <a class="btn btn-vide" href="/">Retour à l'accueil</a>
-    </div>
-
-    <div class="contact">
-      Une question ? <a href="tel:4383683282">438-368-3282</a><br />
-      <a href="mailto:KevinBibeau@vitaliteboheme.ca">KevinBibeau@vitaliteboheme.ca</a>
-    </div>
-
+<main class="vb-corps vb-perdu">
+  <span class="vb-sur">Vitalité Bohème</span>
+  <h1>Cette page s'est <em>perdue en chemin</em></h1>
+  <p class="vb-chapo">Le lien que vous avez suivi ne mène nulle part. Ça arrive. Reprenons la route ensemble.</p>
+  <p class="vb-chapo en">The link you followed doesn't lead anywhere. It happens. Let's get you back on track.</p>
+  <div class="liens">
+    <a class="vb-b-pierre" href="/fiche.html">Questionnaire de santé</a>
+    <a class="vb-b-creux" href="/">Retour à l'accueil</a>
   </div>
+  <p class="contact">Une question ? <a href="tel:4383683282">438-368-3282</a><br />
+    <a href="mailto:KevinBibeau@vitaliteboheme.ca">KevinBibeau@vitaliteboheme.ca</a></p>
+</main>
 
+<footer class="vb-pied">
+  <div class="vb-pied-in">
+    <a class="vb-marque" href="/index.html">Vitalité <i>Bohème</i></a>
+    <nav aria-label="Pied de page">
+      <a href="tel:4383683282">438-368-3282</a>
+      <a href="mailto:KevinBibeau@vitaliteboheme.ca">KevinBibeau@vitaliteboheme.ca</a>
+      <a href="/confidentialite.html"><span data-fr>Confidentialité</span><span data-en>Privacy</span></a>
+    </nav>
+    <span><span data-fr>Massothérapie certifiée · Membre RMPQ</span><span data-en>Certified massage therapy · RMPQ member</span></span>
+  </div>
+</footer>
+
+<script src="/vb.js?v=20261126d"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "39820f3e66a545a7bb606088d3552fc6"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

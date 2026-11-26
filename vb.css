@@ -105,3 +105,32 @@ body.vb :focus-visible { outline: 2px solid var(--vb-or); outline-offset: 3px; }
 .vb-curseur.cache span { opacity: 0; }
 
 @media (prefers-reduced-motion: reduce) { .vb-barre *, .vb-b-or, .vb-b-pierre, .vb-b-creux, .vb-curseur span { transition: none !important; } }
+
+/* ---------- Les pages de texte (application, confidentialité, 404, revalider) ----------
+   Même tête que le questionnaire : papier, surtitre doré, grand titre Cormorant. Cartes au carré. */
+body.vb-texte { margin: 0; font-family: var(--vb-sans); background: var(--vb-papier); color: var(--vb-encre); -webkit-font-smoothing: antialiased; }
+body.vb-texte *, body.vb-texte *::before, body.vb-texte *::after { box-sizing: border-box; }
+.vb-tete { background: var(--vb-papier); border-bottom: 1px solid var(--vb-trait); }
+.vb-tete-in { max-width: 1100px; margin: 0 auto; padding: 64px 40px 42px; }
+.vb-sur { display: inline-block; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--vb-or-encre); font-weight: 500; }
+.vb-tete h1 { font-family: var(--vb-serif); font-weight: 400; font-size: clamp(44px, 6vw, 78px); line-height: .98; letter-spacing: -.015em; margin: 12px 0 0; color: var(--vb-encre); }
+.vb-tete h1 em { color: var(--vb-or-encre); }
+.vb-chapo { font-size: 16.5px; line-height: 1.7; color: var(--vb-encre-2); margin: 18px 0 0; max-width: 58ch; font-weight: 300; }
+.vb-corps { max-width: 860px; margin: 0 auto; padding: 44px 40px 90px; }
+.vb-carte { background: #fff; border: 1px solid var(--vb-trait); border-radius: 0; padding: 32px 34px 28px; margin: 0 0 18px; }
+.vb-carte h2 { font-family: var(--vb-serif); font-size: 31px; font-weight: 400; color: var(--vb-encre); line-height: 1.15; border-bottom: 1px solid var(--vb-trait); padding-bottom: 14px; margin: 0 0 18px; }
+.vb-carte p, .vb-carte li { font-size: 15.5px; line-height: 1.75; color: var(--vb-encre-2); font-weight: 400; margin: 0; }
+.vb-carte p + p { margin-top: 10px; }
+.vb-carte b, .vb-carte strong { color: var(--vb-encre); font-weight: 500; }
+.vb-carte ul, .vb-carte ol { padding-left: 22px; margin: 10px 0; }
+.vb-carte li { margin-bottom: 7px; }
+.vb-carte a { color: var(--vb-encre); text-decoration-color: var(--vb-or); text-underline-offset: 3px; }
+.vb-carte a:hover { color: var(--vb-or-encre); }
+.vb-note { font-size: 13.5px !important; color: var(--vb-encre-3) !important; margin-top: 12px !important; }
+.vb-maj { font-size: 12.5px; color: var(--vb-encre-3); text-align: center; letter-spacing: .04em; margin: 26px 0 0; }
+@media (max-width: 900px) {
+  .vb-tete-in { padding: 40px 20px 30px; }
+  .vb-corps { padding: 28px 14px 60px; }
+  .vb-carte { padding: 24px 18px 22px; }
+  .vb-carte h2 { font-size: 26px; }
+}

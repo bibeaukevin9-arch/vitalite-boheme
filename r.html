@@ -5,39 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Vitalité Bohème</title>
-<link rel="icon" href="images/favicon-vb5.png" type="image/png">
-<!--
-  LE PONT — pourquoi cette page existe.
-
-  Les courriels du système de réservation portaient des liens vers script.google.com.
-  Ce domaine sert beaucoup à l'hameçonnage, et les filtres de Microsoft (hotmail, outlook)
-  s'en méfient au point de jeter le message sans un mot : ni réception, ni indésirables,
-  ni rebond. Mesuré le 2026-09-17 : Vincent Labrecque n'a rien reçu du tout, alors que
-  l'envoi avait bien fonctionné et qu'aucun retour d'échec n'est revenu.
-
-  Cette page-ci porte le domaine de Kevin. Elle ne fait rien d'autre que reconduire la
-  personne vers le programme, en gardant la requête telle quelle.
-
-  ⛔ LA REDIRECTION EST EN JAVASCRIPT, VOLONTAIREMENT — jamais un meta refresh.
-     Outlook « Safe Links » ouvre les liens d'un courriel AVANT que la personne clique.
-     Un meta refresh serait suivi par ce robot, et il déclencherait l'action à sa place :
-     un rendez-vous annulé sans que personne l'ait voulu. Un robot n'exécute pas le
-     JavaScript ; une personne, oui.
--->
+<link rel="icon" href="images/favicon-vb.png" type="image/png">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon-vb.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Jost:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root{ --or:#c9a227; --noir:#14100d; --creme:#f2ebe2; --texte:#3a2e28; --gris:#7a6a58; }
+  :root{ --or:#c9a227; --or-encre:#8a6a1c; --pierre:#14100d; --papier:#f7f2ea; --encre:#1f1914; --gris:#7d6c5c; }
   *{ box-sizing:border-box }
   body{ margin:0; min-height:100vh; display:flex; align-items:center; justify-content:center;
-        background:var(--creme); color:var(--texte); padding:24px;
-        font-family:'Segoe UI',system-ui,-apple-system,sans-serif; }
+        background:var(--papier); color:var(--encre); padding:24px; font-family:'Jost','Segoe UI',system-ui,sans-serif; }
   .boite{ max-width:380px; text-align:center }
-  h1{ font-family:Georgia,'Times New Roman',serif; font-weight:400; font-size:27px;
-      margin:0 0 10px; color:var(--noir) }
-  p{ margin:0 0 22px; color:var(--gris); font-size:15px; line-height:1.6 }
-  a{ display:inline-block; text-decoration:none; border:1px solid var(--or); border-radius:2px;
-     padding:12px 26px; color:var(--noir); font-size:14px; letter-spacing:2px;
-     text-transform:uppercase; font-family:Georgia,serif }
-  a:hover{ background:var(--noir); color:var(--or); border-color:var(--noir) }
+  h1{ font-family:'Cormorant Garamond',Georgia,serif; font-weight:400; font-size:34px; margin:0 0 12px; color:var(--encre) }
+  h1 i{ color:var(--or-encre) }
+  p{ margin:0 0 24px; color:var(--gris); font-size:15px; line-height:1.6 }
+  a{ display:inline-block; text-decoration:none; border-radius:40px; background:var(--pierre); color:#f2ebe2;
+     padding:14px 30px; font-size:15px; letter-spacing:.03em }
+  a:hover{ background:#2c231b }
   .pt{ display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--or);
        margin:0 3px; animation:b 1.2s infinite ease-in-out }
   .pt:nth-child(2){ animation-delay:.15s } .pt:nth-child(3){ animation-delay:.3s }
@@ -47,7 +29,7 @@
 </head>
 <body>
   <div class="boite">
-    <h1>Vitalité Bohème</h1>
+    <h1>Vitalité <i>Bohème</i></h1>
     <p id="dit"><span class="pt"></span><span class="pt"></span><span class="pt"></span><br>
       Un instant, on t'amène à la bonne page.</p>
     <a id="suite" href="#">Continuer</a>

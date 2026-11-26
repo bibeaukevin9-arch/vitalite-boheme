@@ -4,57 +4,66 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Confidentialité — Vitalité Bohème</title>
+  <meta name="description" content="Ce que Vitalité Bohème recueille, pourquoi, et ce que vous pouvez demander." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Confidentialité — Vitalité Bohème" />
+  <meta property="og:description" content="Ce que Vitalité Bohème recueille, pourquoi, et ce que vous pouvez demander." />
+  <meta property="og:url" content="https://vitaliteboheme.ca/confidentialite.html" />
+  <meta property="og:locale" content="fr_CA" />
+  <meta property="og:image" content="https://vitaliteboheme.ca/images/og-vitalite-boheme.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Vitalité Bohème, massothérapie à Waterville" />
+  <meta name="twitter:card" content="summary_large_image" />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://vitaliteboheme.ca/confidentialite.html" />
-  <link rel="icon" href="images/favicon-vb5.png" type="image/png">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="icon" href="images/favicon-vb.png" type="image/png">
+  <link rel="apple-touch-icon" href="images/apple-touch-icon-vb.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="vb.css?v=20261126d">
   <style>
-    :root { --or: #cfa96a; --or-clair: #e8c98a; --beige: #f5ede0; --brun: #8a6a50; --brun-fonce: #4a3220; --creme: #f2ebe2; --texte: #3a2e28; --gris: #7a6a58; }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif; color: var(--texte); background: var(--beige); }
-    body::before { content: ''; position: fixed; inset: 0; background: url('images/fiche-bg.jpg') center center / cover; z-index: -1; }
-    h1, h2 { font-family: 'Cormorant Garamond', Georgia, serif; }
-    .lang-btn { position: fixed; top: 20px; left: 24px; z-index: 1100; background: rgba(30,22,14,0.82); color: #c8b89a; border: 1px solid rgba(201,169,110,0.35);
-      padding: 7px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; letter-spacing: 1px; font-family: Georgia, serif; display: flex; gap: 0; }
-    .lang-btn .lbl { padding: 0 6px; } .lang-btn .lbl.actif { color: var(--or); font-weight: bold; } .lang-btn .sep { color: rgba(201,169,110,0.4); }
     [data-en] { display: none; } body.en [data-fr] { display: none; } body.en [data-en] { display: block; }
-    body.en span[data-en], body.en a[data-en] { display: inline; } body.en span[data-fr], body.en a[data-fr] { display: none; }
-    header { background: #1c1208 url('images/hero-bg.jpg') center / cover no-repeat; padding: 44px 24px 32px; text-align: center; position: relative; box-shadow: 0 8px 40px rgba(0,0,0,0.35); }
-    header::before { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,5,1,0.55), rgba(10,5,1,0.5)); }
-    header > * { position: relative; }
-    header h1 { font-size: 32px; color: var(--creme); font-weight: 600; text-shadow: 0 2px 12px rgba(0,0,0,0.8); }
-    header h1 em { color: var(--or-clair); }
-    header p { color: var(--creme); font-size: 14px; margin-top: 8px; text-shadow: 0 1px 6px rgba(0,0,0,0.8); }
-    header a { display: inline-block; color: rgba(201,169,110,0.8); font-size: 12px; letter-spacing: 1px; text-decoration: none; margin-top: 14px; }
-    main { max-width: 720px; margin: 0 auto; padding: 34px 20px 80px; }
-    section { background: #fff; border-radius: 16px; padding: 24px 24px; margin-bottom: 16px; border: 1.5px solid rgba(201,169,110,0.22); box-shadow: 0 4px 24px rgba(60,40,20,0.10); }
-    h2 { font-size: 22px; color: var(--brun-fonce); margin-bottom: 10px; font-weight: 600; }
-    p, li { font-size: 15px; line-height: 1.7; }
-    ul { padding-left: 20px; margin: 6px 0; }
-    p + p { margin-top: 8px; }
-    a { color: var(--brun-fonce); }
-    .maj { font-size: 12px; color: var(--gris); text-align: center; }
+    body.en span[data-en], body.en a[data-en], body.en b[data-en] { display: inline; }
+    body.en span[data-fr], body.en a[data-fr], body.en b[data-fr] { display: none; }
   </style>
 </head>
-<body>
-<button class="lang-btn" onclick="toggleLang()"><span class="lbl actif" id="lbl-fr">FR</span><span class="sep">|</span><span class="lbl" id="lbl-en">EN</span></button>
+<body class="vb vb-texte">
+<nav class="vb-barre" aria-label="Menu principal">
+  <a class="vb-marque" href="index.html">Vitalité <i>Bohème</i></a>
+  <ul class="vb-liens" id="nav-menu">
+    <li><a href="index.html#services"><span data-fr>Services</span><span data-en>Services</span></a></li>
+    <li><a href="fiche.html"><span data-fr>Questionnaire</span><span data-en>Intake form</span></a></li>
+    <li><a href="application.html"><span data-fr>L’application</span><span data-en>The app</span></a></li>
+    <li><a href="boutique.html"><span data-fr>Boutique</span><span data-en>Shop</span></a></li>
+    <li class="vb-lang-mobile"><button type="button" onclick="toggleLang()"><span data-fr>English</span><span data-en>Français</span></button></li>
+  </ul>
+  <a class="vb-tampon vb-rond" href="boutique.html" aria-label="La boutique, 15 % de rabais avec le code VB15"><svg viewBox="0 0 200 200" aria-hidden="true"><defs><filter id="vb-encre" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="2" seed="9" result="b"/><feDisplacementMap in="SourceGraphic" in2="b" scale="3" result="d"/><feTurbulence type="fractalNoise" baseFrequency="2.2" numOctaves="1" seed="2" result="t"/><feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -0.55 1.3" result="m"/><feComposite in="d" in2="m" operator="in"/></filter><path id="vb-anneau" d="M100,100 m-70,0 a70,70 0 1,1 140,0 a70,70 0 1,1 -140,0"/></defs><g filter="url(#vb-encre)" fill="none" stroke="#e3c77a"><circle cx="100" cy="100" r="92" stroke-width="4"/><circle cx="100" cy="100" r="83" stroke-width="1.3"/><circle cx="100" cy="100" r="56" stroke-width="1.8"/></g><g filter="url(#vb-encre)"><text style="font-family:Jost,sans-serif;font-size:11.5px;letter-spacing:3.2px;font-weight:600" fill="#e3c77a"><textPath href="#vb-anneau">BOUTIQUE · CODE VB15 · BOUTIQUE · CODE VB15 ·</textPath></text><text x="100" y="112" text-anchor="middle" style="font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:700" fill="#e3c77a">15 %</text></g></svg></a>
+  <button class="vb-lang" id="lang-btn" type="button" onclick="toggleLang()" aria-label="Langue / Language">
+    <span class="lbl actif" id="lbl-fr">FR</span><span class="sep">|</span><span class="lbl" id="lbl-en">EN</span>
+  </button>
+  <button class="vb-burger" id="hamburger-btn" type="button" aria-label="Menu" aria-controls="nav-menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  <a class="vb-resa" href="reserver.html"><span data-fr>Réserver</span><span data-en>Book</span> <span class="vb-fleche">→</span></a>
+</nav>
 
-<header>
-  <h1 data-fr>Politique de <em>confidentialité</em></h1>
-  <h1 data-en>Privacy <em>policy</em></h1>
-  <p data-fr>Ce que Vitalité Bohème recueille, pourquoi, et ce que vous pouvez demander.</p>
-  <p data-en>What Vitalité Bohème collects, why, and what you can ask for.</p>
-  <a href="index.html"><span data-fr>← Retour au site</span><span data-en>← Back to website</span></a>
+<header class="vb-tete">
+  <div class="vb-tete-in">
+    <span class="vb-sur">Vitalité Bohème</span>
+    <h1 data-fr>Politique de <em>confidentialité</em></h1>
+    <h1 data-en>Privacy <em>policy</em></h1>
+    <p class="vb-chapo" data-fr>Ce que Vitalité Bohème recueille, pourquoi, et ce que vous pouvez demander.</p>
+    <p class="vb-chapo" data-en>What Vitalité Bohème collects, why, and what you can ask for.</p>
+  </div>
 </header>
 
-<main>
-  <section>
+<main class="vb-corps">
+  <section class="vb-carte">
     <h2 data-fr>Qui est responsable</h2><h2 data-en>Who is responsible</h2>
     <p data-fr>Vitalité Bohème est une entreprise établie à Waterville (Québec). Kevin Bibeau y est la personne responsable de la protection des renseignements personnels, au sens de la Loi 25. Pour toute question : <a href="mailto:KevinBibeau@vitaliteboheme.ca">KevinBibeau@vitaliteboheme.ca</a> ou <a href="tel:+14383683282">438 368-3282</a>.</p>
     <p data-en>Vitalité Bohème is a business based in Waterville, Québec. Kevin Bibeau is the person in charge of protecting personal information, under Québec's Law 25. For any question: <a href="mailto:KevinBibeau@vitaliteboheme.ca">KevinBibeau@vitaliteboheme.ca</a> or <a href="tel:+14383683282">438 368-3282</a>.</p>
   </section>
 
-  <section>
+  <section class="vb-carte">
     <h2 data-fr>Ce qui est recueilli, et pourquoi</h2><h2 data-en>What is collected, and why</h2>
     <p data-fr><b>Pour une demande de rendez-vous :</b> prénom, nom, courriel, téléphone, le soin choisi, la date et l'heure, pour qui est le soin, un code promo s'il y a lieu et la note que vous laissez. Ces renseignements servent à confirmer le rendez-vous, à vous joindre s'il faut le déplacer et à tenir votre dossier client.</p>
     <p data-en><b>For an appointment request:</b> first name, last name, email, phone, the treatment chosen, date and time, who the treatment is for, a promo code if any, and the note you leave. They are used to confirm the appointment, reach you if it needs to move, and keep your client file.</p>
@@ -68,7 +77,7 @@
     <p data-en>No data is sold or rented. News from Vitalité Bohème is only sent to people who ticked the box to receive it, or who had a treatment in the last two years, as Canada's anti-spam law allows. Every mailing identifies the sender and contains an unsubscribe link, effective without delay.</p>
   </section>
 
-  <section>
+  <section class="vb-carte">
     <h2 data-fr>Où ça va</h2><h2 data-en>Where it goes</h2>
     <p data-fr>Les demandes de rendez-vous sont inscrites dans l'agenda et la boîte courriel professionnels de Vitalité Bohème, et la liste des clients dans une feuille de calcul du même compte (services Google). Le questionnaire de santé arrive dans cette même boîte. Google peut héberger ces données à l'extérieur du Québec. Les accès sont protégés par mot de passe et validation en deux étapes.</p>
     <p data-en>Appointment requests are recorded in Vitalité Bohème's professional calendar and mailbox, and the client list in a spreadsheet of the same account (Google services). The health form lands in that same mailbox. Google may host this data outside Québec. Access is protected by password and two-step verification.</p>
@@ -78,7 +87,7 @@
     <p data-en>The website sets no cookies. To know how many people visit it, it uses <b>Cloudflare Web Analytics</b>, a counter with no cookie and no identifier, which does not follow a person from one visit to the next: it counts page views, the page you came from, the type of device and browser, and the country. Cloudflare is an American company. Your display language is remembered in your browser, nothing else.</p>
   </section>
 
-  <section>
+  <section class="vb-carte">
     <h2 data-fr>L'application Vitalité Bohème</h2><h2 data-en>The Vitalité Bohème app</h2>
     <p data-fr><b>Elle ne recueille rien de ce que vous écrivez.</b> Votre journal, votre carnet, vos réponses au portrait, vos humeurs, vos habitudes et leurs chiffres sont écrits sur votre appareil, et rien n'en part sans un geste de votre part. Il n'y a pas de compte. Ce qui sort de l'application est décrit plus bas, au complet : une vérification de version, les mises à jour que vous demandez, ce que vous m'envoyez vous-même par courriel, et des statistiques d'usage, seulement si vous y consentez.</p>
     <p data-en><b>It collects nothing you write.</b> Your journal, your notebook, your portrait answers, your moods, your habits and their numbers are written on your phone, and nothing leaves it without an action on your part. There is no account. What does leave the app is listed below, in full: a version check, the updates you ask for, what you send me yourself by email, and usage statistics, only if you agree.</p>
@@ -114,13 +123,13 @@
     <p data-en>Uninstalling the app erases all of its data from your phone. Nothing you wrote in it exists anywhere else, except what you sent me yourself by email.</p>
   </section>
 
-  <section>
+  <section class="vb-carte">
     <h2 data-fr>Combien de temps</h2><h2 data-en>For how long</h2>
     <p data-fr>Le questionnaire de santé et les renseignements du dossier client sont conservés <strong>au moins cinq ans à compter du dernier soin</strong>, comme l'exige le code de déontologie du Réseau des massothérapeutes professionnels du Québec (article 9.1.4). Passé ce délai, le dossier est détruit de façon sécuritaire : rien n'est gardé au-delà de ce qui est nécessaire. Une demande de rendez-vous refusée ou expirée est retirée de l'agenda.</p>
     <p data-en>The health form and client file information are kept for <strong>at least five years from the last treatment</strong>, as required by the code of ethics of the Réseau des massothérapeutes professionnels du Québec (article 9.1.4). After that period the file is securely destroyed: nothing is kept beyond what is necessary. A refused or expired appointment request is removed from the calendar.</p>
   </section>
 
-  <section>
+  <section class="vb-carte">
     <h2 data-fr>Ce que vous pouvez demander</h2><h2 data-en>What you can ask for</h2>
     <ul>
       <li data-fr>Consulter les renseignements que Vitalité Bohème détient à votre sujet.</li><li data-en>See the information Vitalité Bohème holds about you.</li>
@@ -131,8 +140,20 @@
     <p data-en>Write to <a href="mailto:KevinBibeau@vitaliteboheme.ca">KevinBibeau@vitaliteboheme.ca</a>. Reply within 30 days. If an incident involving your information posed a serious risk to you, you would be notified, as would the Commission d'accès à l'information.</p>
   </section>
 
-  <p class="maj"><span data-fr>Mise à jour : novembre 2026</span><span data-en>Updated: November 2026</span></p>
+  <p class="vb-maj"><span data-fr>Mise à jour : novembre 2026</span><span data-en>Updated: November 2026</span></p>
 </main>
+
+<footer class="vb-pied">
+  <div class="vb-pied-in">
+    <a class="vb-marque" href="index.html">Vitalité <i>Bohème</i></a>
+    <nav aria-label="Pied de page">
+      <a href="tel:4383683282">438-368-3282</a>
+      <a href="mailto:KevinBibeau@vitaliteboheme.ca">KevinBibeau@vitaliteboheme.ca</a>
+      <a href="confidentialite.html"><span data-fr>Confidentialité</span><span data-en>Privacy</span></a>
+    </nav>
+    <span><span data-fr>Massothérapie certifiée · Membre RMPQ</span><span data-en>Certified massage therapy · RMPQ member</span></span>
+  </div>
+</footer>
 
 <script>
   var currentLang = 'fr';
@@ -142,6 +163,7 @@
   function toggleLang() { applyLang(currentLang === 'fr' ? 'en' : 'fr'); }
   (function(){ var s = ''; try { s = localStorage.getItem('vb-lang') || ''; } catch(e) {} applyLang(s === 'en' ? 'en' : 'fr'); })();
 </script>
+<script src="vb.js?v=20261126d"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "39820f3e66a545a7bb606088d3552fc6"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
