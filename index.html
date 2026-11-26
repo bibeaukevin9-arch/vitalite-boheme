@@ -726,6 +726,13 @@
       .modal-box h3 { font-size: 31px; }
       .rang .vb-b-pierre, .rang .vb-b-creux { flex: 1 1 auto; justify-content: center; }
     }
+    /* ─── La photo d'accueil : plus de ligne beige dessous, et la ligne entre le beige et la photo
+       tombe en léger biais (Kevin, 26 nov.). Au téléphone, la photo est sous le texte : pas de biais. ─── */
+    .vitrine { border-bottom: 0; }
+    @media (min-width: 901px) {
+      .vitrine { grid-template-columns: .95fr 1.05fr; }
+      .portrait { clip-path: polygon(9% 0, 100% 0, 100% 100%, 0 100%); }
+    }
   </style>
 </head>
 <body class="vb">
@@ -768,7 +775,6 @@
   </div>
   <div class="portrait">
     <img src="images/kevin-sourire.jpg" alt="Kevin Bibeau, massothérapeute chez Vitalité Bohème" width="507" height="900" fetchpriority="high">
-    <a href="fiche.html" class="q"><b data-fr>Questionnaire santé</b><b data-en>Health questionnaire</b> <span class="vb-fleche">→</span></a>
   </div>
 </header>
 
@@ -860,7 +866,6 @@
       </article>
     </div>
     <div class="services-pied">
-      <p><span data-fr>Reçus d’assurance disponibles.</span><span data-en>Insurance receipts available.</span></p>
       <a href="reserver.html" class="vb-b-pierre"><span data-fr>Choisir mon moment</span><span data-en>Pick my moment</span> <span class="vb-fleche">→</span></a>
     </div>
   </div>
