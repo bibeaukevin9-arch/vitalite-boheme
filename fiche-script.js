@@ -573,7 +573,7 @@ function soumettreFormulaire(e) {
     if (labelConsent) labelConsent.style.background = consentOk ? '' : '#fff0f0';
     if (!consentOk && !premierChamp) premierChamp = consentEl;
   }
-  if (!consentOk) erreurs.push(isEn ? '✅ Consent checkbox (mandatory)' : '✅ Case « J\'accepte » (obligatoire)');
+  if (!consentOk) erreurs.push(isEn ? 'Consent checkbox (mandatory)' : 'Case « J\'accepte » (obligatoire)');
 
   // Moins de 18 ans : parent ou tuteur identifié, consentement parental coché
   var mineur = !!fd.get('mineur');
@@ -588,7 +588,7 @@ function soumettreFormulaire(e) {
     var pcOk = !!fd.get('parent_consent');
     var pcEl = document.getElementById('parent_consent');
     if (pcEl) { pcEl.style.outline = pcOk ? '' : '3px solid #c44'; if (!pcOk && !premierChamp) premierChamp = pcEl; }
-    if (!pcOk) erreurs.push(isEn ? '✅ Parental consent (under 18)' : '✅ Consentement parental (moins de 18 ans)');
+    if (!pcOk) erreurs.push(isEn ? 'Parental consent (under 18)' : 'Consentement parental (moins de 18 ans)');
   }
 
   // Signature
@@ -611,7 +611,7 @@ function soumettreFormulaire(e) {
 
   if (erreurs.length > 0) {
     errDiv.innerHTML = '<strong style="color:#c44;font-size:14px;">'
-      + (isEn ? '⚠️ Please fill in the required fields:' : '⚠️ Veuillez remplir les champs obligatoires :')
+      + (isEn ? 'Please fill in the required fields:' : 'Veuillez remplir les champs obligatoires :')
       + '</strong><ul style="margin:8px 0 0;padding-left:20px;color:#8b2222;font-size:13px;">'
       + erreurs.map(function(e) { return '<li>' + e + '</li>'; }).join('')
       + '</ul>';
@@ -850,7 +850,7 @@ function soumettreFormulaire(e) {
   // Envoi
   var btn = document.getElementById('btn-submit');
   btn.disabled = true;
-  btn.innerHTML = '<span>⏳ Envoi en cours…</span>';
+  btn.innerHTML = '<span>Envoi en cours…</span>';
 
   var templateParams = {
     client_nom:         v('prenom') + ' ' + v('nom') + (v('mineur') ? (isEn ? ' — UNDER 18' : ' — MOINS DE 18 ANS') : ''),
@@ -956,8 +956,8 @@ function soumettreFormulaire(e) {
   }
 
   var LIBELLE_BOUTON = isEn
-    ? '<span>📨 Submit my intake form</span>'
-    : '<span>📨 Envoyer mon questionnaire</span>';
+    ? '<span>Submit my intake form</span>'
+    : '<span>Envoyer mon questionnaire</span>';
 
   // Message d'echec persistant : une alerte se ferme et ne laisse aucune
   // trace. Ici la personne garde sous les yeux quoi faire et comment joindre

@@ -24,20 +24,6 @@
   }, { passive: true });
 }());
 
-// ─── NAV HAMBURGER ──────────────────────────────────────────────────────────
-function toggleMenu() {
-  document.getElementById('hamburger-btn').classList.toggle('ouvert');
-  document.getElementById('nav-menu').classList.toggle('mobile-ouvert');
-}
-function fermerMenu() {
-  document.getElementById('hamburger-btn').classList.remove('ouvert');
-  document.getElementById('nav-menu').classList.remove('mobile-ouvert');
-}
-document.addEventListener('click', function(e) {
-  var nav = document.querySelector('nav');
-  if (nav && !nav.contains(e.target)) fermerMenu();
-});
-
 // ─── LANGUE ─────────────────────────────────────────────────────────────────
 var currentLang = 'fr';
 
@@ -74,7 +60,7 @@ function toggleLang() {
 // ─── MODAL SERVICES ─────────────────────────────────────────────────────────
 var servicesData = {
   relaxation: {
-    icon: '🌿',
+    photo: 'images/svc-foret.jpg',
     fr: {
       titre: 'Relaxation Suédoise',
       tag: 'Détente & douceur',
@@ -89,7 +75,7 @@ var servicesData = {
     }
   },
   therapeutique: {
-    icon: '💆',
+    photo: 'images/svc-therapeutique.jpg',
     fr: {
       titre: 'Massage Thérapeutique',
       tag: 'Ciblé & personnalisé',
@@ -104,26 +90,26 @@ var servicesData = {
     }
   },
   signature: {
-    icon: '🌊',
+    photo: 'images/svc-vagues.jpg',
     fr: {
       titre: 'Inspiration Lomi Lomi',
-      tag: '⚠ Pour public averti',
+      tag: 'Pour public averti',
       desc: `Inspiré des traditions hawaïennes, le Lomi Lomi est une expérience sensorielle à part entière. Un soin qui voyage à travers le corps avec une fluidité rare — plus proche d'une méditation en mouvement que d'un massage traditionnel.
 
-⚠ À noter : ce soin implique un drapage très minimaliste. Le toucher couvre de nombreuses zones du corps et peut être considéré comme invasif. Réservé à un public averti.`,
+À noter : ce soin implique un drapage très minimaliste. Le toucher couvre de nombreuses zones du corps et peut être considéré comme invasif. Réservé à un public averti.`,
       bienfaits: '<strong>Bienfaits :</strong> détente profonde, circulation améliorée, relâchement du fascia, sentiment de légèreté et de fluidité.'
     },
     en: {
       titre: 'Lomi Lomi Inspired',
-      tag: '⚠ For informed clients',
+      tag: 'For informed clients',
       desc: `Rooted in Hawaiian tradition, Lomi Lomi is a sensory experience unlike any other. A treatment that moves through the body with rare fluidity — closer to a moving meditation than a traditional massage.
 
-⚠ Please note: this treatment involves very minimal draping. Touch covers many areas of the body and may be considered invasive. For informed clients only.`,
+Please note: this treatment involves very minimal draping. Touch covers many areas of the body and may be considered invasive. For informed clients only.`,
       bienfaits: '<strong>Benefits:</strong> deep relaxation, improved circulation, fascial release, feeling of lightness and fluidity.'
     }
   },
   couple: {
-    icon: '💑',
+    photo: 'images/cp6.jpg',
     fr: {
       titre: 'Cours de massage en couple',
       tag: 'Connexion & partage',
@@ -144,7 +130,7 @@ function ouvrirService(type) {
   if (!data) return;
   var isEn = (currentLang === 'en');
   var d = isEn ? data.en : data.fr;
-  document.getElementById('modal-icon').innerHTML = data.icon;
+  document.getElementById('modal-icon').style.backgroundImage = "url('" + data.photo + "')";
   document.getElementById('modal-titre').textContent = d.titre;
   document.getElementById('modal-tag').textContent = d.tag;
   document.getElementById('modal-desc').innerHTML = d.desc.replace(/\n\n/g, '<br><br>');

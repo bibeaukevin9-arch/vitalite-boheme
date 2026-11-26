@@ -1,0 +1,96 @@
+/* ==========================================================================
+   Vitalité Bohème · le style commun de tout le site
+   Une seule source pour les couleurs, les polices, la barre du haut et le carré.
+   Choix de Kevin (26 nov. 2026) : barre noire, marque à gauche, liens en
+   Cormorant italique, petit tampon VB15 doré après Boutique, Réserver en bloc
+   doré pleine hauteur, et tout au carré (aucun coin arrondi sauf le tampon).
+   ========================================================================== */
+
+:root {
+  --vb-pierre: #14100d; --vb-pierre-2: #1e1915; --vb-trait-sombre: #3a2f26;
+  --vb-or: #c9a227; --vb-or-clair: #e3c77a; --vb-or-encre: #8a6a1c;
+  --vb-creme: #f2ebe2; --vb-papier: #f7f2ea; --vb-papier-2: #efe6d9; --vb-trait: #ddd1bf;
+  --vb-encre: #1f1914; --vb-encre-2: #5a4b3e; --vb-encre-3: #7d6c5c; --vb-sur-pierre: #b8a894;
+  --vb-serif: 'Cormorant Garamond', Georgia, serif;
+  --vb-sans: 'Jost', 'Segoe UI', system-ui, sans-serif;
+  --vb-sortie: cubic-bezier(.16, 1, .3, 1);
+  --vb-barre-h: 72px;
+}
+
+/* ---------- La règle : structures carrées, boutons ronds (décision du 26 nov. 2026) ---------- */
+body.vb ::selection { background: var(--vb-or-clair); color: var(--vb-pierre); }
+body.vb :focus-visible { outline: 2px solid var(--vb-or); outline-offset: 3px; }
+
+/* ---------- La barre du haut ---------- */
+.vb-barre { position: sticky; top: 0; z-index: 900; height: var(--vb-barre-h); background: var(--vb-pierre); color: var(--vb-creme);
+  display: flex; align-items: center; padding-left: max(24px, calc((100vw - 1280px) / 2 + 24px)); font-family: var(--vb-sans); }
+.vb-marque { font-family: var(--vb-serif); font-size: 26px; font-weight: 500; color: var(--vb-creme); text-decoration: none; white-space: nowrap; margin-right: auto; letter-spacing: .005em; }
+.vb-marque i { color: var(--vb-or-clair); font-style: italic; }
+.vb-liens { list-style: none; display: flex; align-items: center; height: 100%; margin: 0; padding: 0; }
+.vb-liens li { display: flex; align-items: center; height: 100%; }
+.vb-liens a { font-family: var(--vb-serif); font-style: italic; font-size: 19px; color: #e2d6c5; text-decoration: none; padding: 0 18px;
+  border-left: 1px solid #3d3229; line-height: 1.2; transition: color .3s; white-space: nowrap; }
+.vb-liens li:first-child a { border-left: 0; }
+.vb-liens a:hover, .vb-liens a[aria-current="page"] { color: var(--vb-or-clair); }
+.vb-tampon { display: block; width: 54px; height: 54px; margin: 0 8px 0 -8px; transform: rotate(-12deg); transition: transform .6s var(--vb-sortie); flex: none; }
+.vb-tampon svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.vb-tampon:hover { transform: rotate(0) scale(1.08); }
+.vb-lang { background: none; border: 0; cursor: pointer; padding: 0 16px; height: 100%; display: flex; align-items: center; gap: 6px;
+  font-family: var(--vb-sans); font-size: 11.5px; letter-spacing: .14em; color: #8f806d; }
+.vb-lang .lbl { padding: 0; font-family: var(--vb-sans); font-size: 11.5px; letter-spacing: .14em; color: #8f806d; }
+.vb-lang .lbl.actif { color: var(--vb-or-clair); font-weight: 600; }
+.vb-lang .sep { color: #4a3d31; }
+.vb-resa { height: 100%; display: flex; align-items: center; gap: 10px; margin-left: 10px; padding: 0 28px; background: var(--vb-or); color: var(--vb-pierre);
+  font-family: var(--vb-serif); font-size: 20px; font-weight: 600; text-decoration: none; white-space: nowrap; transition: background .3s; }
+.vb-resa:hover { background: var(--vb-or-clair); }
+.vb-resa .vb-fleche { transition: transform .4s var(--vb-sortie); }
+.vb-resa:hover .vb-fleche { transform: translateX(4px); }
+.vb-burger { display: none; background: none; border: 0; cursor: pointer; width: 46px; height: 100%; padding: 0; flex-direction: column; justify-content: center; align-items: center; gap: 5px; }
+.vb-burger span { display: block; width: 22px; height: 1.5px; background: var(--vb-creme); transition: transform .3s, opacity .3s; }
+.vb-burger.ouvert span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.vb-burger.ouvert span:nth-child(2) { opacity: 0; }
+.vb-burger.ouvert span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+.vb-lang-mobile { display: none !important; }
+.vb-lang-mobile button { background: none; border: 0; cursor: pointer; text-align: left; width: 100%; padding: 14px 22px; font-family: var(--vb-sans); font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: #8f806d; }
+
+@media (max-width: 900px) {
+  :root { --vb-barre-h: 62px; }
+  .vb-lang { display: none; }
+  .vb-lang-mobile { display: flex !important; }
+  .vb-barre { padding-left: 16px; }
+  .vb-marque { font-size: 21px; }
+  .vb-burger { display: flex; order: 2; }
+  .vb-lang { order: 1; padding: 0 10px; }
+  .vb-tampon { order: 3; width: 44px; height: 44px; margin: 0 6px 0 2px; }
+  .vb-resa { order: 4; margin: 0; padding: 0 16px; font-size: 17px; }
+  .vb-resa .vb-fleche { display: none; }
+  .vb-liens { order: 5; position: absolute; top: var(--vb-barre-h); left: 0; right: 0; height: auto; flex-direction: column; align-items: stretch;
+    background: var(--vb-pierre); border-top: 1px solid var(--vb-trait-sombre); padding: 8px 0 14px;
+    visibility: hidden; opacity: 0; transform: translateY(-8px); transition: opacity .3s, transform .4s var(--vb-sortie), visibility 0s .4s; }
+  .vb-liens.mobile-ouvert { visibility: visible; opacity: 1; transform: none; transition: opacity .3s, transform .4s var(--vb-sortie); }
+  .vb-liens li { height: auto; }
+  .vb-liens a { border-left: 0; padding: 14px 22px; font-size: 22px; width: 100%; border-bottom: 1px solid #2a2119; }
+}
+@media (max-width: 380px) { .vb-marque { font-size: 19px; } .vb-tampon { width: 38px; height: 38px; margin: 0 2px; } .vb-burger { width: 40px; } .vb-resa { padding: 0 13px; } }
+
+/* ---------- Les boutons, ronds ---------- */
+.vb-b-or, .vb-b-pierre, .vb-b-creux { display: inline-flex; align-items: center; gap: 10px; padding: 15px 28px; border-radius: 40px; font-family: var(--vb-sans); font-size: 15px;
+  letter-spacing: .03em; text-decoration: none; cursor: pointer; border: 0; transition: background .25s, color .25s, transform .25s var(--vb-sortie); }
+.vb-b-or { background: var(--vb-or); color: var(--vb-pierre); font-weight: 500; }
+.vb-b-or:hover { background: var(--vb-or-clair); }
+.vb-b-pierre { background: var(--vb-pierre); color: var(--vb-creme); }
+.vb-b-pierre:hover { background: #2c231b; transform: translateY(-1px); }
+.vb-b-pierre .vb-fleche { color: var(--vb-or-clair); }
+.vb-b-creux { background: transparent; color: var(--vb-encre); border: 1px solid var(--vb-encre); padding: 14px 26px; }
+.vb-b-creux:hover { background: var(--vb-encre); color: var(--vb-creme); }
+
+/* ---------- Le pied de page commun ---------- */
+.vb-pied { background: var(--vb-pierre); color: var(--vb-sur-pierre); font-family: var(--vb-sans); font-size: 13.5px; }
+.vb-pied-in { max-width: 1280px; margin: 0 auto; padding: 30px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 32px; }
+.vb-pied .vb-marque { font-size: 22px; margin: 0; }
+.vb-pied nav { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+.vb-pied a { color: var(--vb-sur-pierre); text-decoration: none; }
+.vb-pied a:hover { color: var(--vb-or-clair); }
+
+@media (prefers-reduced-motion: reduce) { .vb-barre *, .vb-b-or, .vb-b-pierre, .vb-b-creux { transition: none !important; } }

@@ -9,10 +9,11 @@
   <!-- jsPDF -->
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <!-- Logique formulaire -->
-  <script defer src="fiche-script.js?v=20260911c"></script>
+  <script defer src="fiche-script.js?v=20261126"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="vb.css?v=20261126b">
   <style>
     :root {
       --noir: #1c1208;
@@ -33,19 +34,6 @@
     body { font-family: 'Georgia', serif; background: none; color: var(--texte); overflow-x: clip; max-width: 100vw; }
     body::before { content: ''; position: fixed; inset: 0; background: url('images/fiche-bg.jpg') center center / cover; z-index: -1; }
 
-    /* LANGUE */
-    .lang-btn {
-      position: fixed; top: 20px; left: 24px; z-index: 1100;
-      background: rgba(30,22,14,0.82); color: #c8b89a; border: 1px solid rgba(201,169,110,0.35);
-      padding: 7px 16px; border-radius: 20px; cursor: pointer;
-      font-size: 12px; letter-spacing: 1px; font-family: Georgia, serif;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
-      backdrop-filter: blur(8px); display: flex; align-items: center; gap: 0;
-    }
-    .lang-btn:hover { border-color: rgba(201,169,110,0.7); }
-    .lang-btn .lbl { padding: 0 6px; transition: color 0.2s; }
-    .lang-btn .lbl.actif { color: var(--or); font-weight: bold; }
-    .lang-btn .sep { color: rgba(201,169,110,0.4); font-size: 11px; }
     [data-en] { display: none; }
     body.en [data-fr] { display: none; }
     body.en [data-en] { display: block; }
@@ -58,55 +46,6 @@
 
     /* GRILLE ALVÉOLES — fond de texture sur toute la page */
     body { position: relative; }
-
-    /* EN-TÊTE — même fond solide que le hero */
-    .fiche-header {
-      background: #1c1208 url('images/hero-bg.jpg') center center / cover no-repeat;
-      padding: 44px 40px 36px;
-      text-align: center;
-      border-bottom: 1px solid rgba(201,169,110,0.25);
-      position: relative; z-index: 1; overflow: hidden;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.35);
-    }
-    .fiche-header::before {
-      content: ''; position: absolute; inset: 0; z-index: 0;
-      background:
-        linear-gradient(180deg, rgba(10,5,1,0.50) 0%, rgba(15,8,2,0.32) 50%, rgba(10,5,1,0.46) 100%),
-        radial-gradient(ellipse 55% 40% at 50% 0%, rgba(255,220,130,0.16) 0%, transparent 65%);
-    }
-    .fiche-header > *:not(svg) { position: relative; z-index: 2; }
-    .header-logo {
-      width: 72px; height: 72px; border-radius: 50%;
-      border: 2px solid var(--or);
-      box-shadow: 0 0 0 5px rgba(201,169,110,0.14), 0 8px 30px rgba(0,0,0,0.35);
-      margin: 0 auto 18px;
-      overflow: hidden;
-    }
-    .header-logo img { width: 100%; height: 100%; object-fit: cover; }
-    .fiche-header h1 {
-      font-size: 28px; color: #ffffff; margin-bottom: 8px; line-height: 1.3;
-      text-shadow: 0 2px 12px rgba(0,0,0,0.8), 0 1px 3px rgba(0,0,0,0.9);
-      font-weight: bold;
-    }
-    .fiche-header h1 em { color: var(--or-clair); font-style: italic; }
-    .fiche-header p {
-      font-size: 14px; color: #f0e4d0; max-width: 520px;
-      margin: 0 auto 20px; line-height: 1.85;
-      text-shadow: 0 1px 6px rgba(0,0,0,0.8);
-    }
-    .header-badge {
-      display: inline-block; border: 1px solid rgba(201,169,110,0.8);
-      color: #e8c98a; padding: 5px 22px; border-radius: 20px;
-      font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
-      margin-bottom: 16px; background: rgba(0,0,0,0.25);
-      text-shadow: 0 1px 4px rgba(0,0,0,0.8);
-    }
-    .retour-lien {
-      display: inline-block; color: rgba(201,169,110,0.75);
-      font-size: 12px; letter-spacing: 1px; text-decoration: none;
-      margin-top: 14px; transition: color 0.2s;
-    }
-    .retour-lien:hover { color: var(--or-clair); }
 
     /* ─── BORDURES DÉCORATIVES ENTRE ZONES ─────────────────────── */
 
@@ -252,31 +191,6 @@
     #succes-msg h3 { color: #2e7d32; font-size: 22px; margin-bottom: 10px; }
     #succes-msg p { color: #388e3c; font-size: 15px; line-height: 1.7; }
 
-    /* PIED DE PAGE */
-    .fiche-footer {
-      background: url('images/footer-bg.jpg') center center / cover no-repeat;
-      text-align: center; padding: 48px 40px 32px;
-      border-top: 1px solid rgba(201,169,110,0.30);
-      position: relative; z-index: 1; overflow: hidden;
-    }
-    .fiche-footer::before {
-      content: ''; position: absolute; inset: 0; z-index: 0;
-      background: rgba(10,5,1,0.55);
-      pointer-events: none;
-    }
-    .fiche-footer > *:not(svg) { position: relative; z-index: 2; }
-    .fiche-footer-logo { width: 52px; height: 52px; border-radius: 50%; margin: 0 auto 14px; overflow: hidden; border: 1.5px solid rgba(201,169,110,0.4); box-shadow: 0 0 0 4px rgba(201,169,110,0.08); }
-    .fiche-footer-logo img { width: 100%; height: 100%; object-fit: cover; }
-    .fiche-footer-marque { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 18px; color: #e8d5b0; letter-spacing: 0.5px; margin-bottom: 4px; }
-    .fiche-footer-tagline { font-size: 10px; color: rgba(201,169,110,0.5); letter-spacing: 2.5px; text-transform: uppercase; margin-bottom: 18px; }
-    .fiche-footer-or { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 14px auto 18px; }
-    .fiche-footer-or-line { width: 48px; height: 1px; background: rgba(201,169,110,0.3); }
-    .fiche-footer-or-sym { color: rgba(201,169,110,0.55); font-size: 12px; }
-    .fiche-footer p { color: #c8b89a; font-size: 13px; line-height: 1.9; }
-    .fiche-footer a { color: #e8c98a; text-decoration: none; transition: color 0.2s; }
-    .fiche-footer a:hover { color: var(--or); }
-    .fiche-footer .divider-or { width: 40px; height: 1px; background: var(--or); opacity: 0.3; margin: 16px auto; }
-
     /* RESPONSIVE */
     /* Champ date manuelle */
     input.date-manuelle::placeholder { color: #b0a090; font-style: italic; letter-spacing: 1px; }
@@ -286,28 +200,9 @@
       .zone-btn { width: 12px !important; height: 12px !important; border-width: 1.5px !important; }
       .zone-btn.actif { box-shadow: 0 0 0 2px rgba(201,169,110,0.35) !important; }
       .fiche-body { padding: 40px 20px 60px; }
-      .fiche-header { padding: 30px 20px 26px; }
       .q-grid-2, .q-grid-3 { grid-template-columns: 1fr; }
       .q-section { padding: 20px 18px; }
-      .fiche-header h1 { font-size: 22px; }
     }
-    /* ─── CURSEUR DORÉ ─────────────────────────────────────────── */
-    .curseur-or {
-      width: 10px; height: 10px; border-radius: 50%;
-      background: rgba(201,169,110,0.7);
-      position: fixed; pointer-events: none; z-index: 9999;
-      transition: transform 0.15s ease, opacity 0.2s;
-      transform: translate(-50%, -50%);
-    }
-    .curseur-or-anneau {
-      width: 32px; height: 32px; border-radius: 50%;
-      border: 1.5px solid rgba(201,169,110,0.35);
-      position: fixed; pointer-events: none; z-index: 9998;
-      transition: transform 0.35s ease, opacity 0.2s;
-      transform: translate(-50%, -50%);
-    }
-    @media (hover: none) { .curseur-or, .curseur-or-anneau { display: none; } }
-
     /* ─── ANIMATIONS AU SCROLL ──────────────────────────────────── */
     .anim-entree {
       opacity: 0;
@@ -354,9 +249,60 @@
     }
     #btn-dl-pdf:hover { background: var(--or-clair); }
     #dl-note { color: #55703f; font-size: 13px; margin-top: 10px; line-height: 1.5; }
+
+    /* ==========================================================
+       Le style commun (vb.css) : crème, structures carrées, boutons ronds.
+       ========================================================== */
+    body.vb { font-family: var(--vb-sans); background: var(--vb-papier); color: var(--vb-encre); -webkit-font-smoothing: antialiased; }
+    body.vb::before { display: none; }
+    .tete-q { background: var(--vb-papier); border-bottom: 1px solid var(--vb-trait); }
+    .tete-q-in { max-width: 1100px; margin: 0 auto; padding: 64px 40px 42px; display: grid; grid-template-columns: 1fr 320px; gap: 48px; align-items: end; }
+    .tete-q .sur { display: inline-block; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--vb-or-encre); font-weight: 500; }
+    .tete-q h1 { font-family: var(--vb-serif); font-weight: 400; font-size: clamp(46px, 6vw, 80px); line-height: .98; letter-spacing: -.015em; margin-top: 12px; }
+    .tete-q h1 em { color: var(--vb-or-encre); }
+    .tete-q .chapo { font-size: 16.5px; line-height: 1.7; color: var(--vb-encre-2); margin-top: 18px; max-width: 58ch; font-weight: 300; }
+    .verrou { background: #fff; border: 1px solid var(--vb-trait); border-left: 3px solid var(--vb-or); padding: 20px 22px; font-size: 14.5px; line-height: 1.6; color: var(--vb-encre-2); }
+    .verrou-titre { font-family: var(--vb-serif); font-size: 22px; font-weight: 500; color: var(--vb-encre); margin-bottom: 4px; }
+    .fiche-body { max-width: 860px; padding: 44px 40px 90px; }
+    .q-form { counter-reset: sec; }
+    .q-section { counter-increment: sec; background: #fff; border: 1px solid var(--vb-trait); border-radius: 0; box-shadow: none; padding: 34px 34px 30px; margin-bottom: 18px; }
+    .q-section h3 { font-family: var(--vb-serif); font-size: 31px; font-weight: 400; color: var(--vb-encre); border-bottom: 1px solid var(--vb-trait); padding-bottom: 14px; margin-bottom: 22px; }
+    .q-section h3::before { content: counter(sec, decimal-leading-zero); font-family: var(--vb-sans); font-size: 13px; letter-spacing: .14em; color: var(--vb-or-encre); margin-right: 14px; vertical-align: 6px; }
+    .q-form input:not([type="checkbox"]):not([type="radio"]), .q-form textarea, .q-form select {
+      border: 1px solid var(--vb-trait); border-radius: 0; font-family: var(--vb-sans); font-size: 15.5px; background: var(--vb-papier); color: var(--vb-encre); padding: 12px 13px; }
+    .q-form input:focus, .q-form textarea:focus, .q-form select:focus { border-color: var(--vb-pierre); background: #fff; box-shadow: 0 0 0 3px rgba(201,162,39,.22); }
+    .q-form label.field-label { font-family: var(--vb-sans); font-size: 11.5px; letter-spacing: .12em; color: var(--vb-encre-3); margin-bottom: 7px; }
+    .q-form input[type="checkbox"], .q-form input[type="radio"] { accent-color: var(--vb-pierre); }
+    .checkbox-item span, .q-form p, .q-form li { font-family: var(--vb-sans); }
+    .q-form [style*="Georgia"] { font-family: var(--vb-sans) !important; }
+    .q-section div[style*="border-radius:10px"] { border-radius: 0 !important; background: var(--vb-papier) !important; border-color: var(--vb-trait) !important; }
+    .corps-anatomique-wrap, #draw-canvas { border-radius: 0; }
+    .corps-anatomique-wrap { border: 1px solid var(--vb-trait); }
+    .zones-tags-container { border-radius: 0; background: var(--vb-papier); border: 1px dashed var(--vb-trait); }
+    .zone-tag { border-radius: 0; background: var(--vb-pierre); color: var(--vb-or-clair); font-family: var(--vb-sans); }
+    .zone-tag-interdit { border-radius: 0; font-family: var(--vb-sans); }
+    .mode-corps-btn { border-radius: 40px; border: 1px solid var(--vb-pierre); color: var(--vb-pierre); font-family: var(--vb-sans); font-size: 13.5px; padding: 10px 20px; }
+    .mode-corps-btn.active-douleur { background: var(--vb-or); border-color: var(--vb-or); color: var(--vb-pierre); }
+    .sticker-clear-btn { border-radius: 40px; font-family: var(--vb-sans); }
+    .signature-canvas { border-radius: 0; border: 1px solid var(--vb-trait); background: var(--vb-papier); }
+    .btn-submit { border-radius: 40px; background: var(--vb-pierre); color: var(--vb-creme); font-family: var(--vb-sans); font-size: 16px; font-weight: 500; letter-spacing: .04em; padding: 18px 40px; }
+    .btn-submit:hover { background: #2c231b; }
+    #succes-msg { border-radius: 0; background: #fff; border: 1px solid var(--vb-trait); border-top: 4px solid var(--vb-or); padding: 34px 32px; }
+    #succes-msg h3 { font-family: var(--vb-serif); font-weight: 500; font-size: 34px; color: var(--vb-encre); }
+    #succes-msg p { color: var(--vb-encre-2); font-family: var(--vb-sans); }
+    #btn-dl-pdf { border-radius: 40px; background: var(--vb-or); color: var(--vb-pierre); font-family: var(--vb-sans); font-weight: 500; }
+    #dl-note { color: var(--vb-encre-3); }
+    .succes-liens { margin-top: 22px; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+    #inapp-warn { font-family: var(--vb-sans); }
+    @media (max-width: 900px) {
+      .tete-q-in { grid-template-columns: 1fr; gap: 26px; padding: 40px 20px 30px; }
+      .fiche-body { padding: 28px 14px 60px; }
+      .q-section { padding: 24px 18px 22px; }
+      .q-section h3 { font-size: 26px; }
+    }
   </style>
 </head>
-<body>
+<body class="vb">
 
 <!-- Avertissement : navigateur intégré (Facebook, Messenger, Instagram…) -->
 <div id="inapp-warn">
@@ -364,29 +310,38 @@
   <div data-en><b>Open this page in your browser.</b><br>Tap the ••• menu at the top of the screen, then "Open in browser". Your form will be sent either way, but your PDF copy can only be downloaded that way.</div>
 </div>
 
-<div class="curseur-or" id="curseur-or"></div>
-<div class="curseur-or-anneau" id="curseur-anneau"></div>
 
 <!-- ALVÉOLES — grille pleine page, intensité dégradée -->
 
 
-<button class="lang-btn" id="lang-btn" onclick="toggleLang()">
-  <span class="lbl actif" id="lbl-fr">FR</span>
-  <span class="sep">|</span>
-  <span class="lbl" id="lbl-en">EN</span>
-</button>
+<nav class="vb-barre" aria-label="Menu principal">
+  <a class="vb-marque" href="index.html">Vitalité <i>Bohème</i></a>
+  <ul class="vb-liens" id="nav-menu">
+    <li><a href="index.html#services"><span data-fr>Services</span><span data-en>Services</span></a></li>
+    <li><a href="fiche.html"><span data-fr>Questionnaire</span><span data-en>Intake form</span></a></li>
+    <li><a href="application.html"><span data-fr>L’application</span><span data-en>The app</span></a></li>
+    <li><a href="boutique.html"><span data-fr>Boutique</span><span data-en>Shop</span></a></li>
+    <li class="vb-lang-mobile"><button type="button" onclick="toggleLang()"><span data-fr>English</span><span data-en>Français</span></button></li>
+  </ul>
+  <a class="vb-tampon vb-rond" href="boutique.html" aria-label="La boutique, 15 % de rabais avec le code VB15"><svg viewBox="0 0 200 200" aria-hidden="true"><defs><filter id="vb-encre" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="1.2" numOctaves="2" seed="9" result="b"/><feDisplacementMap in="SourceGraphic" in2="b" scale="3" result="d"/><feTurbulence type="fractalNoise" baseFrequency="2.2" numOctaves="1" seed="2" result="t"/><feColorMatrix in="t" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -0.55 1.3" result="m"/><feComposite in="d" in2="m" operator="in"/></filter><path id="vb-anneau" d="M100,100 m-70,0 a70,70 0 1,1 140,0 a70,70 0 1,1 -140,0"/></defs><g filter="url(#vb-encre)" fill="none" stroke="#e3c77a"><circle cx="100" cy="100" r="92" stroke-width="4"/><circle cx="100" cy="100" r="83" stroke-width="1.3"/><circle cx="100" cy="100" r="56" stroke-width="1.8"/></g><g filter="url(#vb-encre)"><text style="font-family:Jost,sans-serif;font-size:11.5px;letter-spacing:3.2px;font-weight:600" fill="#e3c77a"><textPath href="#vb-anneau">BOUTIQUE · CODE VB15 · BOUTIQUE · CODE VB15 ·</textPath></text><text x="100" y="112" text-anchor="middle" style="font-family:'Cormorant Garamond',serif;font-size:52px;font-weight:700" fill="#e3c77a">15 %</text></g></svg></a>
+  <button class="vb-lang" id="lang-btn" type="button" onclick="toggleLang()" aria-label="Langue / Language">
+    <span class="lbl actif" id="lbl-fr">FR</span><span class="sep">|</span><span class="lbl" id="lbl-en">EN</span>
+  </button>
+  <button class="vb-burger" id="hamburger-btn" type="button" aria-label="Menu" aria-controls="nav-menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  <a class="vb-resa" href="reserver.html"><span data-fr>Réserver</span><span data-en>Book</span> <span class="vb-fleche">→</span></a>
+</nav>
 
-<!-- EN-TÊTE -->
-<header class="fiche-header">
-  <div class="header-logo">
-    <img src="images/logo-vb-rond-plein.png" alt="Vitalité Bohème" />
+<header class="tete-q">
+  <div class="tete-q-in">
+    <div>
+      <span class="sur"><span data-fr>Avant votre visite</span><span data-en>Before your visit</span></span>
+      <h1 data-fr>Questionnaire de <em>santé</em></h1>
+      <h1 data-en>Health <em>intake form</em></h1>
+      <p class="chapo" data-fr>Veuillez remplir ce formulaire avant votre séance. Les informations demeurent confidentielles et servent uniquement à assurer votre sécurité et la qualité des soins.</p>
+      <p class="chapo" data-en>Please complete this form before your session. All information is confidential and used solely to ensure your safety and the quality of care.</p>
+    </div>
+    <aside class="verrou"><div class="verrou-titre" data-fr>Confidentiel</div><div class="verrou-titre" data-en>Confidential</div><p data-fr>Ce que vous écrivez va à Vitalité Bohème, de la façon décrite dans la <a href="confidentialite.html">politique de confidentialité</a>.</p><p data-en>What you write goes to Vitalité Bohème, as described in the <a href="confidentialite.html">privacy policy</a>.</p></aside>
   </div>
-  <div class="header-badge"><span data-fr>Avant votre visite</span><span data-en>Before your visit</span></div>
-  <h1 data-fr>Questionnaire de <em>santé</em></h1>
-  <h1 data-en>Health <em>Intake Form</em></h1>
-  <p data-fr>Veuillez remplir ce formulaire avant votre séance. Les informations demeurent confidentielles et servent uniquement à assurer votre sécurité et la qualité des soins.</p>
-  <p data-en>Please complete this form before your session. All information is confidential and used solely to ensure your safety and the quality of care.</p>
-  <a href="index.html" class="retour-lien"><span data-fr>← Retour au site</span><span data-en>← Back to website</span></a>
 </header>
 
 
@@ -395,29 +350,23 @@
 
   <!-- Message succès -->
   <div id="succes-msg">
-    <h3 data-fr>✅ Questionnaire envoyé !</h3>
-    <h3 data-en>✅ Form submitted!</h3>
+    <h3 data-fr>Questionnaire envoyé</h3>
+    <h3 data-en>Form submitted</h3>
     <p data-fr>Merci, votre questionnaire a bien été transmis. Vous pouvez télécharger votre copie ci-dessous. À très bientôt !</p>
     <p data-en>Thank you, your form has been sent. You can download your copy below. See you soon!</p>
     <div id="dl-zone">
       <button type="button" id="btn-dl-pdf">
-        <span data-fr>⬇ Télécharger ma copie PDF</span><span data-en>⬇ Download my PDF copy</span>
+        <span data-fr>Télécharger ma copie PDF</span><span data-en>Download my PDF copy</span>
       </button>
       <div id="dl-note">
-        <span data-fr>Ce téléchargement est pour vos dossiers seulement. Kevin a déjà reçu votre questionnaire.</span>
-        <span data-en>This download is for your records only. Kevin has already received your form.</span>
+        <span data-fr>Ce téléchargement est pour vos dossiers seulement. Vitalité Bohème a déjà reçu votre questionnaire.</span>
+        <span data-en>This download is for your records only. Vitalité Bohème has already received your form.</span>
       </div>
     </div>
-    <div style="margin-top:20px;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;">
-      <a href="tel:4383683282" style="display:inline-block;background:#cfa96a;color:#1c1208;padding:12px 28px;border-radius:30px;font-family:Georgia,serif;font-size:15px;font-weight:bold;text-decoration:none;">
-        <span data-fr>📞 Appeler</span><span data-en>📞 Call us</span>
-      </a>
-      <a href="mailto:KevinBibeau@vitaliteboheme.ca" style="display:inline-block;background:transparent;border:2px solid #cfa96a;color:#2e7d32;padding:12px 28px;border-radius:30px;font-family:Georgia,serif;font-size:15px;font-weight:bold;text-decoration:none;">
-        <span data-fr>✉️ Envoyer un courriel</span><span data-en>✉️ Send an email</span>
-      </a>
-      <a href="index.html" style="display:inline-block;background:transparent;border:2px solid #81c784;color:#2e7d32;padding:12px 28px;border-radius:30px;font-family:Georgia,serif;font-size:15px;text-decoration:none;">
-        <span data-fr>← Retour au site</span><span data-en>← Back to website</span>
-      </a>
+    <div class="succes-liens">
+      <a href="tel:4383683282" class="vb-b-or"><span data-fr>Appeler</span><span data-en>Call us</span></a>
+      <a href="mailto:KevinBibeau@vitaliteboheme.ca" class="vb-b-creux"><span data-fr>Envoyer un courriel</span><span data-en>Send an email</span></a>
+      <a href="index.html" class="vb-b-creux"><span data-fr>Retour au site</span><span data-en>Back to website</span></a>
     </div>
   </div>
 
@@ -425,8 +374,8 @@
 
     <!-- INFORMATIONS PERSONNELLES -->
     <div class="q-section anim-entree">
-      <h3 data-fr>📋 Informations personnelles</h3>
-      <h3 data-en>📋 Personal information</h3>
+      <h3 data-fr>Informations personnelles</h3>
+      <h3 data-en>Personal information</h3>
       <div class="q-grid-2">
         <div class="field-group">
           <label class="field-label" data-fr>Nom *</label>
@@ -520,8 +469,8 @@
 
     <!-- CONTACT D'URGENCE -->
     <div class="q-section anim-entree">
-      <h3 data-fr>🚨 Contact d'urgence</h3>
-      <h3 data-en>🚨 Emergency contact</h3>
+      <h3 data-fr>Contact d'urgence</h3>
+      <h3 data-en>Emergency contact</h3>
       <div class="q-grid-3">
         <div class="field-group">
           <label class="field-label" data-fr>Nom</label>
@@ -543,8 +492,8 @@
 
     <!-- MOTIF DE CONSULTATION -->
     <div class="q-section anim-entree">
-      <h3 data-fr>🎯 Motif de consultation</h3>
-      <h3 data-en>🎯 Reason for visit</h3>
+      <h3 data-fr>Motif de consultation</h3>
+      <h3 data-en>Reason for visit</h3>
       <div class="checkbox-grid">
         <label class="checkbox-item"><input type="checkbox" name="motif" value="Détente" /><span data-fr>Détente</span><span data-en>Relaxation</span></label>
         <label class="checkbox-item"><input type="checkbox" name="motif" value="Douleurs musculaires" /><span data-fr>Douleurs musculaires</span><span data-en>Muscle pain</span></label>
@@ -562,14 +511,14 @@
 
     <!-- ZONES DOULOUREUSES -->
     <div class="q-section anim-entree">
-      <h3 data-fr>🗺️ Douleurs, tensions et zones sensibles</h3>
-      <h3 data-en>🗺️ Pain, tension & sensitive areas</h3>
+      <h3 data-fr>Douleurs, tensions et zones sensibles</h3>
+      <h3 data-en>Pain, tension & sensitive areas</h3>
       <p style="font-size:14px; color:var(--brun); margin-bottom:20px; line-height:1.7;" data-fr>Cliquez sur les zones du corps pour indiquer vos zones de douleur ou d'inconfort.</p>
       <p style="font-size:14px; color:var(--brun); margin-bottom:20px; line-height:1.7;" data-en>Click on body areas to indicate pain or discomfort zones.</p>
 
       <div class="corps-mode-btns">
         <button type="button" id="btn-mode-douleur" class="mode-corps-btn active-douleur" onclick="setCorpsMode('douleur')">
-          <span data-fr>🟡 Douleur / Tension</span><span data-en>🟡 Pain / Tension</span>
+          <span data-fr>Douleur / Tension</span><span data-en>Pain / Tension</span>
         </button>
         <button type="button" id="btn-mode-interdit" class="mode-corps-btn" onclick="toggleStickerMode()">
           <span data-fr>⊘ Zones à éviter</span><span data-en>⊘ Areas to avoid</span>
@@ -579,7 +528,7 @@
       <!-- Outils collants ⊘ -->
       <div id="sticker-tools">
         <button type="button" class="sticker-clear-btn" onclick="clearStickers()">
-          🗑 <span data-fr>Tout effacer</span><span data-en>Clear all</span>
+          <span data-fr>Tout effacer</span><span data-en>Clear all</span>
         </button>
       </div>
 
@@ -648,7 +597,7 @@
 
       <div class="corps-labels">
         <span data-fr>⬅ Vue de face</span><span data-en>⬅ Front view</span>
-        <span data-fr>Vue de dos ➡</span><span data-en>Back view ➡</span>
+        <span data-fr>Vue de dos →</span><span data-en>Back view →</span>
       </div>
 
       <div class="zones-tags-container">
@@ -672,8 +621,8 @@
 
     <!-- HISTORIQUE DE SANTÉ -->
     <div class="q-section anim-entree">
-      <h3 data-fr>🏥 Historique de santé</h3>
-      <h3 data-en>🏥 Health history</h3>
+      <h3 data-fr>Historique de santé</h3>
+      <h3 data-en>Health history</h3>
       <div class="checkbox-grid">
         <label class="checkbox-item"><input type="checkbox" name="sante" value="Problèmes cardiaques"/><span data-fr>Problèmes cardiaques</span><span data-en>Heart conditions</span></label>
         <label class="checkbox-item"><input type="checkbox" name="sante" value="Problèmes respiratoires"/><span data-fr>Problèmes respiratoires (asthme, MPOC)</span><span data-en>Respiratory issues</span></label>
@@ -712,8 +661,8 @@
 
     <!-- MÉDICATION -->
     <div class="q-section anim-entree">
-      <h3 data-fr>💊 Médication et traitements</h3>
-      <h3 data-en>💊 Medication and treatments</h3>
+      <h3 data-fr>Médication et traitements</h3>
+      <h3 data-en>Medication and treatments</h3>
       <div class="field-group">
         <label class="field-label" data-fr>Prenez-vous des médicaments ?</label>
         <label class="field-label" data-en>Are you taking any medication?</label>
@@ -736,10 +685,9 @@
 
     <!-- CONSENTEMENT -->
     <div class="q-section anim-entree">
-      <h3 data-fr>✅ Consentement et politiques</h3>
-      <h3 data-en>✅ Consent and policies</h3>
+      <h3 data-fr>Consentement et politiques</h3>
+      <h3 data-en>Consent and policies</h3>
       <div style="background:#fdfaf6;border:1px solid #e2d8cc;border-left:4px solid var(--or);border-radius:10px;padding:24px 28px;position:relative;">
-        <div style="position:absolute;top:16px;right:20px;font-size:22px;opacity:0.15;">📜</div>
         <p data-fr style="font-size:14px;color:var(--texte);line-height:2.1;margin:0 0 20px;">
           Je m'engage à me présenter avec une <strong>hygiène corporelle de base</strong> et à reporter mon rendez-vous en cas de symptômes contagieux. Je confirme ne pas être sous l'effet d'alcool ou de drogues. Je comprends que la massothérapie est un <strong>service de soin professionnel et thérapeutique</strong>. J'accepte la <strong>politique d'annulation</strong> : pour une annulation de moins de 24 heures ou une absence, des frais pouvant aller <strong>jusqu'à 50 $</strong> par plage réservée peuvent être réclamés, selon la perte subie. Je déclare que les informations fournies sont exactes et je reconnais que la massothérapie <strong>ne remplace pas un avis médical</strong>. <strong>Je m'engage à signaler toute condition cutanée</strong> (mycose, verrues, plaies ouvertes, infection) avant la séance afin d'assurer la sécurité de tous.
         </p>
@@ -762,8 +710,8 @@
 
     <!-- SIGNATURE -->
     <div class="q-section anim-entree">
-      <h3 data-fr>✍️ Signature</h3>
-      <h3 data-en>✍️ Signature</h3>
+      <h3 data-fr>Signature</h3>
+      <h3 data-en>Signature</h3>
       <canvas class="signature-canvas" id="sigCanvas" width="800" height="100"></canvas>
       <button type="button" onclick="effacerSignature()" style="margin-top:10px;background:transparent;border:1.5px solid #c0b0a0;color:var(--gris);padding:8px 20px;border-radius:20px;cursor:pointer;font-size:13px;">
         <span data-fr>Effacer</span><span data-en>Clear</span>
@@ -777,8 +725,8 @@
     </div>
 
     <button type="submit" class="btn-submit" id="btn-submit">
-      <span data-fr>📨 Envoyer mon questionnaire</span>
-      <span data-en>📨 Submit my intake form</span>
+      <span data-fr>Envoyer mon questionnaire</span>
+      <span data-en>Submit my intake form</span>
     </button>
 
   </form>
@@ -786,20 +734,16 @@
 
 
 <!-- PIED DE PAGE -->
-<footer class="fiche-footer">
-  <div class="fiche-footer-logo"><img src="images/logo-vb-rond-plein.png" alt="Vitalité Bohème" /></div>
-  <div class="fiche-footer-marque">Vitalité Bohème</div>
-  <div class="fiche-footer-tagline">Massothérapie — Waterville, Estrie</div>
-  <div class="fiche-footer-or">
-    <div class="fiche-footer-or-line"></div>
-    <span class="fiche-footer-or-sym">✦</span>
-    <div class="fiche-footer-or-line"></div>
+<footer class="vb-pied">
+  <div class="vb-pied-in">
+    <a class="vb-marque" href="index.html">Vitalité <i>Bohème</i></a>
+    <nav aria-label="Pied de page">
+      <a href="tel:4383683282">438-368-3282</a>
+      <a href="mailto:KevinBibeau@vitaliteboheme.ca">KevinBibeau@vitaliteboheme.ca</a>
+      <a href="confidentialite.html"><span data-fr>Confidentialité</span><span data-en>Privacy</span></a>
+    </nav>
+    <span><span data-fr>Massothérapie certifiée · Membre RMPQ</span><span data-en>Certified massage therapy · RMPQ member</span></span>
   </div>
-  <p><span data-fr>Vitalité Bohème · Massothérapie certifiée · Membre RMPQ</span><span data-en>Vitalité Bohème · Certified Massage Therapy · RMPQ Member</span></p>
-  <p style="margin-top:6px;">
-    <a href="tel:4383683282">438-368-3282</a> &nbsp;·&nbsp;
-    <a href="mailto:KevinBibeau@vitaliteboheme.ca">KevinBibeau@vitaliteboheme.ca</a>
-  </p>
 </footer>
 
 <script>
@@ -826,5 +770,6 @@
   }
 })();
 </script>
+<script src="vb.js?v=20261126b"></script>
 </body>
 </html>
