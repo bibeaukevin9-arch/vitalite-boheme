@@ -730,7 +730,9 @@
        tombe en léger biais (Kevin, 26 nov.). Au téléphone, la photo est sous le texte : pas de biais. ─── */
     .vitrine { border-bottom: 0; }
     @media (min-width: 901px) {
-      .vitrine { grid-template-columns: .95fr 1.05fr; }
+      /* La photo fait 507 × 900 : une colonne plus étroite la recadre moins, on voit Kevin presque en entier */
+      .vitrine { grid-template-columns: 1.2fr .8fr; }
+      .portrait img { object-position: center 20%; }
       .portrait { clip-path: polygon(9% 0, 100% 0, 100% 100%, 0 100%); }
     }
   </style>
