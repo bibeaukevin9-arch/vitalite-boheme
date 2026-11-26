@@ -223,10 +223,21 @@
   .tiroir-bas .quitte { font-size: 12.5px; color: var(--encre-3); text-align: center; margin-top: 10px; }
 
   .rangee.cinq .ligne-prix { flex-direction: column; align-items: stretch; gap: 10px; }
+  .rangee.trois { grid-template-columns: repeat(3, 1fr); gap: 44px 32px; }
+  .rangee.trois .socle { aspect-ratio: 1; }
+  .molecule { font-size: 12px; letter-spacing: .07em; text-transform: uppercase; color: var(--or-encre); margin-top: 6px; line-height: 1.45; }
+  .fiche .molecule { font-size: 13px; margin-top: 10px; }
+  .rang-vente { position: absolute; left: 12px; top: 12px; z-index: 1; font-family: var(--serif); font-size: 18px; font-weight: 600; color: var(--pierre);
+    background: var(--creme); border-radius: 30px; padding: 3px 12px; box-shadow: 0 4px 12px rgba(20,16,13,.2); }
+  .retour-site { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--sur-pierre); text-decoration: none; padding: 8px 14px;
+    border: 1px solid var(--trait-sombre); border-radius: 40px; transition: color .2s, border-color .2s; }
+  .retour-site:hover { color: var(--creme); border-color: var(--or); }
+  .retour-site .ic { width: 16px; height: 16px; transform: rotate(180deg); }
 
   /* ---------- Écrans plus étroits ---------- */
   @media (max-width: 1100px) {
     .rangee.cinq { grid-template-columns: repeat(3, 1fr); }
+    .rangee { grid-template-columns: repeat(3, 1fr); }
     .conseil { grid-template-columns: 1fr; gap: 30px; }
     .grille { grid-template-columns: repeat(3, 1fr); }
     .etapes { grid-template-columns: repeat(2, 1fr); }
@@ -238,7 +249,12 @@
     .tampon { width: 116px; height: 116px; }
     .collage { min-height: 340px; }
     .section { padding-top: 64px; }
-    .rangee, .rangee.cinq, .grille { grid-template-columns: repeat(2, 1fr); gap: 32px 14px; }
+    .rangee, .rangee.cinq, .rangee.trois, .grille { grid-template-columns: repeat(2, 1fr); gap: 32px 14px; }
+    .rangee.trois .socle { aspect-ratio: 4 / 5; }
+    .barre-in { gap: 12px; }
+    .marque { font-size: 19px; }
+    .retour-site { padding: 8px 11px; font-size: 12.5px; }
+    .btn-panier > span:not(.pastille-n) { display: none; }
     .tuile h3, .grille .tuile h3 { font-size: 19px; }
     .ligne-prix { flex-direction: column; align-items: stretch; gap: 10px; }
     .trio { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 78%; overflow-x: auto; scroll-snap-type: x mandatory; gap: 16px; padding-bottom: 8px; scrollbar-width: none; }
@@ -273,6 +289,7 @@
 
 <div class="barre"><div class="large barre-in">
   <a class="marque" href="index.html">Vitalité <i>Bohème</i></a>
+  <a class="retour-site" href="index.html"><svg class="ic"><use href="#i-fleche"/></svg><span>Retour au site</span></a>
   <button class="btn-panier" id="ouvrir-panier" aria-label="Ouvrir le panier"><svg class="ic"><use href="#i-sac"/></svg><span>Panier</span><span class="pastille-n" id="compte">0</span></button>
 </div></div>
 
@@ -374,6 +391,53 @@
     'glutamed': 'De la glutamine et de la glycine.',
     'synermag': 'Du magnésium.'
   };
+  /* Ce qu'il y a dedans, sous le nom d'ATP. Tiré des ingrédients médicinaux de la licence
+     (base de Santé Canada, lue le 25 nov. 2026). Sans donnée sûre, rien n'est affiché. */
+  var SOUS = {
+    'creatine-monohydrate': 'Créatine monohydrate',
+    'myoprime': 'Créatine monohydrate, HMB, ATP et vitamine D',
+    'grass-fed-whey': 'Concentré de protéines de lactosérum',
+    'isolate': 'Isolat de protéines de lactosérum',
+    'supreme-beef-protein': 'Protéine de bœuf',
+    'organic-vegan-blend': 'Protéines végétales biologiques',
+    'eaa': 'Acides aminés essentiels',
+    'electrolytes-xl': 'Électrolytes',
+    'pentacarb': 'Glucides, cinq formes',
+    'e-nos-330g-citrus': 'Citrulline, arginine, bêta-alanine, agmatine et glycérol',
+    'glutamed': 'Glutamine et glycine',
+    'synermag': 'Magnésium 100 mg, taurine et vitamine B6',
+    'synermag-plus': 'Magnésium 152 mg, taurine et vitamine B6',
+    'mind-mag': 'Magnésium L-thréonate, vitamines C et D',
+    'synercalm': 'Inositol, L-théanine et magnésium',
+    'vitamin-d3': 'Vitamine D3',
+    'vitamin-d3k2': 'Vitamines D3 et K2',
+    'syner-c': 'Vitamine C',
+    'synerzinc': 'Zinc',
+    'methyl-syner-b': 'Vitamines du groupe B et bétaïne',
+    'total-defense': 'Vitamines et minéraux',
+    'omega-pure': 'Oméga-3',
+    'omega-3-triglyceride': 'Oméga-3 triglycérides',
+    'ultra-omega-3': 'Oméga-3 monoglycérides',
+    'neuro-prime': 'Alpha-GPC, L-tyrosine et acétyl-L-carnitine',
+    'gluco-control': 'Berbérine, quercétine, chrome, biotine et vanadium',
+    'prebiofib': 'Graine de lin',
+    'synersleep': 'Mélatonine',
+    'alpha-jack-2': 'Champignons',
+    'trans-resveratrol-nmn': 'Trans-resvératrol et NMN',
+    'total-radiance-collagen': 'Collagène',
+    'syner_collagen': 'Collagène',
+    'probio7': 'Probiotique',
+    'enzimatik-control': 'Enzymes digestives',
+    'green-red-whole-foods-100-organic': 'Aliments biologiques en poudre'
+  };
+  /* L'ordre de la grille d'ATP Lab triée par ventes (fr.atplab.com/collections/all?sort_by=best-selling,
+     relu le 26 nov. 2026). C'est le classement de leur boutique en ligne seulement. */
+  var VENTES = ['total-defense', 'synerzinc', 'omega-3-triglyceride', 'vitamin-d3k2', 'vitamin-d3', 'omega-pure', 'green-red-whole-foods-100-organic', 'syner-c', 'ultra-omega-3',
+    'syner_collagen', 'organic-vegan-blend', 'methyl-syner-b', 'inflam-control', 'trans-resveratrol-nmn', 'probio7', 'enzimatik-control', 'gluco-control', 'prebiofib', 'hepatik-defense',
+    'synermag', 'mind-mag', 'synersleep', 'cool-down', 'synercalm', 'adrenrgyam', 'synermag-plus', 'grass-fed-whey', 'supreme-beef-protein', 'isolate', 'neuro-prime', 'myoprime', 'eaa',
+    'electrolytes-xl', 'glutamed', 'e-nos-330g-citrus', 'pentacarb', 'synerslim', 'creatine-monohydrate', 'alpha-jack-2', 'aromatek', 'total-radiance-collagen', 'estro-control'];
+  /* Les produits dont le nom évoque un effet ne sont pas mis de l'avant, seulement listés dans la gamme. */
+  var PAS_EN_VEDETTE = ['inflam-control', 'gluco-control', 'synerslim', 'estro-control'];
   var OMEGA = ['Source d’acides gras oméga-3 pour le maintien d’une bonne santé.', 'Aide à soutenir la santé cognitive et la fonction cérébrale.', 'Aide à maintenir la santé cardiovasculaire.'];
   var CREATINE = ['Aide à augmenter la performance physique pendant un exercice intense.', 'Augmente la masse musculaire avec un programme d’entraînement en résistance.', 'Améliore la force et la performance lors d’efforts brefs et très intenses répétés, comme les sprints, les sauts ou la musculation.'];
   var USAGES = {
@@ -414,7 +478,9 @@
       texte: 'Lactosérum, isolat, bœuf ou végétal. Le choix se fait au goût et à la digestion.' },
     { id: 'hydratation', nom: 'Hydratation et <i>énergie</i>', onglet: 'Hydratation', produits: ['electrolytes-xl', 'pentacarb', 'eaa', 'e-nos-330g-citrus'],
       texte: 'Ce qui se boit pendant et autour de l’effort.' },
-    { id: 'vitamines', nom: 'Vitamines et <i>minéraux</i>', onglet: 'Vitamines', produits: ['vitamin-d3k2', 'total-defense', 'synermag', 'vitamin-d3', 'synerzinc', 'syner-c', 'methyl-syner-b', 'synermag-plus'],
+    { id: 'magnesium', nom: 'Le <i>magnésium</i>', onglet: 'Magnésium', produits: ['synermag', 'synermag-plus', 'mind-mag', 'synercalm'],
+      texte: 'Le magnésium d’ATP Lab, en quatre formules.' },
+    { id: 'vitamines', nom: 'Vitamines et <i>minéraux</i>', onglet: 'Vitamines', produits: ['vitamin-d3k2', 'total-defense', 'vitamin-d3', 'synerzinc', 'syner-c', 'methyl-syner-b'],
       texte: 'Les bases de tous les jours, entraînement ou pas.' },
     { id: 'omega', nom: 'Les <i>oméga-3</i>', onglet: 'Oméga-3', produits: ['omega-pure', 'ultra-omega-3', 'omega-3-triglyceride'],
       texte: 'En capsules ou en liquide.' }
@@ -554,7 +620,7 @@
     el.className = 'tuile';
     el.appendChild(socle(h, opts.w || 600, true, opts.choix));
     var corps = document.createElement('div');
-    corps.innerHTML = '<h3><button type="button">' + nom(h) + '</button></h3><p class="quoi">' + (QUOI[h] || GENERIQUE) + '</p>';
+    corps.innerHTML = '<h3><button type="button">' + nom(h) + '</button></h3>' + (SOUS[h] ? '<p class="molecule">' + SOUS[h] + '</p>' : '') + '<p class="quoi">' + (QUOI[h] || GENERIQUE) + '</p>';
     $('button', corps).addEventListener('click', function () { ouvrirFiche(h); });
     el.appendChild(corps);
     var a = acheteur(h, function () { el.dispatchEvent(new CustomEvent('choix', { bubbles: true })); });
@@ -571,8 +637,15 @@
   }
   function dessinerChoix(main) {
     var s = section('choix', 'Mes choix <i>Vitalité Bohème</i>', 'Un produit par catégorie, celui que je mets de l’avant. Touche une photo pour voir sa fiche.');
-    var r = document.createElement('div'); r.className = 'rangee cinq';
+    var r = document.createElement('div'); r.className = 'rangee trois';
     CATEGORIES.forEach(function (c) { var h = c.produits.filter(existe)[0]; if (h) r.appendChild(tuile(h, { choix: true })); });
+    s.appendChild(r); main.appendChild(s);
+  }
+  function dessinerVentes(main) {
+    var s = section('ventes', 'Les plus <i>vendus</i>', 'Les produits qui partent le plus sur la boutique en ligne d’ATP Lab, dans leur ordre.');
+    var r = document.createElement('div'); r.className = 'rangee';
+    VENTES.filter(function (h) { return existe(h) && PAS_EN_VEDETTE.indexOf(h) < 0; }).slice(0, 8)
+      .forEach(function (h) { var t = tuile(h); $('.socle', t).insertAdjacentHTML('afterbegin', '<span class="rang-vente">N° ' + (VENTES.indexOf(h) + 1) + '</span>'); r.appendChild(t); });
     s.appendChild(r); main.appendChild(s);
   }
   function dessinerEnsembles(main) {
@@ -617,13 +690,14 @@
   }
   function famille(p) { return FAMILLES[p.product_type] || 'Autres'; }
   function dessinerGamme(main) {
-    var s = section('gamme', 'Toute la <i>gamme</i>', 'Chaque produit d’ATP Lab, au prix Vitalité Bohème.');
+    var s = section('gamme', 'Toute la <i>gamme</i>', 'Chaque produit d’ATP Lab, au prix Vitalité Bohème, dans l’ordre des ventes de leur boutique en ligne.');
     var filtres = document.createElement('div'); filtres.className = 'filtres'; filtres.setAttribute('role', 'group'); filtres.setAttribute('aria-label', 'Filtrer les produits');
     var grille = document.createElement('div'); grille.className = 'grille';
     var noms = ['Tout', 'Entraînement', 'Au quotidien', 'Digestion', 'Autres'], compte = { 'Tout': ordre.length };
     ordre.forEach(function (h) { var f = famille(catalogue[h]); compte[f] = (compte[f] || 0) + 1; });
     filtres.innerHTML = noms.filter(function (n) { return compte[n]; }).map(function (n, i) { return '<button type="button" aria-pressed="' + (i === 0) + '" data-f="' + n + '">' + n + '<span class="n">' + compte[n] + '</span></button>'; }).join('');
-    ordre.slice().sort(function (a, b) { return noms.indexOf(famille(catalogue[a])) - noms.indexOf(famille(catalogue[b])); })
+    var rang = function (h) { var i = VENTES.indexOf(h); return i < 0 ? 999 : i; };
+    ordre.slice().sort(function (a, b) { return rang(a) - rang(b); })
       .forEach(function (h) { var t = tuile(h, { w: 520 }); t.dataset.f = famille(catalogue[h]); grille.appendChild(t); });
     filtres.addEventListener('click', function (ev) {
       var b = ev.target.closest('button'); if (!b) return;
@@ -642,7 +716,7 @@
     });
   }
   function dessinerOnglets() {
-    var liens = [['choix', 'Mes choix'], ['ensembles', 'Ensembles']].concat(CATEGORIES.map(function (c) { return [c.id, c.onglet]; })).concat([['gamme', 'Toute la gamme']]);
+    var liens = [['choix', 'Mes choix'], ['ventes', 'Les plus vendus'], ['ensembles', 'Ensembles']].concat(CATEGORIES.map(function (c) { return [c.id, c.onglet]; })).concat([['gamme', 'Toute la gamme']]);
     var o = $('#onglets');
     o.innerHTML = liens.map(function (l) { return '<a href="#' + l[0] + '" data-cible="' + l[0] + '">' + l[1] + '</a>'; }).join('');
     if (!('IntersectionObserver' in window)) return;
@@ -650,7 +724,10 @@
       entrees.forEach(function (en) {
         if (!en.isIntersecting) return;
         o.querySelectorAll('a').forEach(function (a) { a.classList.toggle('actif', a.dataset.cible === en.target.id); });
-        var actif = o.querySelector('.actif'); if (actif) actif.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+        /* On fait glisser seulement la barre d'onglets, jamais la page : scrollIntoView
+           interrompait le défilement en cours et faisait sauter la page entre les sections. */
+        var actif = o.querySelector('.actif');
+        if (actif && o.scrollWidth > o.clientWidth) o.scrollLeft = actif.offsetLeft - (o.clientWidth - actif.offsetWidth) / 2;
       });
     }, { rootMargin: '-140px 0px -60% 0px' });
     liens.forEach(function (l) { var s = document.getElementById(l[0]); if (s) io.observe(s); });
@@ -662,7 +739,7 @@
     var corps = $('#fiche-corps'); corps.innerHTML = '';
     corps.appendChild(socle(h, 1000, false, false));
     var c = document.createElement('div'); c.className = 'contenu';
-    c.innerHTML = '<h3 id="fiche-titre">' + nom(h) + '</h3><p class="quoi">' + (QUOI[h] || GENERIQUE) + '</p>' +
+    c.innerHTML = '<h3 id="fiche-titre">' + nom(h) + '</h3>' + (SOUS[h] ? '<p class="molecule">' + SOUS[h] + '</p>' : '') + '<p class="quoi">' + (QUOI[h] || GENERIQUE) + '</p>' +
       (USAGES[h] ? '<div class="usage"><span class="qui">Usage indiqué par ATP Lab</span><ul>' + USAGES[h].map(function (u) { return '<li>' + u + '</li>'; }).join('') + '</ul></div>' : '');
     c.appendChild(acheteur(h));
     c.insertAdjacentHTML('beforeend', '<a class="complete" href="' + lienATP(h) + '" target="_blank" rel="sponsored noopener">Fiche complète, ingrédients et mode d’emploi chez ATP Lab <svg class="ic"><use href="#i-sortie"/></svg></a>' +
@@ -745,7 +822,7 @@
         main.innerHTML = '<p class="attente large" style="padding:80px 16px">Les produits n’ont pas pu être chargés depuis ATP Lab. <a href="' + BOUTIQUE + '/collections/all" target="_blank" rel="sponsored noopener">Voir la boutique chez eux</a>.</p>';
         $('#ouvrir-panier').disabled = true; return;
       }
-      dessinerCollage(); dessinerChoix(main); dessinerEnsembles(main); dessinerCategories(main); dessinerGamme(main); dessinerOnglets(); dessinerPanier();
+      dessinerCollage(); dessinerChoix(main); dessinerVentes(main); dessinerEnsembles(main); dessinerCategories(main); dessinerGamme(main); dessinerOnglets(); dessinerPanier();
     });
 })();
 </script>
