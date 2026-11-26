@@ -1,0 +1,70 @@
+name: Prix ATP du jour
+
+# Une seule lecture par jour du catalogue d'ATP Lab, vers 4 h 30 (heure du Québec),
+# à partir du 1er décembre 2026. Si la lecture échoue, la tâche échoue : GitHub envoie
+# alors un courriel, et la page garde les prix de la veille.
+
+on:
+  schedule:
+    - cron: '30 9 * * *'
+  workflow_dispatch:
+    inputs:
+      tester_alerte:
+        description: "Échouer exprès, sans rien lire chez ATP, pour vérifier que le courriel d'alerte arrive"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  prix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test de l'alerte
+        if: ${{ inputs.tester_alerte }}
+        run: |
+          echo "Test de l'alerte : aucune lecture chez ATP. Cet échec est voulu."
+          exit 1
+
+      - uses: actions/checkout@v4
+
+      - name: Lire les prix une seule fois
+        run: |
+          python3 - <<'EOF'
+          import json, sys, urllib.request, urllib.error, datetime
+          maintenant = datetime.datetime.now(datetime.timezone.utc)
+          if maintenant < datetime.datetime(2026, 12, 1, 5, tzinfo=datetime.timezone.utc):
+              print("Avant le 1er décembre 2026 : rien à faire.")
+              open('rien-a-faire', 'w').close()
+              sys.exit(0)
+          req = urllib.request.Request('https://fr.atplab.com/products.json?limit=250',
+                                       headers={'User-Agent': 'Mozilla/5.0 (compatible; prix-quotidien)'})
+          try:
+              with urllib.request.urlopen(req, timeout=30) as r:
+                  produits = json.load(r).get('products', [])
+          except urllib.error.HTTPError as e:
+              print("ATP a refusé la lecture (code %s). Bloqué ? Les prix d'hier restent en ligne." % e.code)
+              sys.exit(1)
+          except Exception as e:
+              print("Lecture impossible :", e, "- les prix d'hier restent en ligne.")
+              sys.exit(1)
+          if len(produits) < 10:
+              print("Seulement", len(produits), "produits reçus : on garde les prix d'hier.")
+              sys.exit(1)
+          for p in produits:
+              p.pop('body_html', None)
+          json.dump({'maj': maintenant.isoformat(timespec='seconds'), 'products': produits},
+                    open('prix-atp.json', 'w', encoding='utf-8'), ensure_ascii=False, separators=(',', ':'))
+          print(len(produits), "produits lus.")
+          EOF
+
+      - name: Publier
+        run: |
+          if [ -f rien-a-faire ]; then exit 0; fi
+          git config user.name "prix-atp"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add prix-atp.json
+          git diff --cached --quiet && { echo "Rien de neuf"; exit 0; }
+          git commit -m "Prix ATP du jour"
+          git push
