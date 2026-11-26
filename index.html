@@ -726,24 +726,6 @@
       .modal-box h3 { font-size: 31px; }
       .rang .vb-b-pierre, .rang .vb-b-creux { flex: 1 1 auto; justify-content: center; }
     }
-    /* ─── La devanture : le haut de l'accueil reprend l'image de partage du site
-       (fond pierre, le VB, le nom, un filet d'or, « Massothérapie · Waterville »). ─── */
-    .devanture { background: var(--vb-pierre); color: var(--vb-creme); }
-    .dev-logo { width: 96px; height: auto; display: block; }
-    .dev-nom { font-family: var(--vb-serif); font-weight: 400; font-size: clamp(56px, 7vw, 108px); line-height: .95; letter-spacing: -.01em; margin: 34px 0 0; color: var(--vb-creme); }
-    .dev-nom span { display: block; font-style: italic; color: var(--vb-or-clair); }
-    .dev-filet { display: block; width: 72px; height: 1px; background: var(--vb-or); margin: 34px 0 0; }
-    .dev-lieu { margin: 22px 0 0; font-size: 13px; letter-spacing: .26em; text-transform: uppercase; color: #b9ab98; }
-    .devanture .rang { margin-top: 38px; }
-    .devanture .dev-creux { color: var(--vb-creme); border-color: #6f604f; }
-    .devanture .dev-creux:hover { background: var(--vb-creme); color: var(--vb-pierre); }
-    .vitrine { border-bottom: 0; }
-    @media (max-width: 900px) {
-      .dev-logo { width: 72px; }
-      .dev-nom { margin-top: 24px; }
-      .dev-filet { margin-top: 26px; }
-      .devanture .rang a { width: 100%; justify-content: center; }
-    }
   </style>
 </head>
 <body class="vb">
@@ -774,14 +756,14 @@
 
 <!-- ─── La vitrine ─── -->
 <header class="vitrine" id="hero">
-  <div class="vitrine-g devanture">
-    <img class="dev-logo" src="images/vb-monogramme.png" alt="" width="300" height="243">
-    <h1 class="dev-nom">Vitalité <span>Bohème</span></h1>
-    <span class="dev-filet" aria-hidden="true"></span>
-    <p class="dev-lieu"><span data-fr>Massothérapie · Waterville</span><span data-en>Massage therapy · Waterville</span></p>
+  <div class="vitrine-g">
+    <h1 class="titre" data-fr>Découvrez Votre <em>Harmonie Personnelle</em></h1>
+    <h1 class="titre" data-en>Discover Your <em>Personal Harmony</em></h1>
+    <p class="chapo" data-fr>Un refuge de bien-être sur mesure, où chaque instant est dédié à votre ressourcement complet. Explorez un nouvel horizon avec Vitalité Bohème.</p>
+    <p class="chapo" data-en>A bespoke wellness sanctuary where every moment is devoted to your complete renewal. Explore a new horizon with Vitalité Bohème.</p>
     <div class="rang">
-      <a href="reserver.html" class="vb-b-or"><span data-fr>Réserver en ligne</span><span data-en>Book online</span> <span class="vb-fleche">→</span></a>
-      <a href="#services" class="vb-b-creux dev-creux"><span data-fr>Voir les services</span><span data-en>See services</span></a>
+      <a href="reserver.html" class="vb-b-pierre"><span data-fr>Réserver en ligne</span><span data-en>Book online</span> <span class="vb-fleche">→</span></a>
+      <a href="#services" class="vb-b-creux"><span data-fr>Voir les services</span><span data-en>See services</span></a>
     </div>
   </div>
   <div class="portrait">
