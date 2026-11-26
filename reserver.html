@@ -334,23 +334,27 @@
     .carte h2::before { color: var(--vb-or-encre); }
     .carte .sous { color: var(--vb-encre-2); }
     .pas span { font-family: var(--vb-sans); font-size: 12px; letter-spacing: .14em; border-radius: 0; color: var(--vb-encre-3); border-color: var(--vb-trait); background: #fff; }
-    .pas span.actif { background: var(--vb-pierre); color: var(--vb-or-clair); border-color: var(--vb-pierre); }
-    .bandeau-code { max-width: none; background: #fff; border: 1px solid var(--vb-encre); padding: 0; display: block; }
-    .bandeau-code .champ { display: grid; grid-template-columns: auto 1fr; align-items: stretch; }
-    .bandeau-code label { margin: 0; padding: 14px 16px; background: var(--vb-pierre); color: var(--vb-or-clair); font-family: var(--vb-sans); font-size: 12px; letter-spacing: .14em; display: flex; align-items: center; }
-    .bandeau-code input { border: 0; border-radius: 0; font-family: var(--vb-sans); }
-    .bandeau-code .aide { grid-column: 1 / -1; padding: 8px 16px 10px; border-top: 1px solid var(--vb-trait); margin: 0; }
-    .bandeau-code .code-echo { margin: 0 16px 12px; }
+    .pas span.actif { background: #fff; color: var(--vb-encre); border-color: var(--vb-encre); box-shadow: inset 0 -2px 0 var(--vb-or); font-weight: 500; }
+    .bandeau-code { max-width: none; background: transparent; border: 0; padding: 0; }
+    .bandeau-code label { font-family: var(--vb-sans); font-size: 12px; letter-spacing: .14em; color: var(--vb-or-encre); margin-bottom: 7px; }
+    .bandeau-code input { max-width: 380px; border: 1px solid var(--vb-trait); border-radius: 0; background: #fff; font-family: var(--vb-sans); }
+    .bandeau-code input:focus { border-color: var(--vb-encre); }
+    .bandeau-code .aide { margin-top: 6px; }
     .soin, .jour, .heure, .h-sec, .h-heure, .h-date, .semaine-nav button { border-radius: 0; }
     .soin { border-color: var(--vb-trait); background: #fff; }
     .soin .duree { color: var(--vb-encre); font-family: var(--vb-serif); }
-    .soin.choisi { background: var(--vb-pierre); border-color: var(--vb-pierre); }
-    .soin.choisi .duree { color: var(--vb-or-clair); }
+    /* Le choix : un contour foncé et le coin plié doré des heures « idéales », jamais un carré noir */
+    .soin.choisi, .jour.choisi, .heure.choisi, .heure.collee.choisi { position: relative; background: #fff; border: 2px solid var(--vb-encre); box-shadow: none; }
+    .soin.choisi::after, .jour.choisi::after, .heure.choisi::after { content: ''; position: absolute; top: 0; right: 0; border-style: solid; border-width: 0 15px 15px 0; border-color: transparent var(--vb-or) transparent transparent; }
+    .soin.choisi .duree, .soin.choisi .nom, .soin.choisi .prix, .soin.choisi .prix b, .jour.choisi .d, .heure.choisi, .heure.collee.choisi { color: var(--vb-encre); }
+    .jour.choisi .j, .jour.choisi .n { color: var(--vb-encre-2); }
+    .sugg button:hover { background: #fff; color: var(--vb-encre); border-color: var(--vb-encre); }
     .jour, .heure, .h-sec, .h-heure { border-color: var(--vb-trait); }
     .champ input, .champ select, .champ textarea { border-radius: 0; border-color: var(--vb-trait); background: var(--vb-papier); font-family: var(--vb-sans); }
     .champ input:focus, .champ select:focus, .champ textarea:focus { border-color: var(--vb-pierre); background: #fff; }
     .champ label { font-family: var(--vb-sans); letter-spacing: .12em; color: var(--vb-encre-3); }
-    .recap { background: var(--vb-pierre); border-radius: 0; }
+    .recap { background: var(--vb-papier); color: var(--vb-encre); border-radius: 0; border-left: 3px solid var(--vb-or); }
+    .recap b { color: var(--vb-encre); }
     .personne, .avert, .erreur, .mineur, .lien-bouton { border-radius: 0; }
     .personne { background: var(--vb-papier); }
     .btn { border-radius: 40px; background: var(--vb-pierre); color: var(--vb-creme); border: 0; font-family: var(--vb-sans); text-transform: none; letter-spacing: .04em; font-size: 16px; font-weight: 500; padding: 16px 26px; }
@@ -364,7 +368,6 @@
       .tete-r-in { padding: 40px 20px 28px; }
       .r-body { padding: 26px 14px 60px; }
       .carte { padding: 24px 16px 22px; }
-      .bandeau-code .champ { grid-template-columns: 1fr; }
     }
   </style>
 </head>

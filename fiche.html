@@ -9,7 +9,7 @@
   <!-- jsPDF -->
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <!-- Logique formulaire -->
-  <script defer src="fiche-script.js?v=20261126"></script>
+  <script defer src="fiche-script.js?v=20261126e"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -107,13 +107,13 @@
       background: #fff; border: 1.5px solid #d8ccbe;
     }
     .corps-anatomique-wrap img { width: 100%; height: auto; display: block; }
-    .zone-btn {
-      position: absolute; width: 22px; height: 22px; border-radius: 50%;
-      background: transparent; border: 2.5px solid transparent;
-      cursor: pointer; transform: translate(-50%, -50%); transition: all 0.2s;
-    }
-    .zone-btn:hover { background: rgba(201,169,110,0.5); border-color: var(--or); transform: translate(-50%,-50%) scale(1.25); }
-    .zone-btn.actif { background: var(--or); border-color: var(--or); transform: translate(-50%,-50%) scale(1.2); box-shadow: 0 0 0 4px rgba(201,169,110,0.35); }
+    /* Le collant de douleur : un rond doré qui nomme les régions sous lui */
+    .collant-douleur { position: absolute; transform: translate(-50%, -50%); border-radius: 50%; z-index: 3; cursor: pointer;
+      background: rgba(201,162,39,.30); border: 3px solid var(--vb-or); box-shadow: 0 2px 8px rgba(20,16,13,.25); animation: pose-collant .35s var(--vb-sortie); }
+    .collant-douleur::after { content: ''; position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; border-radius: 50%; background: var(--vb-or-encre); transform: translate(-50%, -50%); }
+    @keyframes pose-collant { from { transform: translate(-50%, -50%) scale(.4); opacity: 0; } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
+    .corps-anatomique-wrap { cursor: pointer; }
+
 
     .corps-mode-btns { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
     .mode-corps-btn {
@@ -197,8 +197,6 @@
     input.date-manuelle:focus::placeholder { color: transparent; }
 
     @media (max-width: 640px) {
-      .zone-btn { width: 12px !important; height: 12px !important; border-width: 1.5px !important; }
-      .zone-btn.actif { box-shadow: 0 0 0 2px rgba(201,169,110,0.35) !important; }
       .fiche-body { padding: 40px 20px 60px; }
       .q-grid-2, .q-grid-3 { grid-template-columns: 1fr; }
       .q-section { padding: 20px 18px; }
@@ -513,8 +511,8 @@
     <div class="q-section anim-entree">
       <h3 data-fr>Douleurs, tensions et zones sensibles</h3>
       <h3 data-en>Pain, tension & sensitive areas</h3>
-      <p style="font-size:14px; color:var(--brun); margin-bottom:20px; line-height:1.7;" data-fr>Cliquez sur les zones du corps pour indiquer vos zones de douleur ou d'inconfort.</p>
-      <p style="font-size:14px; color:var(--brun); margin-bottom:20px; line-height:1.7;" data-en>Click on body areas to indicate pain or discomfort zones.</p>
+      <p style="font-size:14px; color:var(--brun); margin-bottom:20px; line-height:1.7;" data-fr>Touchez le corps là où vous avez de la douleur ou de l'inconfort : un collant doré se pose et nomme la zone. Touchez-le de nouveau pour l'enlever.</p>
+      <p style="font-size:14px; color:var(--brun); margin-bottom:20px; line-height:1.7;" data-en>Tap the body where you feel pain or discomfort: a gold sticker appears and names the area. Tap it again to remove it.</p>
 
       <div class="corps-mode-btns">
         <button type="button" id="btn-mode-douleur" class="mode-corps-btn active-douleur" onclick="setCorpsMode('douleur')">
@@ -534,69 +532,10 @@
 
       <div class="corps-anatomique-wrap" id="corps-wrap" onclick="placerSticker(event)">
         <img src="images/corps-anatomique.png" alt="Corps humain — zones de douleur" />
-
-        <!-- FACE — tête -->
-        <div class="zone-btn" style="top:8.0%;left:27.0%" onclick="toggleZone(this,'Tête')" title="Tête"></div>
-        <!-- FACE — ventre / abdomen -->
-        <div class="zone-btn" style="top:34.5%;left:24.2%" onclick="toggleZone(this,'Ventre droit')" title="Ventre droit"></div>
-        <div class="zone-btn" style="top:34.5%;left:29.8%" onclick="toggleZone(this,'Ventre gauche')" title="Ventre gauche"></div>
-        <!-- FACE — bras gauche patient (côté droit de l'image, x > 27%) -->
-        <div class="zone-btn" style="top:21.3%;left:32.7%" onclick="toggleZone(this,'Deltoïde gauche')" title="Deltoïde gauche"></div>
-        <div class="zone-btn" style="top:22.2%;left:37.5%" onclick="toggleZone(this,'Biceps brachial gauche')" title="Biceps brachial gauche"></div>
-        <div class="zone-btn" style="top:22.2%;left:42.4%" onclick="toggleZone(this,'Avant-bras gauche')" title="Avant-bras gauche"></div>
-        <div class="zone-btn" style="top:21.6%;left:47.0%" onclick="toggleZone(this,'Poignet gauche')" title="Poignet gauche"></div>
-        <!-- FACE — bras droit patient (côté gauche de l'image, x < 27%) -->
-        <div class="zone-btn" style="top:20.3%;left:20.4%" onclick="toggleZone(this,'Deltoïde droit')" title="Deltoïde droit"></div>
-        <div class="zone-btn" style="top:22.2%;left:16.7%" onclick="toggleZone(this,'Biceps brachial droit')" title="Biceps brachial droit"></div>
-        <div class="zone-btn" style="top:22.0%;left:12.0%" onclick="toggleZone(this,'Avant-bras droit')" title="Avant-bras droit"></div>
-        <div class="zone-btn" style="top:22.0%;left:7.8%" onclick="toggleZone(this,'Poignet droit')" title="Poignet droit"></div>
-        <!-- FACE — tronc -->
-        <div class="zone-btn" style="top:23.5%;left:24.3%" onclick="toggleZone(this,'Grand pectoral droit')" title="Grand pectoral droit"></div>
-        <div class="zone-btn" style="top:23.9%;left:29.6%" onclick="toggleZone(this,'Grand pectoral gauche')" title="Grand pectoral gauche"></div>
-        <!-- FACE — jambes -->
-        <div class="zone-btn" style="top:45.2%;left:23.4%" onclick="toggleZone(this,'Hanche droite')" title="Hanche droite"></div>
-        <div class="zone-btn" style="top:45.9%;left:31.1%" onclick="toggleZone(this,'Hanche gauche')" title="Hanche gauche"></div>
-        <div class="zone-btn" style="top:54.7%;left:22.8%" onclick="toggleZone(this,'Quadriceps droit')" title="Quadriceps droit"></div>
-        <div class="zone-btn" style="top:54.7%;left:31.1%" onclick="toggleZone(this,'Quadriceps gauche')" title="Quadriceps gauche"></div>
-        <div class="zone-btn" style="top:63.0%;left:23.7%" onclick="toggleZone(this,'Genou droit')" title="Genou droit"></div>
-        <div class="zone-btn" style="top:63.7%;left:30.6%" onclick="toggleZone(this,'Genou gauche')" title="Genou gauche"></div>
-        <div class="zone-btn" style="top:76.6%;left:22.8%" onclick="toggleZone(this,'Tibia droit')" title="Tibia droit"></div>
-        <div class="zone-btn" style="top:76.9%;left:31.5%" onclick="toggleZone(this,'Tibia gauche')" title="Tibia gauche"></div>
-        <div class="zone-btn" style="top:86.5%;left:23.5%" onclick="toggleZone(this,'Pied droit')" title="Pied droit"></div>
-        <div class="zone-btn" style="top:86.9%;left:31.0%" onclick="toggleZone(this,'Pied gauche')" title="Pied gauche"></div>
-
-        <!-- DOS — tête -->
-        <div class="zone-btn" style="top:8.0%;left:73.5%" onclick="toggleZone(this,'Tête (dos)')" title="Tête (dos)"></div>
-        <!-- DOS — nuque (centré) -->
-        <div class="zone-btn" style="top:16.4%;left:73.4%" onclick="toggleZone(this,'Nuque')" title="Nuque"></div>
-        <!-- DOS — trapèze (x < 74 = gauche patient, x > 74 = droit patient) -->
-        <div class="zone-btn" style="top:25.9%;left:75.9%" onclick="toggleZone(this,'Trapèze droit')" title="Trapèze droit"></div>
-        <div class="zone-btn" style="top:26.4%;left:70.6%" onclick="toggleZone(this,'Trapèze gauche')" title="Trapèze gauche"></div>
-        <!-- DOS — épaules et bras -->
-        <div class="zone-btn" style="top:21.8%;left:67.6%" onclick="toggleZone(this,'Deltoïde gauche (dos)')" title="Deltoïde gauche (dos)"></div>
-        <div class="zone-btn" style="top:22.0%;left:80.2%" onclick="toggleZone(this,'Deltoïde droit (dos)')" title="Deltoïde droit (dos)"></div>
-        <div class="zone-btn" style="top:22.6%;left:84.1%" onclick="toggleZone(this,'Triceps brachial droit')" title="Triceps brachial droit"></div>
-        <div class="zone-btn" style="top:22.4%;left:59.7%" onclick="toggleZone(this,'Avant-bras gauche (dos)')" title="Avant-bras gauche (dos)"></div>
-        <div class="zone-btn" style="top:23.1%;left:87.9%" onclick="toggleZone(this,'Avant-bras droit (dos)')" title="Avant-bras droit (dos)"></div>
-        <div class="zone-btn" style="top:23.5%;left:63.8%" onclick="toggleZone(this,'Triceps brachial gauche')" title="Triceps brachial gauche"></div>
-        <div class="zone-btn" style="top:21.6%;left:55.6%" onclick="toggleZone(this,'Poignet gauche (dos)')" title="Poignet gauche (dos)"></div>
-        <div class="zone-btn" style="top:22.0%;left:93.0%" onclick="toggleZone(this,'Poignet droit (dos)')" title="Poignet droit (dos)"></div>
-        <!-- DOS — lombaires -->
-        <div class="zone-btn" style="top:36.4%;left:71.1%" onclick="toggleZone(this,'Lombaires gauche')" title="Lombaires gauche"></div>
-        <div class="zone-btn" style="top:36.8%;left:76.2%" onclick="toggleZone(this,'Lombaires droit')" title="Lombaires droit"></div>
-        <!-- DOS — fessier et jambes -->
-        <div class="zone-btn" style="top:45.2%;left:70.3%" onclick="toggleZone(this,'Fessier gauche')" title="Fessier gauche"></div>
-        <div class="zone-btn" style="top:45.4%;left:76.2%" onclick="toggleZone(this,'Fessier droit')" title="Fessier droit"></div>
-        <div class="zone-btn" style="top:54.9%;left:69.7%" onclick="toggleZone(this,'Ischio-jambiers gauche')" title="Ischio-jambiers gauche"></div>
-        <div class="zone-btn" style="top:54.7%;left:76.9%" onclick="toggleZone(this,'Ischio-jambiers droit')" title="Ischio-jambiers droit"></div>
-        <div class="zone-btn" style="top:70.5%;left:69.7%" onclick="toggleZone(this,'Mollet gauche')" title="Mollet gauche"></div>
-        <div class="zone-btn" style="top:71.2%;left:77.6%" onclick="toggleZone(this,'Mollet droit')" title="Mollet droit"></div>
-        <div class="zone-btn" style="top:86.7%;left:69.7%" onclick="toggleZone(this,'Cheville gauche')" title="Cheville gauche"></div>
-        <div class="zone-btn" style="top:87.3%;left:78.1%" onclick="toggleZone(this,'Cheville droite')" title="Cheville droite"></div>
       </div>
 
       <div class="corps-labels">
-        <span data-fr>⬅ Vue de face</span><span data-en>⬅ Front view</span>
+        <span data-fr>← Vue de face</span><span data-en>← Front view</span>
         <span data-fr>Vue de dos →</span><span data-en>Back view →</span>
       </div>
 

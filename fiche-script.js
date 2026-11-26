@@ -86,9 +86,13 @@ function applyLang(lang) {
   });
   try { localStorage.setItem('vb-lang', lang); } catch(e) {}
   if (typeof renderZoneTags === 'function' && Array.isArray(zonesDouleur)) renderZoneTags();
+  if (typeof updateStickerInput === 'function' && Array.isArray(stickers)) updateStickerInput();   // au chargement, les collants n'existent pas encore
   // Les infobulles des collants ⊘ sont ecrites a la main a la pose : on les repasse
   // dans la nouvelle langue, sinon elles restent dans celle du moment ou on a clique.
   try {
+    document.querySelectorAll('.collant-douleur').forEach(function(c) {
+      c.title = (c.dataset.zones || '').split('|').map(zoneLabel).join(', ') + (isEn ? ' — tap to remove' : ' — toucher pour retirer');
+    });
     document.querySelectorAll('.zone-interdit-sticker').forEach(function(s) {
       var z = s.dataset.zone || '';
       s.title = (isEn ? translateZoneInterditEN(z) + ' — click to remove' : z + ' — cliquer pour retirer');
@@ -171,7 +175,58 @@ var ZONE_EN = {
 };
 
 function zoneLabel(nomFr) {
-  return (currentLang === 'en' && ZONE_EN[nomFr]) ? ZONE_EN[nomFr] : nomFr;
+  if (currentLang !== 'en') return nomFr;
+  return ZONE_EN[nomFr] || REGIONS_EN[nomFr] || nomFr;
+}
+
+// ─── LE CORPS : des collants qui nomment les régions ──────────────
+// images/corps-regions.png : l'alpha dit où est le corps, le rouge porte le numéro de la région x 8.
+// Les 25 noms ci-dessous suivent cet ordre : ne pas réordonner.
+var REGIONS = ["Tête", "Cou", "Nuque", "Épaule droite", "Épaule gauche", "Bras droit", "Bras gauche",
+  "Main droite", "Main gauche", "Poitrine", "Ventre", "Haut du dos", "Bas du dos",
+  "Hanche droite", "Hanche gauche", "Fessier droit", "Fessier gauche", "Cuisse droite",
+  "Cuisse gauche", "Genou droit", "Genou gauche", "Jambe droite", "Jambe gauche",
+  "Pied droit", "Pied gauche"];
+var REGIONS_EN = { "Tête": "Head", "Cou": "Neck (front)", "Nuque": "Back of the neck", "Épaule droite": "Right shoulder",
+  "Épaule gauche": "Left shoulder", "Bras droit": "Right arm", "Bras gauche": "Left arm", "Main droite": "Right hand",
+  "Main gauche": "Left hand", "Poitrine": "Chest", "Ventre": "Abdomen", "Haut du dos": "Upper back", "Bas du dos": "Lower back",
+  "Hanche droite": "Right hip", "Hanche gauche": "Left hip", "Fessier droit": "Right glute", "Fessier gauche": "Left glute",
+  "Cuisse droite": "Right thigh", "Cuisse gauche": "Left thigh", "Genou droit": "Right knee", "Genou gauche": "Left knee",
+  "Jambe droite": "Right lower leg", "Jambe gauche": "Left lower leg", "Pied droit": "Right foot", "Pied gauche": "Left foot" };
+var MASQUE_W = 768, MASQUE_H = 512, masqueRegions = null;
+(function () {
+  var im = new Image();
+  im.onload = function () {
+    try { var c = document.createElement('canvas'); c.width = MASQUE_W; c.height = MASQUE_H;
+      var x = c.getContext('2d'); x.drawImage(im, 0, 0, MASQUE_W, MASQUE_H); masqueRegions = x.getImageData(0, 0, MASQUE_W, MASQUE_H).data; } catch (e) {}
+  };
+  im.src = 'images/corps-regions.png';
+})();
+function regionAuPixel(x, y) {
+  if (x < 0 || y < 0 || x >= MASQUE_W || y >= MASQUE_H) return 0;
+  var i = (y * MASQUE_W + x) * 4;
+  return masqueRegions[i + 3] < 128 ? 0 : Math.round(masqueRegions[i] / 8);
+}
+/* Les régions sous un rond (centre en %, rayon en px de la page). Toujours au moins une si on a touché
+   près du corps ; aucune si c'est dans le vide. null si la carte n'est pas encore chargée. */
+function regionsSous(xPct, yPct, rayonPx, largeurPx) {
+  if (!masqueRegions) return null;
+  var cx = xPct / 100 * MASQUE_W, cy = yPct / 100 * MASQUE_H, r = Math.max(1, rayonPx * MASQUE_W / largeurPx);
+  var compte = {}, total = 0, x, y, k;
+  for (y = Math.floor(cy - r); y <= cy + r; y++) for (x = Math.floor(cx - r); x <= cx + r; x++) {
+    if ((x - cx) * (x - cx) + (y - cy) * (y - cy) > r * r) continue;
+    k = regionAuPixel(x, y); if (k) { compte[k] = (compte[k] || 0) + 1; total++; }
+  }
+  var centre = regionAuPixel(Math.round(cx), Math.round(cy));   // la région touchée passe en premier
+  var noms = Object.keys(compte).filter(function (k) { return compte[k] >= total * 0.12; })
+    .sort(function (a, b) { return (b == centre) - (a == centre) || compte[b] - compte[a]; }).map(function (k) { return REGIONS[k - 1]; });
+  if (noms.length) return noms;
+  var lim = Math.max(r * 1.3, 6), best = 0, bd = 1e9, d;   // juste à côté du corps, pas dans le blanc
+  for (y = Math.floor(cy - lim); y <= cy + lim; y++) for (x = Math.floor(cx - lim); x <= cx + lim; x++) {
+    k = regionAuPixel(x, y); if (!k) continue;
+    d = (x - cx) * (x - cx) + (y - cy) * (y - cy); if (d < bd && d <= lim * lim) { bd = d; best = k; }
+  }
+  return best ? [REGIONS[best - 1]] : [];
 }
 
 // ─── ZONES CORPORELLES ─────────────────────────────────────────
@@ -221,7 +276,7 @@ var ZONE_INTERDITES_EN = {
 };
 
 function translateZoneInterditEN(nom) {
-  return ZONE_INTERDITES_EN[nom] || nom;
+  return ZONE_INTERDITES_EN[nom] || REGIONS_EN[nom] || nom;
 }
 
 // Détection automatique de la zone en fonction des coordonnées %
@@ -306,14 +361,15 @@ function setCorpsMode(mode) {
   if (mode === 'douleur' && stickerMode) toggleStickerMode();
 }
 
-function getNom(el) {
-  if (el.getAttribute('data-nom')) return el.getAttribute('data-nom');
-  var m = (el.getAttribute('onclick')||'').match(/toggleZone\(this,'(.*)'\)/);
-  return m ? m[1].replace(/\\'/g,"'") : '';
+// Les collants de douleur : chacun garde les régions qu'il couvre dans data-zones (séparées par |).
+function nomsDouleur() {
+  var noms = [];
+  zonesDouleur.forEach(function (c) { (c.dataset.zones || '').split('|').forEach(function (n) { if (n && noms.indexOf(n) === -1) noms.push(n); }); });
+  return noms;
 }
 
 function renderZoneTags() {
-  var noms = zonesDouleur.map(getNom);
+  var noms = nomsDouleur();
   var container = document.getElementById('zones-tags');
   document.getElementById('zones-input').value = noms.join(', ');
   if (!noms.length) {
@@ -323,11 +379,26 @@ function renderZoneTags() {
   container.innerHTML = noms.map(function(z) { return '<span class="zone-tag">' + zoneLabel(z) + '</span>'; }).join('');
 }
 
-function toggleZone(btn, nom) {
-  if (stickerMode) return;
-  var idx = zonesDouleur.indexOf(btn);
-  if (idx === -1) { zonesDouleur.push(btn); btn.classList.add('actif'); }
-  else { zonesDouleur.splice(idx, 1); btn.classList.remove('actif'); }
+function placerCollantDouleur(wrap, xPct, yPct, largeur) {
+  var taille = Math.max(42, largeur * 0.075);   // assez gros pour le doigt
+  var noms = regionsSous(xPct, yPct, largeur * 0.0375, largeur);   // mais il attrape la même part du corps partout
+  if (!noms || !noms.length) return;   // carte pas encore chargée, ou touché dans le vide
+  var c = document.createElement('div');
+  c.className = 'collant-douleur';
+  c.style.left = xPct.toFixed(2) + '%';
+  c.style.top = yPct.toFixed(2) + '%';
+  c.style.width = c.style.height = Math.round(taille) + 'px';
+  c.dataset.zones = noms.join('|');
+  c.title = noms.map(zoneLabel).join(', ') + (currentLang === 'en' ? ' — tap to remove' : ' — toucher pour retirer');
+  c.addEventListener('click', function (ev) {
+    ev.stopPropagation();
+    if (stickerMode) return;
+    if (c.parentNode) c.parentNode.removeChild(c);
+    zonesDouleur = zonesDouleur.filter(function (x) { return x !== c; });
+    renderZoneTags();
+  });
+  wrap.appendChild(c);
+  zonesDouleur.push(c);
   renderZoneTags();
 }
 
@@ -338,9 +409,6 @@ function toggleStickerMode() {
   btn.className = 'mode-corps-btn' + (stickerMode ? ' active-interdit' : '');
   document.getElementById('sticker-tools').style.display = stickerMode ? 'flex' : 'none';
   document.getElementById('corps-wrap').style.cursor = stickerMode ? 'crosshair' : '';
-  document.querySelectorAll('.zone-btn').forEach(function(z) {
-    z.style.pointerEvents = stickerMode ? 'none' : '';
-  });
   if (stickerMode) document.getElementById('btn-mode-douleur').className = 'mode-corps-btn';
   else setCorpsMode('douleur');
 }
@@ -353,16 +421,19 @@ function makeStickerSVG() {
 }
 
 function placerSticker(e) {
-  if (!stickerMode) return;
-  if (e.target.closest && e.target.closest('.zone-interdit-sticker')) return;
+  if (e.target.closest && e.target.closest('.zone-interdit-sticker, .collant-douleur')) return;
   var wrap = document.getElementById('corps-wrap');
   var rect = wrap.getBoundingClientRect();
   var src = e.touches ? e.touches[0] : e;
   var xPct = (src.clientX - rect.left) / rect.width * 100;
   var yPct = (src.clientY - rect.top)  / rect.height * 100;
-  var zoneName = detectZoneInterdite(xPct, yPct);
   // Blocage zone génitale — zone élargie (entre hanches et quadriceps, centre)
   if (xPct >= 21 && xPct <= 33 && yPct >= 44 && yPct <= 49) return;
+  if (!stickerMode) { placerCollantDouleur(wrap, xPct, yPct, rect.width); return; }
+  // Le nom du collant ⊘ : la région du corps sous le doigt.
+  var trouve = regionsSous(xPct, yPct, 4, rect.width);
+  if (!trouve || !trouve.length) return;
+  var zoneName = trouve[0];
   var sticker = document.createElement('div');
   sticker.className = 'zone-interdit-sticker';
   sticker.style.left = xPct.toFixed(2) + '%';
@@ -391,8 +462,8 @@ function placerSticker(e) {
  */
 function reinitialiserCorps() {
   try {
-    zonesDouleur.slice().forEach(function(btn) { if (btn && btn.classList) btn.classList.remove('actif'); });
-    zonesDouleur.length = 0;
+    zonesDouleur.forEach(function(c) { if (c && c.parentNode) c.parentNode.removeChild(c); });
+    zonesDouleur = [];
     renderZoneTags();
   } catch (e) { console.warn('zones de douleur :', e); }
   try { clearStickers(); } catch (e) { console.warn('collants :', e); }
