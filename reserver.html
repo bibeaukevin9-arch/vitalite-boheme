@@ -21,7 +21,7 @@
   <link rel="apple-touch-icon" href="images/apple-touch-icon-vb.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="vb.css?v=20261126d">
+  <link rel="stylesheet" href="vb.css?v=20261126L">
   <style>
     :root {
       --noir: #14100d; --noir-doux: #1e1915;
@@ -355,7 +355,7 @@
     .soin, .jour, .heure, .h-sec, .h-heure, .h-date, .semaine-nav button { border-radius: 0; }
     .soin { border-color: var(--vb-trait); background: #fff; }
     .soin .duree { color: var(--vb-encre); font-family: var(--vb-serif); }
-    /* Le choix : un contour foncé et le coin plié doré des heures « idéales », jamais un carré noir */
+    /* Le choix : jamais un carré noir (version finale plus bas) */
     .soin.choisi, .jour.choisi, .heure.choisi, .heure.collee.choisi { position: relative; background: #fff; border: 2px solid var(--vb-encre); box-shadow: none; }
     .soin.choisi::after, .jour.choisi::after, .heure.choisi::after { content: ''; position: absolute; top: 0; right: 0; border-style: solid; border-width: 0 15px 15px 0; border-color: transparent var(--vb-or) transparent transparent; }
     .soin.choisi .duree, .soin.choisi .nom, .soin.choisi .prix, .soin.choisi .prix b, .jour.choisi .d, .heure.choisi, .heure.collee.choisi { color: var(--vb-encre); }
@@ -380,6 +380,80 @@
       .tete-r-in { padding: 40px 20px 28px; }
       .r-body { padding: 26px 14px 60px; }
       .carte { padding: 24px 16px 22px; }
+    }
+
+    /* ==========================================================
+       Le haut et les cases : les étapes en fil, le trait d'or sans coin plié,
+       des chiffres droits et une seule encre.
+       ========================================================== */
+    .pas { gap: 0; flex-wrap: nowrap; }
+    .pas > span { background: transparent; border: 0; border-radius: 0; box-shadow: none; padding: 7px 14px 9px; position: relative;
+      font-family: var(--vb-sans); font-size: 12px; font-weight: 400; letter-spacing: .14em; text-transform: uppercase; color: #a89a89; }
+    .pas > span + span { border-left: 1px solid var(--vb-trait); }
+    .pas > span > span { padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; }
+    .pas > span.actif { background: transparent; border-color: var(--vb-trait); box-shadow: none; color: var(--vb-encre); font-weight: 500; }
+    .pas > span.actif::after { content: ''; position: absolute; left: 14px; right: 14px; bottom: 0; height: 2px; background: var(--vb-or); }
+    .pas > span.fait { color: var(--vb-or-encre); }
+    .pas > span.fait::before { content: none; }
+    .bandeau-code .aide { font-size: 13.5px; line-height: 1.5; color: var(--vb-encre-2); margin-top: 8px; max-width: 46ch; }
+
+    .soins, .jours { gap: 8px; }
+    .heures { gap: 16px 8px; }
+    .soin { display: flex; flex-direction: column; padding: 14px 14px 12px; background: #fff; border: 1px solid var(--vb-trait); color: var(--vb-encre); position: relative; }
+    .soin .duree { font-size: 34px; font-weight: 400; color: var(--vb-encre); font-variant-numeric: lining-nums tabular-nums; }
+    .soin .duree small { font-family: var(--vb-sans); font-size: 13px; letter-spacing: .02em; color: var(--vb-encre-3); margin-left: 5px; }
+    .soin .nom { font-size: 13px; line-height: 1.4; color: var(--vb-encre-2); margin: 8px 0 10px; min-height: 0; flex: 1; }
+    .soin .prix { font-size: 15px; color: var(--vb-encre); }
+    .soin .prix b { font-size: inherit; font-weight: 500; color: var(--vb-encre); font-variant-numeric: lining-nums tabular-nums; }
+    .soin .prix small { font-size: 11px; color: var(--vb-encre-3); margin-left: 4px; }
+    .soin:last-child { grid-column: 1 / -1; display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; column-gap: 16px; }
+    .soin:last-child .nom { margin: 0; }
+
+    .sugg .t { color: var(--vb-or-encre); font-weight: 500; }
+    .sugg .liste { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 8px; padding-top: 8px; }
+    .sugg button { display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 10px 6px 9px; background: #fff;
+      border: 1px solid var(--vb-trait); border-radius: 0; color: var(--vb-encre-2); font-size: 12px; font-weight: 400; letter-spacing: .04em;
+      box-shadow: inset 0 2px 0 var(--vb-or); }
+    .sugg button b { font-family: var(--vb-serif); font-size: 22px; font-weight: 500; line-height: 1.05; margin-left: 0; letter-spacing: 0;
+      color: var(--vb-encre); font-variant-numeric: lining-nums tabular-nums; }
+    .sugg button:hover { background: var(--vb-papier); color: var(--vb-encre-2); border-color: var(--vb-encre); }
+    .tag-ideal { position: static; transform: none; display: block; background: none; padding: 0; margin: 0 0 4px;
+      font-family: var(--vb-sans); font-size: 9px; font-weight: 600; letter-spacing: .16em; color: var(--vb-or-encre); }
+    .sugg button .tag-ideal { margin-bottom: 5px; }
+    .heure.collee::before, .sugg button::before { content: none; }
+    .soin.choisi::after, .jour.choisi::after, .heure.choisi::after { content: none; }
+
+    .jour { background: #fff; border: 1px solid var(--vb-trait); padding: 10px 2px 9px; gap: 2px; }
+    .jour .j { letter-spacing: .12em; color: var(--vb-encre-3); }
+    .jour .d { font-size: 24px; line-height: 1.05; color: var(--vb-encre); font-variant-numeric: lining-nums tabular-nums; }
+    .jour .n { color: var(--vb-or-encre); min-height: 14px; white-space: nowrap; font-variant-numeric: lining-nums; }
+    .jour:has(.etoile) { box-shadow: inset 0 2px 0 var(--vb-or); }
+    .jour.plein { opacity: 1; background: transparent; border-color: #ebe2d4; }
+    .jour.plein .j, .jour.plein .d, .jour.plein .n { color: #c2b6a5; }
+    .jour.appel .n { color: var(--vb-encre-2); }
+    .jours.mois-grille { gap: 4px; }
+    .mois-grille .jour .n { white-space: normal; }
+
+    .heure { display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; border: 1px solid var(--vb-trait);
+      padding: 11px 4px; font-weight: 400; line-height: 1.25; color: var(--vb-encre); font-variant-numeric: lining-nums tabular-nums; }
+    .heure.collee { background: #fff; border: 1px solid var(--vb-trait); border-radius: 0; font-weight: 400; box-shadow: inset 0 2px 0 var(--vb-or); }
+
+    /* Le choix : contour foncé fin, fond crème, trait d'or en bas (le même signe que l'étape en cours) */
+    .soin.choisi, .jour.choisi, .heure.choisi, .heure.collee.choisi { background: var(--vb-papier); border: 1px solid var(--vb-encre); box-shadow: inset 0 -3px 0 var(--vb-or); }
+    .jour.choisi:has(.etoile), .heure.collee.choisi { box-shadow: inset 0 2px 0 var(--vb-or), inset 0 -3px 0 var(--vb-or); }
+
+    @media (max-width: 560px) {
+      .pas > span { padding-left: 11px; padding-right: 11px; letter-spacing: .12em; }
+      .pas > span.actif::after { left: 11px; right: 11px; }
+      .sugg .liste { grid-template-columns: repeat(2, 1fr); }
+      .jours { gap: 4px; }
+      .jours.mois-grille { gap: 3px; }
+      .jour { padding: 10px 0 8px; }
+      .jour .d { font-size: 21px; }
+      .jour .mot { display: none; }
+      .soin:last-child { grid-template-columns: auto 1fr; }
+      .soin:last-child .nom { grid-column: 1 / -1; grid-row: 2; margin: 8px 0 6px; }
+      .soin:last-child .prix { grid-row: 1; grid-column: 2; justify-self: end; }
     }
   </style>
 </head>
@@ -430,7 +504,7 @@
     <div class="champ large">
       <label for="promo"><span data-fr>Tu as un code ?</span><span data-en>Have a code?</span></label>
       <input id="promo" name="promo" autocomplete="off" autocapitalize="characters" placeholder="819 000-0000">
-      <div class="aide"><span data-fr>Un seul code. Le numéro de la personne qui t'a parlé de nous en est un.</span><span data-en>One code only. The number of whoever told you about us counts as one.</span></div>
+      <div class="aide"><span data-fr>Quelqu'un t'a parlé de nous&nbsp;? Son numéro de téléphone compte comme un code. Un seul code par réservation.</span><span data-en>Someone told you about us? Their phone number counts as a code. One code per booking.</span></div>
     </div>
     <div class="code-echo" id="code-echo" hidden></div>
   </div>
@@ -1158,7 +1232,7 @@ function rendreSuggestions() {
 function libJourCourt(k) { var p = k.split('-'), d = new Date(+p[0], +p[1] - 1, +p[2]); return d.toLocaleDateString(currentLang === 'en' ? 'en-CA' : 'fr-CA', { weekday: 'short', day: 'numeric', month: 'short' }); }
 function noteJour(k, heures) {
   var etoile = etat.ouverts.indexOf(k) >= 0 ? '<span class="etoile">✦ </span>' : '';
-  return etoile + heures.length + ' ' + T('libre' + (heures.length > 1 ? 's' : ''), 'free');
+  return etoile + heures.length + '<span class="mot"> ' + T('libre' + (heures.length > 1 ? 's' : ''), 'free') + '</span>';
 }
 function rendreJours() {
   if (etat.vueMois) { rendreMois(); return; }
@@ -1179,7 +1253,7 @@ function rendreJours() {
     var k = cleJour(d), heures = etat.dispo[k] || [];
     var passe = d < auj, plein = passe || heures.length === 0;
     var appel = !passe && heures.length === 0 && (d - auj) / 36e5 < REGLES.delaiMinH + 24;
-    var note = passe ? '' : heures.length ? noteJour(k, heures) : appel ? T('appelle', 'call') : T('complet', 'full');
+    var note = passe ? '' : heures.length ? noteJour(k, heures) : appel ? T('appelle', 'call') : '<span class="mot">' + T('complet', 'full') + '</span>';
     html += '<button type="button" class="jour' + (plein ? ' plein' : '') + (appel ? ' appel' : '') + (etat.jour === k ? ' choisi' : '') + '" data-k="' + k + '"' + (plein ? ' disabled' : '') + '>' +
       '<div class="j">' + (currentLang === 'en' ? jEn : jFr)[i] + '</div><div class="d">' + d.getDate() + '</div><div class="n">' + note + '</div></button>';
   }
@@ -1487,7 +1561,7 @@ function finOk(h, duree) { var p = h.split(':'); return (+p[0] * 60 + +p[1] + du
   applyLang(url.get('lang') === 'en' ? 'en' : (saved === 'en' ? 'en' : 'fr'));
 })();
 </script>
-<script src="vb.js?v=20261126d"></script>
+<script src="vb.js?v=20261126L"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "39820f3e66a545a7bb606088d3552fc6"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

@@ -179,54 +179,181 @@ function zoneLabel(nomFr) {
   return ZONE_EN[nomFr] || REGIONS_EN[nomFr] || nomFr;
 }
 
-// ─── LE CORPS : des collants qui nomment les régions ──────────────
-// images/corps-regions.png : l'alpha dit où est le corps, le rouge porte le numéro de la région x 8.
-// Les 25 noms ci-dessous suivent cet ordre : ne pas réordonner.
+// ─── LE CORPS : un point qui grandit, des étiquettes unies, les muscles dessous ──────────────
+// images/corps-regions.png, 768 × 512 :
+//   alpha = le corps ; rouge = n° de la région × 8 (REGIONS, ne pas réordonner : 26 et 27 ajoutés à la fin) ;
+//   vert  = n° du groupe musculaire (GROUPES).
+// La carte des groupes est tirée de BodyParts3D (© DBCLS, CC BY 4.0) : son crédit est DANS le fichier PNG.
 var REGIONS = ["Tête", "Cou", "Nuque", "Épaule droite", "Épaule gauche", "Bras droit", "Bras gauche",
   "Main droite", "Main gauche", "Poitrine", "Ventre", "Haut du dos", "Bas du dos",
   "Hanche droite", "Hanche gauche", "Fessier droit", "Fessier gauche", "Cuisse droite",
   "Cuisse gauche", "Genou droit", "Genou gauche", "Jambe droite", "Jambe gauche",
-  "Pied droit", "Pied gauche"];
+  "Pied droit", "Pied gauche", "Avant-bras droit", "Avant-bras gauche"];
 var REGIONS_EN = { "Tête": "Head", "Cou": "Neck (front)", "Nuque": "Back of the neck", "Épaule droite": "Right shoulder",
-  "Épaule gauche": "Left shoulder", "Bras droit": "Right arm", "Bras gauche": "Left arm", "Main droite": "Right hand",
+  "Épaule gauche": "Left shoulder", "Bras droit": "Right upper arm", "Bras gauche": "Left upper arm", "Main droite": "Right hand",
   "Main gauche": "Left hand", "Poitrine": "Chest", "Ventre": "Abdomen", "Haut du dos": "Upper back", "Bas du dos": "Lower back",
   "Hanche droite": "Right hip", "Hanche gauche": "Left hip", "Fessier droit": "Right glute", "Fessier gauche": "Left glute",
   "Cuisse droite": "Right thigh", "Cuisse gauche": "Left thigh", "Genou droit": "Right knee", "Genou gauche": "Left knee",
-  "Jambe droite": "Right lower leg", "Jambe gauche": "Left lower leg", "Pied droit": "Right foot", "Pied gauche": "Left foot" };
-var MASQUE_W = 768, MASQUE_H = 512, masqueRegions = null;
+  "Jambe droite": "Right lower leg", "Jambe gauche": "Left lower leg", "Pied droit": "Right foot", "Pied gauche": "Left foot",
+  "Avant-bras droit": "Right forearm", "Avant-bras gauche": "Left forearm",
+  // les noms unis
+  "Épaules": "Shoulders", "Les deux bras": "Both upper arms", "Les deux avant-bras": "Both forearms", "Mains": "Hands",
+  "Hanches": "Hips", "Fessiers": "Glutes", "Cuisses": "Thighs", "Genoux": "Knees", "Jambes": "Lower legs", "Pieds": "Feet",
+  "Dos": "Back", "Tout le cou": "Whole neck", "Tout le bras droit": "Whole right arm", "Tout le bras gauche": "Whole left arm",
+  "Toute la jambe droite": "Whole right leg", "Toute la jambe gauche": "Whole left leg",
+  "Les deux bras au complet": "Both arms, whole", "Les deux jambes au complet": "Both legs, whole", "Corps entier": "Whole body" };
+// n° du groupe → [clé, côté] (58 groupes)
+var GROUPES = {1: ['achille', 'droit'], 2: ['achille', 'gauche'], 3: ['adducteurs', 'droit'], 4: ['adducteurs', 'gauche'], 5: ['biceps', 'droit'], 6: ['biceps', 'gauche'], 7: ['cou', ''], 8: ['deltoide_arriere', 'droit'], 9: ['deltoide_arriere', 'gauche'], 10: ['deltoide_avant', 'droit'], 11: ['deltoide_avant', 'gauche'], 12: ['dessus_pied', 'droit'], 13: ['dessus_pied', 'gauche'], 14: ['dos_main', 'droit'], 15: ['dos_main', 'gauche'], 16: ['extenseurs_ab', 'droit'], 17: ['extenseurs_ab', 'gauche'], 18: ['flechisseurs_ab', 'droit'], 19: ['flechisseurs_ab', 'gauche'], 20: ['flechisseurs_hanche', 'droit'], 21: ['flechisseurs_hanche', 'gauche'], 22: ['genou', 'droit'], 23: ['genou', 'gauche'], 24: ['grand_dorsal', 'droit'], 25: ['grand_dorsal', 'gauche'], 26: ['grand_droit', ''], 27: ['grand_fessier', 'droit'], 28: ['grand_fessier', 'gauche'], 29: ['ischio', 'droit'], 30: ['ischio', 'gauche'], 31: ['jambier', 'droit'], 32: ['jambier', 'gauche'], 33: ['lombaires', 'droit'], 34: ['lombaires', 'gauche'], 35: ['machoire', 'droit'], 36: ['machoire', 'gauche'], 37: ['mollet', 'droit'], 38: ['mollet', 'gauche'], 39: ['moyen_fessier', 'droit'], 40: ['moyen_fessier', 'gauche'], 41: ['nuque', ''], 42: ['obliques', 'droit'], 43: ['obliques', 'gauche'], 44: ['omoplate', 'droit'], 45: ['omoplate', 'gauche'], 46: ['paume', 'droit'], 47: ['paume', 'gauche'], 48: ['pectoral', 'droit'], 49: ['pectoral', 'gauche'], 50: ['quadriceps', 'droit'], 51: ['quadriceps', 'gauche'], 52: ['tete', ''], 53: ['trapeze_moyen', 'droit'], 54: ['trapeze_moyen', 'gauche'], 55: ['trapeze_sup', 'droit'], 56: ['trapeze_sup', 'gauche'], 57: ['triceps', 'droit'], 58: ['triceps', 'gauche']};
+// Les mots des muscles (les mots du massothérapeute), [un côté, les deux côtés]. Vide = déjà dit par l'étiquette.
+var MUSCLES_FR = {
+  tete: ['', ''], machoire: ['masséter et temporal', 'masséters et temporaux'], cou: ['SCM et scalènes', 'SCM et scalènes'],
+  nuque: ['cervicales', 'cervicales'], trapeze_sup: ['trapèze supérieur', 'trapèzes supérieurs'],
+  trapeze_moyen: ['trapèze moyen', 'trapèzes moyens'], omoplate: ['infra-épineux et ronds', 'infra-épineux et ronds'],
+  deltoide_avant: ['deltoïde antérieur', 'deltoïdes antérieurs'], deltoide_arriere: ['deltoïde postérieur', 'deltoïdes postérieurs'],
+  pectoral: ['grand pectoral', 'grands pectoraux'], grand_dorsal: ['grand dorsal', 'grands dorsaux'],
+  biceps: ['biceps', 'biceps'], triceps: ['triceps', 'triceps'], flechisseurs_ab: ['fléchisseurs', 'fléchisseurs'],
+  extenseurs_ab: ['extenseurs', 'extenseurs'], paume: ['paume', 'paumes'], dos_main: ['dos de la main', 'dos des mains'],
+  grand_droit: ['grand droit', 'grand droit'], obliques: ['oblique', 'obliques'],
+  flechisseurs_hanche: ['fléchisseurs de la hanche', 'fléchisseurs des hanches'], adducteurs: ['adducteurs', 'adducteurs'],
+  quadriceps: ['quadriceps', 'quadriceps'], genou: ['', ''], jambier: ['jambier antérieur', 'jambiers antérieurs'],
+  mollet: ['gastrocnémien et soléaire', 'gastrocnémiens et soléaires'], dessus_pied: ['', ''],
+  achille: ["tendon d'Achille", "tendons d'Achille"], lombaires: ['lombaires', 'lombaires'],
+  grand_fessier: ['grand fessier', 'grands fessiers'], moyen_fessier: ['moyen fessier', 'moyens fessiers'],
+  ischio: ['ischio-jambiers', 'ischio-jambiers'] };
+var MUSCLES_EN = {
+  tete: ['', ''], machoire: ['masseter and temporalis', 'masseters and temporalis'], cou: ['SCM and scalenes', 'SCM and scalenes'],
+  nuque: ['cervical muscles', 'cervical muscles'], trapeze_sup: ['upper trapezius', 'upper trapezius'],
+  trapeze_moyen: ['middle trapezius', 'middle trapezius'], omoplate: ['infraspinatus and teres', 'infraspinatus and teres'],
+  deltoide_avant: ['anterior deltoid', 'anterior deltoids'], deltoide_arriere: ['posterior deltoid', 'posterior deltoids'],
+  pectoral: ['pectoralis major', 'pectoralis major'], grand_dorsal: ['latissimus dorsi', 'latissimus dorsi'],
+  biceps: ['biceps', 'biceps'], triceps: ['triceps', 'triceps'], flechisseurs_ab: ['forearm flexors', 'forearm flexors'],
+  extenseurs_ab: ['forearm extensors', 'forearm extensors'], paume: ['palm', 'palms'], dos_main: ['back of the hand', 'backs of the hands'],
+  grand_droit: ['rectus abdominis', 'rectus abdominis'], obliques: ['oblique', 'obliques'],
+  flechisseurs_hanche: ['hip flexors', 'hip flexors'], adducteurs: ['adductors', 'adductors'],
+  quadriceps: ['quadriceps', 'quadriceps'], genou: ['', ''], jambier: ['tibialis anterior', 'tibialis anterior'],
+  mollet: ['gastrocnemius and soleus', 'gastrocnemius and soleus'], dessus_pied: ['', ''],
+  achille: ['Achilles tendon', 'Achilles tendons'], lombaires: ['lumbar muscles', 'lumbar muscles'],
+  grand_fessier: ['gluteus maximus', 'gluteus maximus'], moyen_fessier: ['gluteus medius', 'gluteus medius'],
+  ischio: ['hamstrings', 'hamstrings'] };
+var ORDRE_MUSCLES = Object.keys(MUSCLES_FR);
+var MASQUE_W = 768, MASQUE_H = 512, COUPE = 402;   // COUPE : la colonne vide entre la vue de face et la vue de dos
+var masqueRegions = null, REG = null, GRP = null, PX_REG = null, TOT_VUE = [0, 0];
 (function () {
   var im = new Image();
   im.onload = function () {
-    try { var c = document.createElement('canvas'); c.width = MASQUE_W; c.height = MASQUE_H;
-      var x = c.getContext('2d'); x.drawImage(im, 0, 0, MASQUE_W, MASQUE_H); masqueRegions = x.getImageData(0, 0, MASQUE_W, MASQUE_H).data; } catch (e) {}
+    try {
+      var c = document.createElement('canvas'); c.width = MASQUE_W; c.height = MASQUE_H;
+      var x = c.getContext('2d'); x.drawImage(im, 0, 0, MASQUE_W, MASQUE_H);
+      var d = x.getImageData(0, 0, MASQUE_W, MASQUE_H).data;
+      REG = new Uint8Array(MASQUE_W * MASQUE_H); GRP = new Uint8Array(MASQUE_W * MASQUE_H);
+      PX_REG = []; for (var k = 0; k <= REGIONS.length; k++) PX_REG.push([0, 0]);
+      for (var i = 0; i < MASQUE_W * MASQUE_H; i++) {
+        if (d[i * 4 + 3] < 128) continue;
+        var r = Math.round(d[i * 4] / 8); if (!r) continue;
+        var v = (i % MASQUE_W) < COUPE ? 0 : 1;
+        REG[i] = r; GRP[i] = d[i * 4 + 1]; PX_REG[r][v]++; TOT_VUE[v]++;
+      }
+      masqueRegions = d;
+    } catch (e) { console.warn('carte du corps :', e); }
   };
-  im.src = 'images/corps-regions.png';
+  im.src = 'images/corps-regions.png?v=20261126z';   // ⚠️ changer ce numéro si la carte change (cache)
 })();
 function regionAuPixel(x, y) {
-  if (x < 0 || y < 0 || x >= MASQUE_W || y >= MASQUE_H) return 0;
-  var i = (y * MASQUE_W + x) * 4;
-  return masqueRegions[i + 3] < 128 ? 0 : Math.round(masqueRegions[i] / 8);
+  if (!REG || x < 0 || y < 0 || x >= MASQUE_W || y >= MASQUE_H) return 0;
+  return REG[y * MASQUE_W + x];
 }
-/* Les régions sous un rond (centre en %, rayon en px de la page). Toujours au moins une si on a touché
-   près du corps ; aucune si c'est dans le vide. null si la carte n'est pas encore chargée. */
+/* La région sous un point (le collant ⊘) : celle du pixel, ou la plus proche si on a touché juste à côté du corps. */
 function regionsSous(xPct, yPct, rayonPx, largeurPx) {
-  if (!masqueRegions) return null;
-  var cx = xPct / 100 * MASQUE_W, cy = yPct / 100 * MASQUE_H, r = Math.max(1, rayonPx * MASQUE_W / largeurPx);
-  var compte = {}, total = 0, x, y, k;
-  for (y = Math.floor(cy - r); y <= cy + r; y++) for (x = Math.floor(cx - r); x <= cx + r; x++) {
-    if ((x - cx) * (x - cx) + (y - cy) * (y - cy) > r * r) continue;
-    k = regionAuPixel(x, y); if (k) { compte[k] = (compte[k] || 0) + 1; total++; }
-  }
-  var centre = regionAuPixel(Math.round(cx), Math.round(cy));   // la région touchée passe en premier
-  var noms = Object.keys(compte).filter(function (k) { return compte[k] >= total * 0.12; })
-    .sort(function (a, b) { return (b == centre) - (a == centre) || compte[b] - compte[a]; }).map(function (k) { return REGIONS[k - 1]; });
-  if (noms.length) return noms;
-  var lim = Math.max(r * 1.3, 6), best = 0, bd = 1e9, d;   // juste à côté du corps, pas dans le blanc
+  if (!REG) return null;
+  var cx = Math.round(xPct / 100 * MASQUE_W), cy = Math.round(yPct / 100 * MASQUE_H);
+  var k = regionAuPixel(cx, cy); if (k) return [REGIONS[k - 1]];
+  var lim = Math.max(6, rayonPx * MASQUE_W / largeurPx * 1.3), best = 0, bd = 1e9, d, x, y;
   for (y = Math.floor(cy - lim); y <= cy + lim; y++) for (x = Math.floor(cx - lim); x <= cx + lim; x++) {
     k = regionAuPixel(x, y); if (!k) continue;
     d = (x - cx) * (x - cx) + (y - cy) * (y - cy); if (d < bd && d <= lim * lim) { bd = d; best = k; }
   }
   return best ? [REGIONS[best - 1]] : [];
+}
+/* Ce que touchent des ronds (centre et rayon en pixels de la carte) : les régions, et dans chacune ses groupes.
+   Une région compte si elle fait 12 % de ce qu'un rond couvre, ou si un rond en couvre 35 % ; un groupe compte
+   s'il fait 15 % de ce que le rond couvre de sa région. 85 % d'une silhouette couverte = le corps entier. */
+function analyserCorps(ronds) {
+  var vu = new Uint8Array(MASQUE_W * MASQUE_H), couvert = [0, 0], garde = {}, grpParReg = {};
+  ronds.forEach(function (rd) {
+    var cR = {}, cG = {}, tot = 0, x, y;
+    var x0 = Math.max(0, Math.floor(rd.x - rd.r)), x1 = Math.min(MASQUE_W - 1, Math.ceil(rd.x + rd.r));
+    var y0 = Math.max(0, Math.floor(rd.y - rd.r)), y1 = Math.min(MASQUE_H - 1, Math.ceil(rd.y + rd.r));
+    for (y = y0; y <= y1; y++) for (x = x0; x <= x1; x++) {
+      if ((x - rd.x) * (x - rd.x) + (y - rd.y) * (y - rd.y) > rd.r * rd.r) continue;
+      var i = y * MASQUE_W + x, k = REG[i]; if (!k) continue;
+      var v = x < COUPE ? 0 : 1, cle = k + '|' + v, g = GRP[i];
+      cR[cle] = (cR[cle] || 0) + 1; tot++;
+      cG[k] = cG[k] || {}; cG[k][g] = (cG[k][g] || 0) + 1;
+      if (!vu[i]) { vu[i] = 1; couvert[v]++; }
+    }
+    var une = false;
+    Object.keys(cR).forEach(function (cle) {
+      var p = cle.split('|'), k = +p[0], v = +p[1], n = cR[cle];
+      if (n >= tot * 0.12 || n >= PX_REG[k][v] * 0.35) { garde[k] = 1; une = true; }
+    });
+    if (!une && tot) {   // un tout petit point : la région qui en a le plus
+      var meilleure = Object.keys(cR).sort(function (a, b) { return cR[b] - cR[a]; })[0];
+      garde[+meilleure.split('|')[0]] = 1;
+    }
+    Object.keys(cG).forEach(function (k) {
+      var t = 0; Object.keys(cG[k]).forEach(function (g) { t += cG[k][g]; });
+      Object.keys(cG[k]).forEach(function (g) {
+        if (cG[k][g] >= t * 0.15) { grpParReg[k] = grpParReg[k] || {}; grpParReg[k][g] = 1; }
+      });
+    });
+  });
+  var entier = couvert[0] >= TOT_VUE[0] * 0.85 || couvert[1] >= TOT_VUE[1] * 0.85;
+  return { regions: Object.keys(garde).map(function (k) { return REGIONS[k - 1]; }), grpParReg: grpParReg, entier: entier };
+}
+/* Les étiquettes unies : deux côtés → le pluriel ; haut + bas du dos → Dos ; bras + avant-bras → tout le bras ;
+   cuisse + jambe → toute la jambe ; ce qui ne se touche pas reste séparé. Chaque étiquette garde ses régions. */
+var PAIRES_UNIES = [["Tout le bras droit", "Tout le bras gauche", "Les deux bras au complet"],
+  ["Toute la jambe droite", "Toute la jambe gauche", "Les deux jambes au complet"],
+  ["Épaule droite", "Épaule gauche", "Épaules"], ["Bras droit", "Bras gauche", "Les deux bras"],
+  ["Avant-bras droit", "Avant-bras gauche", "Les deux avant-bras"], ["Main droite", "Main gauche", "Mains"],
+  ["Hanche droite", "Hanche gauche", "Hanches"], ["Fessier droit", "Fessier gauche", "Fessiers"],
+  ["Cuisse droite", "Cuisse gauche", "Cuisses"], ["Genou droit", "Genou gauche", "Genoux"],
+  ["Jambe droite", "Jambe gauche", "Jambes"], ["Pied droit", "Pied gauche", "Pieds"]];
+var TOUTS_UNIS = [["Dos", ["Haut du dos", "Bas du dos"], []], ["Tout le cou", ["Cou", "Nuque"], []],
+  ["Tout le bras droit", ["Bras droit", "Avant-bras droit"], ["Main droite"]],
+  ["Tout le bras gauche", ["Bras gauche", "Avant-bras gauche"], ["Main gauche"]],
+  ["Toute la jambe droite", ["Cuisse droite", "Jambe droite"], ["Genou droit", "Pied droit"]],
+  ["Toute la jambe gauche", ["Cuisse gauche", "Jambe gauche"], ["Genou gauche", "Pied gauche"]]];
+function unirZones(regions, entier) {
+  if (entier || REGIONS.every(function (n) { return regions.indexOf(n) >= 0; }))
+    return [{ nom: 'Corps entier', membres: REGIONS.slice(), deux: true }];
+  var et = regions.map(function (n) { return { nom: n, membres: [n], deux: false }; });
+  function trouve(n) { for (var i = 0; i < et.length; i++) if (et[i].nom === n) return et[i]; return null; }
+  TOUTS_UNIS.forEach(function (t) {
+    if (!t[1].every(trouve)) return;
+    var membres = [];
+    t[1].concat(t[2]).forEach(function (n) { var e = trouve(n); if (e) { membres = membres.concat(e.membres); et.splice(et.indexOf(e), 1); } });
+    et.push({ nom: t[0], membres: membres, deux: false });
+  });
+  PAIRES_UNIES.forEach(function (p) {
+    var a = trouve(p[0]), b = trouve(p[1]); if (!a || !b) return;
+    et.splice(et.indexOf(a), 1); et.splice(et.indexOf(b), 1);
+    et.push({ nom: p[2], membres: a.membres.concat(b.membres), deux: true });
+  });
+  function rang(e) {   // de la tête aux pieds ; l'avant-bras se range avec le bras
+    return Math.min.apply(null, e.membres.map(function (m) { var i = REGIONS.indexOf(m); return i === 25 ? 5.5 : i === 26 ? 6.5 : i; }));
+  }
+  return et.sort(function (a, b) { return rang(a) - rang(b); });
+}
+/* Les muscles d'une étiquette (clés de MUSCLES_FR), de la tête aux pieds. Rien sous « Corps entier ». */
+function musclesDe(e, grpParReg) {
+  if (e.nom === 'Corps entier') return [];
+  var cles = {};
+  e.membres.forEach(function (m) {
+    var k = REGIONS.indexOf(m) + 1, gs = grpParReg[k] || {};
+    Object.keys(gs).forEach(function (g) { var x = GROUPES[g]; if (x && MUSCLES_FR[x[0]] && MUSCLES_FR[x[0]][0]) cles[x[0]] = 1; });
+  });
+  return Object.keys(cles).sort(function (a, b) { return ORDRE_MUSCLES.indexOf(a) - ORDRE_MUSCLES.indexOf(b); });
 }
 
 // ─── ZONES CORPORELLES ─────────────────────────────────────────
@@ -361,46 +488,121 @@ function setCorpsMode(mode) {
   if (mode === 'douleur' && stickerMode) toggleStickerMode();
 }
 
-// Les collants de douleur : chacun garde les régions qu'il couvre dans data-zones (séparées par |).
-function nomsDouleur() {
-  var noms = [];
-  zonesDouleur.forEach(function (c) { (c.dataset.zones || '').split('|').forEach(function (n) { if (n && noms.indexOf(n) === -1) noms.push(n); }); });
-  return noms;
+// Les collants de douleur : { el, x, y (en % de l'image), d (diamètre en fraction de sa largeur) }.
+// Une touche pose un petit point (il nomme ce qui est sous le doigt) ; garder le doigt
+// appuyé l'agrandit jusqu'au corps entier ; une touche dessus l'enlève (dans un cercle d'au moins 22 px :
+// le doigt est plus gros que le point).
+var COLLANT_POINT = 0.004, COLLANT_MAX = 0.8, APPUI_LONG_MS = 380, POUSSE_PAR_S = 0.22;
+function largeurCorps() { var w = document.getElementById('corps-wrap'); return (w && w.getBoundingClientRect().width) || 1; }
+function rayonCollantPx(c) { return Math.max(11, c.d * largeurCorps() / 2); }
+function dessinerCollant(c) {
+  var r = rayonCollantPx(c);
+  c.el.style.left = c.x.toFixed(2) + '%'; c.el.style.top = c.y.toFixed(2) + '%';
+  c.el.style.width = c.el.style.height = Math.round(r * 2) + 'px';
+  if (c.el.classList) c.el.classList.toggle('point', r < 12);
 }
+function etiquettesDouleur() {
+  if (!REG || !zonesDouleur.length) return [];
+  var a = analyserCorps(zonesDouleur.map(function (c) {
+    return { x: c.x / 100 * MASQUE_W, y: c.y / 100 * MASQUE_H, r: Math.max(1, c.d / 2 * MASQUE_W) };
+  }));
+  return unirZones(a.regions, a.entier).map(function (e) { return { nom: e.nom, deux: e.deux, muscles: musclesDe(e, a.grpParReg) }; });
+}
+function motsMuscles(e, lang) {
+  var T = lang === 'en' ? MUSCLES_EN : MUSCLES_FR;
+  return e.muscles.map(function (k) { return T[k][e.deux ? 1 : 0]; });
+}
+// Ancien nom gardé : applyLang() l'appelle.
+function nomsDouleur() { return etiquettesDouleur().map(function (e) { return e.nom; }); }
 
 function renderZoneTags() {
-  var noms = nomsDouleur();
+  var et = etiquettesDouleur();
+  // Le texte envoyé est toujours en français,
+  // « Dos (trapèze moyen · grand dorsal · lombaires), Épaules (deltoïdes postérieurs) ».
+  document.getElementById('zones-input').value = et.map(function (e) {
+    var m = motsMuscles(e, 'fr'); return e.nom + (m.length ? ' (' + m.join(' · ') + ')' : '');
+  }).join(', ');
   var container = document.getElementById('zones-tags');
-  document.getElementById('zones-input').value = noms.join(', ');
-  if (!noms.length) {
+  if (!et.length) {
     container.innerHTML = '<em style="color:#c0b0a0;font-size:13px">' + (currentLang === 'en' ? 'No area selected' : 'Aucune zone sélectionnée') + '</em>';
     return;
   }
-  container.innerHTML = noms.map(function(z) { return '<span class="zone-tag">' + zoneLabel(z) + '</span>'; }).join('');
+  // E1 : la partie du corps en or dans l'étiquette noire, ses muscles en petit dessous.
+  container.innerHTML = et.map(function (e) {
+    var m = motsMuscles(e, currentLang);
+    return '<span class="zone-tag"><b>' + zoneLabel(e.nom) + '</b>' + (m.length ? '<small>' + m.join(' · ') + '</small>' : '') + '</span>';
+  }).join('');
 }
 
-function placerCollantDouleur(wrap, xPct, yPct, largeur) {
-  var taille = Math.max(42, largeur * 0.075);   // assez gros pour le doigt
-  var noms = regionsSous(xPct, yPct, largeur * 0.0375, largeur);   // mais il attrape la même part du corps partout
-  if (!noms || !noms.length) return;   // carte pas encore chargée, ou touché dans le vide
-  var c = document.createElement('div');
-  c.className = 'collant-douleur';
-  c.style.left = xPct.toFixed(2) + '%';
-  c.style.top = yPct.toFixed(2) + '%';
-  c.style.width = c.style.height = Math.round(taille) + 'px';
-  c.dataset.zones = noms.join('|');
-  c.title = noms.map(zoneLabel).join(', ') + (currentLang === 'en' ? ' — tap to remove' : ' — toucher pour retirer');
-  c.addEventListener('click', function (ev) {
-    ev.stopPropagation();
-    if (stickerMode) return;
-    if (c.parentNode) c.parentNode.removeChild(c);
-    zonesDouleur = zonesDouleur.filter(function (x) { return x !== c; });
-    renderZoneTags();
-  });
-  wrap.appendChild(c);
-  zonesDouleur.push(c);
+function poserCollant(xPct, yPct) {
+  var wrap = document.getElementById('corps-wrap');
+  var el = document.createElement('div');
+  el.className = 'collant-douleur';
+  var c = { el: el, x: xPct, y: yPct, d: COLLANT_POINT };
+  wrap.appendChild(el); dessinerCollant(c);
+  zonesDouleur.push(c); renderZoneTags();
+  return c;
+}
+function enleverCollant(c) {
+  if (c.el && c.el.parentNode) c.el.parentNode.removeChild(c.el);
+  zonesDouleur = zonesDouleur.filter(function (x) { return x !== c; });
   renderZoneTags();
 }
+function collantSous(xPct, yPct) {
+  var w = document.getElementById('corps-wrap').getBoundingClientRect(), best = null;
+  zonesDouleur.forEach(function (c) {
+    var dx = (xPct - c.x) / 100 * w.width, dy = (yPct - c.y) / 100 * w.height, r = Math.max(22, rayonCollantPx(c));
+    if (dx * dx + dy * dy <= r * r && (!best || c.d < best.d)) best = c;   // le plus petit d'abord
+  });
+  return best;
+}
+// La zone génitale : on n'y pose rien. Le carré d'avant (x 21–33 %, y 44–49 %) couvrait les deux hanches.
+function zoneGenitale(xPct, yPct) { return xPct >= 25 && xPct <= 29 && yPct >= 44 && yPct <= 49.5; }
+
+// Le doigt sur le corps : touche courte = poser ou enlever ; appui long = le collant grandit tant qu'on tient.
+var appuiCorps = null;
+(function brancherCorps() {
+  var wrap = document.getElementById('corps-wrap');
+  if (!wrap || !window.PointerEvent) return;
+  function pos(e) { var r = wrap.getBoundingClientRect(); return { x: (e.clientX - r.left) / r.width * 100, y: (e.clientY - r.top) / r.height * 100 }; }
+  wrap.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+  wrap.addEventListener('pointerdown', function (e) {
+    if (e.target.closest && e.target.closest('.zone-interdit-sticker')) return;
+    var p = pos(e), a = { p: p, sur: stickerMode ? null : collantSous(p.x, p.y), pousse: null, bouge: false };
+    appuiCorps = a;
+    if (stickerMode) return;
+    a.minuterie = setTimeout(function () {
+      if (appuiCorps !== a || a.bouge) return;
+      var c = a.sur || ((zoneGenitale(p.x, p.y) || !REG) ? null : poserCollant(p.x, p.y));
+      if (!c) return;
+      a.pousse = c;
+      var t0 = performance.now(), d0 = c.d;
+      (function boucle(t) {
+        if (appuiCorps !== a) return;
+        c.d = Math.min(COLLANT_MAX, d0 + (t - t0) / 1000 * POUSSE_PAR_S);
+        dessinerCollant(c); renderZoneTags();
+        if (c.d < COLLANT_MAX) requestAnimationFrame(boucle);
+      })(t0);
+    }, APPUI_LONG_MS);
+  });
+  wrap.addEventListener('pointermove', function (e) {
+    var a = appuiCorps; if (!a || a.pousse) return;
+    var p = pos(e); if (Math.abs(p.x - a.p.x) + Math.abs(p.y - a.p.y) > 3) a.bouge = true;   // il fait défiler la page
+  });
+  // Pendant qu'il grandit, le doigt ne fait pas défiler la page.
+  wrap.addEventListener('touchmove', function (e) { if (appuiCorps && appuiCorps.pousse) e.preventDefault(); }, { passive: false });
+  function fin(e) {
+    var a = appuiCorps; if (!a) return;
+    clearTimeout(a.minuterie); appuiCorps = null;
+    if (a.pousse || a.bouge || e.type === 'pointercancel') return;
+    if (stickerMode) { placerSticker(e); return; }
+    if (a.sur) { enleverCollant(a.sur); return; }
+    if (!zoneGenitale(a.p.x, a.p.y) && REG) poserCollant(a.p.x, a.p.y);
+  }
+  wrap.addEventListener('pointerup', fin);
+  wrap.addEventListener('pointercancel', fin);
+  window.addEventListener('resize', function () { zonesDouleur.forEach(dessinerCollant); });
+})();
 
 // ─── MODE COLLANTS ⊘ ───────────────────────────────────────────
 function toggleStickerMode() {
@@ -427,9 +629,7 @@ function placerSticker(e) {
   var src = e.touches ? e.touches[0] : e;
   var xPct = (src.clientX - rect.left) / rect.width * 100;
   var yPct = (src.clientY - rect.top)  / rect.height * 100;
-  // Blocage zone génitale — zone élargie (entre hanches et quadriceps, centre)
-  if (xPct >= 21 && xPct <= 33 && yPct >= 44 && yPct <= 49) return;
-  if (!stickerMode) { placerCollantDouleur(wrap, xPct, yPct, rect.width); return; }
+  if (zoneGenitale(xPct, yPct)) return;
   // Le nom du collant ⊘ : la région du corps sous le doigt.
   var trouve = regionsSous(xPct, yPct, 4, rect.width);
   if (!trouve || !trouve.length) return;
@@ -462,7 +662,7 @@ function placerSticker(e) {
  */
 function reinitialiserCorps() {
   try {
-    zonesDouleur.forEach(function(c) { if (c && c.parentNode) c.parentNode.removeChild(c); });
+    zonesDouleur.forEach(function(c) { if (c && c.el && c.el.parentNode) c.el.parentNode.removeChild(c.el); });
     zonesDouleur = [];
     renderZoneTags();
   } catch (e) { console.warn('zones de douleur :', e); }
@@ -493,6 +693,8 @@ function updateStickerInput() {
     if (z && zones.indexOf(z) === -1) zones.push(z);
   });
 
+  // Les noms s'unissent comme ceux de la douleur (deux côtés → pluriel, haut + bas du dos → Dos…).
+  zones = unirZones(zones, false).map(function (e) { return e.nom; });
   if (inp) inp.value = zones.join(', ');
 
   if (container) container.style.display = 'block';

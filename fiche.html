@@ -21,11 +21,11 @@
   <!-- jsPDF -->
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <!-- Logique formulaire -->
-  <script defer src="fiche-script.js?v=20261126e"></script>
+  <script defer src="fiche-script.js?v=20261126z"></script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="vb.css?v=20261126d">
+  <link rel="stylesheet" href="vb.css?v=20261126L">
   <style>
     :root {
       --noir: #1c1208;
@@ -120,11 +120,20 @@
     }
     .corps-anatomique-wrap img { width: 100%; height: auto; display: block; }
     /* Le collant de douleur : un rond doré qui nomme les régions sous lui */
-    .collant-douleur { position: absolute; transform: translate(-50%, -50%); border-radius: 50%; z-index: 3; cursor: pointer;
-      background: rgba(201,162,39,.30); border: 3px solid var(--vb-or); box-shadow: 0 2px 8px rgba(20,16,13,.25); animation: pose-collant .35s var(--vb-sortie); }
-    .collant-douleur::after { content: ''; position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; border-radius: 50%; background: var(--vb-or-encre); transform: translate(-50%, -50%); }
-    @keyframes pose-collant { from { transform: translate(-50%, -50%) scale(.4); opacity: 0; } to { transform: translate(-50%, -50%) scale(1); opacity: 1; } }
-    .corps-anatomique-wrap { cursor: pointer; }
+    /* Kevin, 26 nov. : le look H2, un halo creux qui respire — un anneau d'or cerné de sombre, le centre clair
+       sur le muscle ; au premier toucher, un petit point d'or bordé de noir. Il grandit tant qu'on tient. */
+    .collant-douleur { position: absolute; transform: translate(-50%, -50%); border-radius: 50%; z-index: 3; pointer-events: none;
+      background: radial-gradient(circle, rgba(255,236,170,0) 52%, rgba(255,226,140,.55) 64%, rgba(240,196,70,.98) 76%, rgba(201,150,20,1) 84%, rgba(20,16,13,.75) 88%, rgba(20,16,13,0) 94%);
+      box-shadow: inset 0 0 0 1.5px rgba(20,16,13,.55), 0 0 10px 2px rgba(255,214,110,.55);
+      animation: respire-collant 2.8s ease-in-out infinite; }
+    .collant-douleur.point { box-shadow: none;
+      background: radial-gradient(circle, #fff1c2 0 22%, #f0c446 23% 58%, #14100d 59% 72%, rgba(255,214,110,.55) 73% 86%, rgba(255,214,110,0) 87%); }
+    @keyframes respire-collant { 0%, 100% { opacity: 1; } 50% { opacity: .78; } }
+    @media (prefers-reduced-motion: reduce) { .collant-douleur { animation: none; } }
+    /* Le doigt sur le corps : la page défile encore à la verticale ; pas de loupe ni de menu à l'appui long. */
+    .corps-anatomique-wrap { cursor: pointer; touch-action: pan-y; -webkit-user-select: none; user-select: none;
+      -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
+    .corps-anatomique-wrap img { pointer-events: none; -webkit-user-drag: none; }
 
 
     .corps-mode-btns { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
@@ -266,13 +275,11 @@
     body.vb { font-family: var(--vb-sans); background: var(--vb-papier); color: var(--vb-encre); -webkit-font-smoothing: antialiased; }
     body.vb::before { display: none; }
     .tete-q { background: var(--vb-papier); border-bottom: 1px solid var(--vb-trait); }
-    .tete-q-in { max-width: 1100px; margin: 0 auto; padding: 64px 40px 42px; display: grid; grid-template-columns: 1fr 320px; gap: 48px; align-items: end; }
+    .tete-q-in { max-width: 1100px; margin: 0 auto; padding: 64px 40px 42px; display: grid; grid-template-columns: 1fr; gap: 48px; align-items: end; }
     .tete-q .sur { display: inline-block; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--vb-or-encre); font-weight: 500; }
     .tete-q h1 { font-family: var(--vb-serif); font-weight: 400; font-size: clamp(46px, 6vw, 80px); line-height: .98; letter-spacing: -.015em; margin-top: 12px; }
     .tete-q h1 em { color: var(--vb-or-encre); }
     .tete-q .chapo { font-size: 16.5px; line-height: 1.7; color: var(--vb-encre-2); margin-top: 18px; max-width: 58ch; font-weight: 300; }
-    .verrou { background: #fff; border: 1px solid var(--vb-trait); border-left: 3px solid var(--vb-or); padding: 20px 22px; font-size: 14.5px; line-height: 1.6; color: var(--vb-encre-2); }
-    .verrou-titre { font-family: var(--vb-serif); font-size: 22px; font-weight: 500; color: var(--vb-encre); margin-bottom: 4px; }
     .fiche-body { max-width: 860px; padding: 44px 40px 90px; }
     .q-form { counter-reset: sec; }
     .q-section { counter-increment: sec; background: #fff; border: 1px solid var(--vb-trait); border-radius: 0; box-shadow: none; padding: 34px 34px 30px; margin-bottom: 18px; }
@@ -289,7 +296,10 @@
     .corps-anatomique-wrap, #draw-canvas { border-radius: 0; }
     .corps-anatomique-wrap { border: 1px solid var(--vb-trait); }
     .zones-tags-container { border-radius: 0; background: var(--vb-papier); border: 1px dashed var(--vb-trait); }
-    .zone-tag { border-radius: 0; background: var(--vb-pierre); color: var(--vb-or-clair); font-family: var(--vb-sans); }
+    .zone-tag { border-radius: 0; background: var(--vb-pierre); color: var(--vb-or-clair); font-family: var(--vb-sans);
+      vertical-align: top; padding: 6px 12px 7px; max-width: 100%; }
+    .zone-tag b { display: block; font-weight: 500; font-size: 13.5px; }
+    .zone-tag small { display: block; font-size: 11.5px; color: #cdbfa8; line-height: 1.35; margin-top: 1px; }
     .zone-tag-interdit { border-radius: 0; font-family: var(--vb-sans); }
     .mode-corps-btn { border-radius: 40px; border: 1px solid var(--vb-pierre); color: var(--vb-pierre); font-family: var(--vb-sans); font-size: 13.5px; padding: 10px 20px; }
     .mode-corps-btn.active-douleur { background: var(--vb-or); border-color: var(--vb-or); color: var(--vb-pierre); }
@@ -350,7 +360,6 @@
       <p class="chapo" data-fr>Veuillez remplir ce formulaire avant votre séance. Les informations demeurent confidentielles et servent uniquement à assurer votre sécurité et la qualité des soins.</p>
       <p class="chapo" data-en>Please complete this form before your session. All information is confidential and used solely to ensure your safety and the quality of care.</p>
     </div>
-    <aside class="verrou"><div class="verrou-titre" data-fr>Confidentiel</div><div class="verrou-titre" data-en>Confidential</div><p data-fr>Ce que vous écrivez va à Vitalité Bohème, de la façon décrite dans la <a href="confidentialite.html">politique de confidentialité</a>.</p><p data-en>What you write goes to Vitalité Bohème, as described in the <a href="confidentialite.html">privacy policy</a>.</p></aside>
   </div>
 </header>
 
@@ -523,8 +532,8 @@
     <div class="q-section anim-entree">
       <h3 data-fr>Douleurs, tensions et zones sensibles</h3>
       <h3 data-en>Pain, tension & sensitive areas</h3>
-      <p style="font-size:14px; color:var(--brun); margin-bottom:20px; line-height:1.7;" data-fr>Touchez le corps là où vous avez de la douleur ou de l'inconfort : un collant doré se pose et nomme la zone. Touchez-le de nouveau pour l'enlever.</p>
-      <p style="font-size:14px; color:var(--brun); margin-bottom:20px; line-height:1.7;" data-en>Tap the body where you feel pain or discomfort: a gold sticker appears and names the area. Tap it again to remove it.</p>
+      <p style="font-size:14px; color:var(--brun); margin-bottom:20px; line-height:1.7;" data-fr>Touchez le corps là où vous avez de la douleur ou de l'inconfort : un petit point se pose et nomme la zone. Gardez le doigt appuyé pour l'agrandir. Touchez-le de nouveau pour l'enlever.</p>
+      <p style="font-size:14px; color:var(--brun); margin-bottom:20px; line-height:1.7;" data-en>Tap the body where you feel pain or discomfort: a small dot appears and names the area. Keep your finger down to make it bigger. Tap it again to remove it.</p>
 
       <div class="corps-mode-btns">
         <button type="button" id="btn-mode-douleur" class="mode-corps-btn active-douleur" onclick="setCorpsMode('douleur')">
@@ -542,7 +551,7 @@
         </button>
       </div>
 
-      <div class="corps-anatomique-wrap" id="corps-wrap" onclick="placerSticker(event)">
+      <div class="corps-anatomique-wrap" id="corps-wrap">
         <img src="images/corps-anatomique.png" alt="Corps humain — zones de douleur" />
       </div>
 
@@ -646,10 +655,10 @@
           I commit to attending with <strong>basic personal hygiene</strong> and to rescheduling if I have contagious symptoms. I confirm I will not be under the influence of alcohol or drugs. I understand that massage therapy is a <strong>professional and therapeutic service</strong>. I accept the <strong>cancellation policy</strong>: for a cancellation under 24 hours or a no-show, fees of <strong>up to $50</strong> per booked slot may be claimed, based on the loss incurred. I declare that all information provided is accurate and acknowledge that massage therapy <strong>does not replace medical advice</strong>. <strong>I agree to report any skin condition</strong> (fungal infection, warts, open wounds, infection) before my session to ensure the safety of all.
         </p>
         <p data-fr style="font-size:13px;color:var(--gris);line-height:1.9;margin:0 0 18px;padding-top:16px;border-top:1px solid #e2d8cc;">
-          Ce que deviennent tes renseignements : <a href="confidentialite.html" target="_blank" rel="noopener" style="color:#7b241c;font-weight:600;">politique de confidentialité</a>.
+          <span style="letter-spacing:.14em;text-transform:uppercase;font-size:10.5px;font-weight:500;margin-right:4px;">Confidentiel</span>Ce que vous écrivez va à Vitalité Bohème, de la façon décrite dans la <a href="confidentialite.html" target="_blank" rel="noopener" style="color:#7b241c;font-weight:600;">politique de confidentialité</a>.
         </p>
         <p data-en style="font-size:13px;color:var(--gris);line-height:1.9;margin:0 0 18px;padding-top:16px;border-top:1px solid #e2d8cc;">
-          What happens to your information: <a href="confidentialite.html" target="_blank" rel="noopener" style="color:#7b241c;font-weight:600;">privacy policy</a>.
+          <span style="letter-spacing:.14em;text-transform:uppercase;font-size:10.5px;font-weight:500;margin-right:4px;">Confidential</span>What you write goes to Vitalité Bohème, as described in the <a href="confidentialite.html" target="_blank" rel="noopener" style="color:#7b241c;font-weight:600;">privacy policy</a>.
         </p>
         <div style="display:flex;align-items:center;gap:12px;padding-top:16px;border-top:1px solid #e2d8cc;">
           <input type="checkbox" name="consentement_global" id="consentement_global" style="width:20px;height:20px;accent-color:var(--or);flex-shrink:0;cursor:pointer;" />
@@ -721,7 +730,7 @@
   }
 })();
 </script>
-<script src="vb.js?v=20261126d"></script>
+<script src="vb.js?v=20261126L"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "39820f3e66a545a7bb606088d3552fc6"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

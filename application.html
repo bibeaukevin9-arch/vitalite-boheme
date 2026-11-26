@@ -21,37 +21,51 @@
   <link rel="apple-touch-icon" href="images/apple-touch-icon-vb.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="vb.css?v=20261126d">
+  <link rel="stylesheet" href="vb.css?v=20261126L">
   <style>
     [data-en] { display: none; } body.en [data-fr] { display: none; } body.en [data-en] { display: block; }
     body.en span[data-en], body.en a[data-en], body.en b[data-en] { display: inline; }
     body.en span[data-fr], body.en a[data-fr], body.en b[data-fr] { display: none; }
-    .vers-le-bas { display: block; text-align: center; text-decoration: none; background: #fff; border: 1px solid var(--vb-trait);
-      border-top: 3px solid var(--vb-or); padding: 18px 20px; margin-bottom: 18px; color: var(--vb-encre-2); font-size: 15px; line-height: 1.6; }
-    .vers-le-bas b { color: var(--vb-encre); font-weight: 500; }
-    .vers-le-bas:hover { background: var(--vb-papier-2); }
-    .vers-le-bas .fleche { display: block; font-size: 20px; line-height: 1; color: var(--vb-or-encre); margin-top: 6px; animation: descendre 1.9s ease-in-out infinite; }
-    @keyframes descendre { 0%,100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
-    @media (prefers-reduced-motion: reduce) { .vers-le-bas .fleche { animation: none; } }
     .principe { font-family: var(--vb-serif) !important; font-size: 24px !important; line-height: 1.4 !important; color: var(--vb-encre) !important;
       border-left: 3px solid var(--vb-or); padding-left: 18px; margin: 4px 0 16px !important; }
-    .telecharger { scroll-margin-top: calc(var(--vb-barre-h) + 20px); text-align: center; background: var(--vb-pierre); border-color: var(--vb-pierre); }
-    .telecharger h2 { color: var(--vb-creme); border-bottom-color: var(--vb-trait-sombre); }
-    .telecharger p { color: var(--vb-sur-pierre); }
-    .bouton { display: inline-flex; align-items: center; gap: 10px; background: var(--vb-or); color: var(--vb-pierre) !important; text-decoration: none;
-      font-family: var(--vb-sans); font-weight: 500; font-size: 16px; letter-spacing: .03em; padding: 17px 36px; border-radius: 40px; margin: 14px 0 10px;
-      transition: background .25s; }
-    .bouton:hover { background: var(--vb-or-clair); }
-    .sous-bouton { font-size: 12.5px !important; color: var(--vb-sur-pierre) !important; }
-    .compteur { display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--vb-trait-sombre); }
+    /* La case carrée du téléchargement : la même que les cases de liens.html (coin plié doré) */
+    .telecharger-zone { scroll-margin-top: calc(var(--vb-barre-h) + 20px); margin-bottom: 26px; }
+    .case { position: relative; display: flex; align-items: center; gap: 16px; padding: 15px 20px 15px 16px; text-decoration: none;
+      background: #fff; border: 1px solid var(--vb-trait); border-radius: 0; color: var(--vb-encre); -webkit-tap-highlight-color: transparent;
+      transition: border-color .2s, box-shadow .2s, transform .2s; }
+    a.case:hover, a.case:focus-visible { border-color: var(--vb-encre); box-shadow: inset 0 0 0 1px var(--vb-encre); outline: none; }
+    a.case:active { transform: scale(.985); }
+    .case.vedette { border: 2px solid var(--vb-encre); padding: 20px 20px 20px 16px; }
+    .case.vedette::after { content: ''; position: absolute; top: 0; right: 0; border-style: solid; border-width: 0 18px 18px 0;
+      border-color: transparent var(--vb-or) transparent transparent; }
+    .case.vedette:hover { box-shadow: none; background: var(--vb-papier); }
+    .case .ico { flex: none; width: 44px; height: 44px; color: var(--vb-or-encre); }
+    .case .ico svg { width: 100%; height: 100%; display: block; overflow: visible; }
+    .case .txt { flex: 1 1 auto; min-width: 0; }
+    .case .titre { display: block; font-family: var(--vb-serif); font-size: 23px; font-weight: 600; line-height: 1.15; }
+    .case .sous { display: block; font-size: 12.5px; color: var(--vb-encre-3); margin-top: 3px; line-height: 1.45; }
+    .case .fleche { flex: none; width: 14px; height: 14px; color: var(--vb-encre); }
+    .case .fleche svg { width: 100%; height: 100%; display: block; }
+    .avertir { font-size: 14px; line-height: 1.6; color: var(--vb-encre-2); margin: 12px 2px 0; }
+    /* Le compteur reste masqué tant que GitHub n'a pas répondu (voir le script) */
+    .compteur { display: none; font-size: 12.5px; color: var(--vb-encre-3); margin: 8px 2px 0; }
     .compteur.visible { display: block; }
-    .compteur .nombre { font-family: var(--vb-serif); font-size: 36px; font-weight: 500; color: var(--vb-or-clair); line-height: 1.1; display: block; }
-    .compteur .quoi { font-size: 13px; color: var(--vb-sur-pierre); }
-    .compteur.en-ligne { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--vb-trait); }
-    .compteur.en-ligne .nombre { font-size: 28px; display: inline; color: var(--vb-encre); }
-    .compteur.en-ligne .quoi { font-size: 12.5px; color: var(--vb-encre-3); }
-    .chantier { border-left: 3px solid var(--vb-or); background: var(--vb-papier); padding: 18px 20px; }
-    .chantier h2 { border-bottom: 0; padding-bottom: 0; margin-bottom: 10px; }
+    .compteur .nombre { font-family: var(--vb-serif); font-size: 18px; color: var(--vb-encre); font-weight: 600; }
+    /* Les cases qui s'ouvrent */
+    .replis { display: flex; flex-direction: column; gap: 12px; margin-bottom: 22px; }
+    details.case { display: block; padding: 0; }
+    details.case summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 14px;
+      padding: 17px 20px 17px 18px; font-family: var(--vb-serif); font-size: 21px; font-weight: 600; line-height: 1.2; }
+    details.case summary::-webkit-details-marker { display: none; }
+    details.case summary::after { content: "+"; flex: none; color: var(--vb-or-encre); font-family: var(--vb-sans); font-size: 24px; font-weight: 400; line-height: 1; }
+    details.case[open] summary::after { content: "\2212"; }
+    details.case[open] { border-color: var(--vb-encre); }
+    details.case .dedans { padding: 0 20px 18px 18px; font-size: 15px; line-height: 1.7; color: var(--vb-encre-2); }
+    details.case .dedans p { margin: 0 0 12px; }
+    details.case .dedans ul, details.case .dedans ol { margin: 0 0 12px; padding-left: 20px; }
+    details.case .dedans b { color: var(--vb-encre); font-weight: 500; }
+    details.etapes { margin-top: 12px; }
+    details.etapes summary { font-family: var(--vb-sans); font-size: 15px; font-weight: 500; padding: 14px 18px; }
   </style>
 </head>
 <body class="vb vb-texte">
@@ -84,140 +98,118 @@
 
 <main class="vb-corps">
 
-  <a class="vers-le-bas" href="#telecharger">
-    <span data-fr><b>Le téléchargement est au bas de la page.</b><br>Ce qui précède explique l'application et son installation.</span>
-    <span data-en><b>The download is at the bottom of the page.</b><br>What comes before explains the app and its installation.</span>
-    <span class="fleche" aria-hidden="true">↓</span>
-    <span class="compteur en-ligne">
-      <span class="nombre">—</span>
-      <span class="quoi" data-fr>téléchargements à ce jour</span>
-      <span class="quoi" data-en>downloads to date</span>
-    </span>
-  </a>
+  <div class="telecharger-zone" id="telecharger">
+    <a class="case vedette" href="https://github.com/bibeaukevin9-arch/vitalite-boheme/releases/download/v0.83/Vitalite-Boheme.apk">
+      <span class="ico" aria-hidden="true">
+        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="12" y="4" width="16" height="32" rx="1.5"/><path d="M17.5 8h5"/><path d="M20 13v12"/><path d="M15.5 21l4.5 4.5 4.5-4.5"/>
+        </svg>
+      </span>
+      <span class="txt">
+        <span class="titre"><span data-fr>Télécharger l'application</span><span data-en>Download the app</span></span>
+        <span class="sous"><span data-fr>Android 8 et plus · 58,4 Mo</span><span data-en>Android 8 and later · 58.4 MB</span></span>
+      </span>
+      <span class="fleche" aria-hidden="true"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2l5 5-5 5"/></svg></span>
+    </a>
+    <p class="avertir" data-fr>Android va t'avertir deux ou trois fois avant l'installation. C'est normal pour une application qui vient d'un site plutôt que de Google Play.</p>
+    <p class="avertir" data-en>Android will warn you two or three times before installing. That is normal for an app that comes from a website rather than Google Play.</p>
+    <details class="case etapes">
+      <summary><span data-fr>Les étapes, une par une</span><span data-en>The steps, one by one</span></summary>
+      <div class="dedans">
+        <div data-fr>
+          <ol>
+            <li>Depuis un téléphone Android, touche la case ci-dessus.</li>
+            <li>Le navigateur dira que <i>ce type de fichier peut endommager ton appareil</i>. Choisis <b>Télécharger quand même</b>.</li>
+            <li>Ouvre le fichier téléchargé. Android demande d'autoriser le navigateur à <b>installer des applications inconnues</b>. Cette autorisation ne se donne qu'une fois.</li>
+            <li>Un dernier écran peut indiquer <b>Application inconnue</b>. Choisis <b>Installer quand même</b>.</li>
+            <li>L'icône apparaît parmi tes applications.</li>
+          </ol>
+          <p>Les mises à jour se font ensuite depuis l'application, quand tu touches « Mettre à jour ». Elles s'installent par-dessus, sans perte de données.</p>
+        </div>
+        <div data-en>
+          <ol>
+            <li>From an Android phone, tap the box above.</li>
+            <li>The browser will warn that <i>this type of file can harm your device</i>. Choose <b>Download anyway</b>.</li>
+            <li>Open the downloaded file. Android asks you to allow the browser to <b>install unknown apps</b>. This permission is given only once.</li>
+            <li>A last screen may say <b>Unknown app</b>. Choose <b>Install anyway</b>.</li>
+            <li>The icon appears among your apps.</li>
+          </ol>
+          <p>Updates then happen from inside the app, when you tap “Mettre à jour” (Update). They install over the previous version, with no loss of data.</p>
+        </div>
+      </div>
+    </details>
+    <p class="compteur"><span class="nombre">—</span> <span data-fr>téléchargements à ce jour</span><span data-en>downloads to date</span></p>
+  </div>
 
   <section class="vb-carte">
     <h2 data-fr>Pourquoi elle existe</h2><h2 data-en>Why it exists</h2>
-    <p class="principe" data-fr>Nous sommes la somme de nos habitudes. Ce sont elles, bien plus que nos décisions, qui façonnent la personne que nous devenons.</p>
-    <p class="principe" data-en>We are the sum of our habits. Far more than our decisions, they shape the person we become.</p>
-    <p data-fr>C'est de cette conviction qu'est née l'application Vitalité Bohème. Pas d'un besoin de plus dans un marché déjà rempli, mais d'un constat simple : les outils existants exigent de la constance de gens qui viennent justement chercher de l'aide pour en développer.</p>
-    <p data-en>This conviction is where the Vitalité Bohème app began. Not from another need in a crowded market, but from a simple observation: existing tools demand consistency from people who are, precisely, seeking help to build it.</p>
-    <p data-fr>Notre intention est autre. Offrir un système qui accompagne la construction de soi : installer les habitudes qui te servent, desserrer celles qui te pèsent, et surtout tenir dans la durée — parce que c'est la durée, et rien d'autre, qui transforme un geste en identité.</p>
-    <p data-en>Our intent is different: to offer a system that supports the building of a person. Establishing the habits that serve you, loosening those that weigh on you, and above all lasting over time — because time, and nothing else, turns a gesture into an identity.</p>
+    <p class="principe" data-fr>Tu es la somme de tes habitudes.</p>
+    <p class="principe" data-en>You are the sum of your habits.</p>
+    <p data-fr>Et personne ne tient une habitude tous les jours, sans exception. L'application part de ces deux vérités en même temps. Une journée manquée n'efface rien. Deux de suite appellent ton attention.</p>
+    <p data-en>And no one keeps a habit every single day. The app starts from both truths at once. A missed day erases nothing. Two in a row call for your attention.</p>
   </section>
 
-  <section class="vb-carte">
-    <h2 data-fr>Comment elle est pensée</h2><h2 data-en>How it is designed</h2>
-    <p data-fr>Trois principes gouvernent l'application. Ils expliquent la plupart des choix qui la distinguent.</p>
-    <p data-en>Three principles govern the app. They explain most of the choices that set it apart.</p>
-    <ul data-fr>
-      <li><b>Une journée manquée n'efface rien.</b> La plupart des applications d'habitudes remettent le compteur à zéro dès le premier jour sauté — précisément le moment où l'on cesse de les ouvrir. Ici, une journée manquée ne casse rien : ce sont deux journées consécutives qui appellent l'attention. La recherche sur la formation des habitudes appuie cette approche : un oubli occasionnel ne compromet pas l'automatisation d'un comportement.</li>
-      <li><b>Le point de départ compte autant que le chemin.</b> Un court portrait situe où tu en es avant de mesurer quoi que ce soit. Il porte sur ce que tu es, jamais sur ce que tu consommes, et rien n'y est obligatoire.</li>
-      <li><b>Construire et retirer sont deux gestes distincts.</b> Installer une habitude ne se conduit pas comme en desserrer une autre. L'application les traite séparément, avec des mécaniques différentes.</li>
-    </ul>
-    <ul data-en>
-      <li><b>A missed day erases nothing.</b> Most habit apps reset the counter on the first skipped day — the exact moment people stop opening them. Here, a missed day breaks nothing: it takes two consecutive days to call for attention. Research on habit formation supports this: an occasional lapse does not compromise the automation of a behaviour.</li>
-      <li><b>The starting point matters as much as the path.</b> A short portrait places where you stand before measuring anything. It asks who you are, never what you consume, and nothing in it is required.</li>
-      <li><b>Building and letting go are two distinct acts.</b> Establishing a habit is not conducted like loosening another. The app treats them separately, with different mechanics.</li>
-    </ul>
-  </section>
+  <div class="replis">
+    <details class="case">
+      <summary><span data-fr>Ce qu'elle contient</span><span data-en>What it contains</span></summary>
+      <div class="dedans">
+        <div data-fr>
+          <p><b>Gratuite, parce que j'ai décidé qu'elle le soit.</b> Sans compte, sans publicité, et rien ne se débloque en payant.</p>
+          <ul>
+            <li><b>Le suivi des habitudes</b>, avec un calendrier qui se remplit à mesure.</li>
+            <li><b>Un minuteur d'entraînement</b> et des exercices, comptés à voix haute.</li>
+            <li><b>La respiration guidée</b> au son des bols.</li>
+            <li><b>Un carnet</b> pour relire tes journées.</li>
+            <li><b>Des jeux courts</b> de logique, de calcul et de mémoire.</li>
+            <li><b>L'anatomie en trois dimensions</b>, sans connexion.</li>
+          </ul>
+          <p>Un outil pour tenir ce que tu as décidé de faire. Il ne remplace personne.</p>
+        </div>
+        <div data-en>
+          <p><b>Free, because I decided it would be.</b> No account, no ads, and nothing unlocks by paying.</p>
+          <ul>
+            <li><b>Habit tracking</b>, with a calendar that fills in as you go.</li>
+            <li><b>A workout timer</b> and exercises, counted out loud.</li>
+            <li><b>Guided breathing</b> to the sound of singing bowls.</li>
+            <li><b>A journal</b> to look back on your days.</li>
+            <li><b>Short games</b> of logic, math and memory.</li>
+            <li><b>Anatomy in three dimensions</b>, offline.</li>
+          </ul>
+          <p>A tool to keep what you decided to do. It replaces no one.</p>
+        </div>
+      </div>
+    </details>
+    <details class="case">
+      <summary><span data-fr>Ce que tu écris reste sur ton téléphone</span><span data-en>What you write stays on your phone</span></summary>
+      <div class="dedans">
+        <div data-fr>
+          <p>Ton journal, ton carnet, tes habitudes et tes réponses au portrait ne partent nulle part sans un geste de ta part, et il n'y a aucun compte à créer.</p>
+          <p>L'application va quand même sur Internet pour trois choses précises. Elle vérifie une fois par jour s'il existe une nouvelle version, elle télécharge la mise à jour quand tu la demandes, et elle envoie des statistiques d'usage sans ton nom, seulement si tu as dit oui. La dictée vocale peut passer par Google, et l'application te le demande avant.</p>
+          <p><b>Le revers.</b> Rien n'est sauvegardé ailleurs. Si tu changes de téléphone, exporte tes données depuis les réglages, sinon elles partent avec l'ancien.</p>
+          <p><a href="confidentialite.html">Tout ce qui sort, au complet, dans la politique de confidentialité →</a></p>
+        </div>
+        <div data-en>
+          <p>Your journal, your notebook, your habits and your portrait answers go nowhere without an action on your part, and there is no account to create.</p>
+          <p>The app still goes online for three specific things. It checks once a day whether a new version exists, it downloads the update when you ask for it, and it sends usage statistics without your name, only if you said yes. Voice dictation may go through Google, and the app asks you first.</p>
+          <p><b>The flip side.</b> Nothing is backed up anywhere else. If you change phones, export your data from the settings, or it leaves with the old one.</p>
+          <p><a href="confidentialite.html">Everything that leaves, in full, in the privacy policy →</a></p>
+        </div>
+      </div>
+    </details>
+    <details class="case">
+      <summary><span data-fr>Je la construis encore</span><span data-en>I'm still building it</span></summary>
+      <div class="dedans">
+        <p data-fr>Elle change de semaine en semaine, et il reste des choses à corriger. Un crayon est sur presque tous les écrans. Tu entoures ce qui ne va pas, tu ajoutes un mot, et ton retour décide de la suite.</p>
+        <p data-en>It changes week by week, and there are still things to fix. A pencil sits on nearly every screen. You circle what is wrong, add a word, and your feedback decides what comes next.</p>
+      </div>
+    </details>
+  </div>
 
-  <section class="vb-carte">
-    <h2 data-fr>Ce qu'elle contient</h2><h2 data-en>What it contains</h2>
-    <p data-fr><b>Gratuite, sans compte, sans publicité et sans limite.</b> Aucune fonction n'est réservée à une version payante : il n'y a pas de version payante. Le nombre d'habitudes n'est pas plafonné, les statistiques ne sont pas verrouillées, et rien ne se débloque contre un abonnement.</p>
-    <p data-en><b>Free, no account, no advertising, no limits.</b> No feature is reserved for a paid tier: there is no paid tier. The number of habits is not capped, statistics are not locked, and nothing unlocks against a subscription.</p>
-    <ul data-fr>
-      <li><b>Le suivi des habitudes</b>, avec la règle des deux jours et un calendrier qui se remplit à mesure.</li>
-      <li><b>Un minuteur d'entraînement</b> et une bibliothèque d'exercices, avec le compte à voix haute.</li>
-      <li><b>Des exercices de respiration</b> guidés au son de bols.</li>
-      <li><b>Un carnet</b> pour consigner ce qui a marqué la journée, et le relire plus tard.</li>
-      <li><b>Des jeux de logique, de calcul et de mémoire</b>, courts, dont la difficulté s'ajuste au joueur.</li>
-      <li><b>L'anatomie en trois dimensions</b>, sans connexion. Les os, cent muscles qu'on fait tourner et qu'on déconstruit par groupes, de la surface à la profondeur, et trente-six mouvements joués par un corps qui bouge. Les os et les muscles ont leur livre, et chaque partie a ses jeux, avec la bonne réponse montrée à chaque question.</li>
-      <li><b>Un portrait personnel</b> et une progression d'ensemble, visibles d'un coup d'œil.</li>
-      <li><b>Une seule notification non demandée par jour</b>, le matin. L'application ne relance pas et ne réclame rien ; les rappels d'habitudes, eux, sont ceux que tu as réglés toi-même.</li>
-    </ul>
-    <ul data-en>
-      <li><b>Habit tracking</b>, with the two-day rule and a calendar that fills in as you go.</li>
-      <li><b>A workout timer</b> and an exercise library, with spoken counting.</li>
-      <li><b>Breathing exercises</b> guided by singing bowls.</li>
-      <li><b>A journal</b> to record what marked the day, and read it back later.</li>
-      <li><b>Short logic, math and memory games</b>, whose difficulty adjusts to the player.</li>
-      <li><b>Anatomy in three dimensions</b>, offline. The bones, one hundred muscles you can turn and take apart by group, from the surface to the deepest layer, and thirty-six movements played by a moving body. Bones and muscles each have their book, and every part has its games, with the right answer shown at every question.</li>
-      <li><b>A personal portrait</b> and an overall progression, visible at a glance.</li>
-      <li><b>One unprompted notification a day</b>, in the morning. The app does not chase you and asks for nothing; habit reminders are the ones you set yourself.</li>
-    </ul>
-    <p class="vb-note" data-fr>L'application est un outil de soutien à la constance. Elle ne remplace personne et ne se substitue à aucun accompagnement.</p>
-    <p class="vb-note" data-en>The app is a tool to support consistency. It replaces no one and substitutes for no form of guidance.</p>
-  </section>
+  <p class="vb-note" style="text-align:center" data-fr>L'application est pour Android seulement. Elle n'existe pas sur iPhone.</p>
+  <p class="vb-note" style="text-align:center" data-en>The app is for Android only. It does not exist on iPhone.</p>
 
-  <section class="vb-carte">
-    <div class="chantier">
-      <h2 data-fr>Une application en développement</h2>
-      <h2 data-en>An app under development</h2>
-      <p data-fr>L'application évolue de semaine en semaine. Nous préférons l'annoncer plutôt que de le laisser découvrir : des éléments restent à corriger et à perfectionner.</p>
-      <p data-en>The app evolves week by week. We prefer to say so rather than let you discover it: elements remain to be corrected and refined.</p>
-      <p data-fr><b>Tes observations orientent réellement son développement.</b> Un crayon est présent sur presque tous les écrans. Une pression capture l'écran affiché ; tu entoures ce qui ne va pas, tu ajoutes un mot, et tu l'envoies. C'est de cette façon que l'application progresse.</p>
-      <p data-en><b>Your observations genuinely shape its development.</b> A pencil sits on nearly every screen. One tap captures the current screen; you circle what is wrong, add a note, and send it. This is how the app moves forward.</p>
-    </div>
-  </section>
-
-  <section class="vb-carte">
-    <h2 data-fr>Ce que tu écris ne quitte pas l'appareil</h2><h2 data-en>What you write does not leave the device</h2>
-    <p data-fr>Ton journal, ton carnet, tes réponses au portrait, tes humeurs, tes habitudes et leurs chiffres demeurent sur l'appareil. Aucun compte n'est requis, et rien de ce que tu écris ne part sans un geste de ta part.</p>
-    <p data-en>Your journal, your notebook, your portrait answers, your moods, your habits and their numbers remain on the device. No account is required, and nothing you write leaves without an action on your part.</p>
-    <p data-fr><b>Ce qui sort, au complet.</b> Une fois par jour, à l'ouverture, l'application demande à GitHub s'il existe une version plus récente, et rien de toi ne l'accompagne — ni habitude, ni carnet. Quand tu touches « Mettre à jour », elle télécharge la nouvelle version depuis GitHub. Si tu l'acceptes au premier lancement, elle envoie des statistiques d'usage, sans ton nom : les jours d'ouverture, la version, les écrans ouverts, les jeux et leurs scores, les habitudes choisies dans le catalogue (sauf ce que tu essaies d'arrêter), les plantages. Jamais tes notes, ton carnet, ton humeur ni ce que tu écris ; sans ton oui, rien ne part, et tu peux changer d'avis dans les réglages. La dictée vocale peut recourir au service de reconnaissance vocale de Google, auquel cas la voix quitte l'appareil le temps de la transcription : l'application le demande avant la première utilisation, et le refus est possible. Et lorsque tu transmets une observation par le crayon, c'est ta propre application de courriel qui l'envoie, avec ce que tu as écrit, la capture annotée, le nom de l'écran et la version. Même chose quand tu envoies ton carnet : tu relis le courriel avant de l'envoyer toi-même.</p>
-    <p data-en><b>What leaves the app, in full.</b> Once a day, on opening, the app asks GitHub whether a newer version exists, and nothing of yours goes with it — no habit, no journal entry. When you tap “Mettre à jour” (Update), it downloads the new version from GitHub. If you agree on first launch, it sends usage statistics, without your name: days opened, version, screens opened, games and their scores, habits chosen from the catalogue (except what you are trying to quit), crashes. Never your notes, your journal, your mood or anything you write; without your yes nothing is sent, and you can change your mind in the settings. Voice dictation may use Google's speech recognition service, in which case the voice leaves the device for the duration of the transcription: the app asks before the first use, and declining is possible. And when you send an observation through the pencil, it is your own email app that sends it, with what you wrote, the annotated screenshot, the screen's name and the version. Same when you send your notebook: you read the email before sending it yourself.</p>
-    <p data-fr><b>Le revers, dit franchement :</b> comme ton contenu n'est déposé sur aucun serveur, il n'est sauvegardé nulle part ailleurs non plus. Si l'appareil se perd ou se remplace, les données s'en vont avec lui. Les réglages de l'application permettent d'exporter l'ensemble dans un fichier — c'est la seule copie qui existe, et elle t'appartient.</p>
-    <p data-en><b>The flip side, said plainly:</b> since your content is not stored on any server, it is not backed up anywhere else either. If the device is lost or replaced, the data goes with it. The app settings allow exporting everything to a file — it is the only copy that exists, and it is yours.</p>
-    <p><a href="confidentialite.html"><span data-fr>Consulter la politique de confidentialité →</span><span data-en>Read the privacy policy →</span></a></p>
-  </section>
-
-  <section class="vb-carte">
-    <h2 data-fr>Installation</h2><h2 data-en>Installation</h2>
-    <p data-fr>L'application n'est pas encore distribuée par Google Play. Android affichera donc deux ou trois avertissements avant l'installation : c'est la procédure normale pour toute application provenant d'un site web.</p>
-    <p data-en>The app is not yet distributed through Google Play. Android will therefore display two or three warnings before installing: this is the standard procedure for any app coming from a website.</p>
-    <ol data-fr>
-      <li>Depuis un téléphone Android, utilise le bouton de téléchargement au bas de cette page.</li>
-      <li>Le navigateur signalera que <i>ce type de fichier peut endommager ton appareil</i>. Choisis <b>Télécharger quand même</b>.</li>
-      <li>Ouvre le fichier téléchargé. Android demandera d'autoriser le navigateur à <b>installer des applications inconnues</b> : cette autorisation ne se donne qu'une fois.</li>
-      <li>Un dernier écran peut indiquer <b>Application inconnue</b>. Choisis <b>Installer quand même</b>.</li>
-      <li>L'installation est terminée. L'icône apparaît parmi tes applications.</li>
-    </ol>
-    <ol data-en>
-      <li>From an Android phone, use the download button at the bottom of this page.</li>
-      <li>The browser will warn that <i>this type of file can harm your device</i>. Choose <b>Download anyway</b>.</li>
-      <li>Open the downloaded file. Android will ask you to allow the browser to <b>install unknown apps</b>: this permission is granted only once.</li>
-      <li>A final screen may say <b>Unknown app</b>. Choose <b>Install anyway</b>.</li>
-      <li>Installation is complete. The icon appears among your apps.</li>
-    </ol>
-    <p class="vb-note" data-fr><b>Mises à jour :</b> depuis la version 0.73, l'application te propose la nouvelle version et la télécharge elle-même quand tu touches « Mettre à jour ». Tu peux aussi revenir sur cette page. Elle s'installe par-dessus la précédente, sans perte de données.</p>
-    <p class="vb-note" data-en><b>Updates:</b> since version 0.73, the app offers the new version and downloads it itself when you tap “Mettre à jour” (Update). You can also come back to this page. It installs over the previous one, with no loss of data.</p>
-  </section>
-
-  <section class="vb-carte">
-    <h2 data-fr>iPhone</h2><h2 data-en>iPhone</h2>
-    <p data-fr>L'application n'est pas encore disponible sur iPhone. Une version iOS demande un développement distinct et une distribution par l'App Store. Si la demande se manifeste, elle sera envisagée.</p>
-    <p data-en>The app is not yet available on iPhone. An iOS version requires separate development and distribution through the App Store. Should the demand arise, it will be considered.</p>
-  </section>
-
-  <section class="vb-carte telecharger" id="telecharger">
-    <h2 data-fr>Télécharger</h2><h2 data-en>Download</h2>
-    <p data-fr>Pour Android. Gratuite, sans compte et sans publicité.</p>
-    <p data-en>For Android. Free, no account, no advertising.</p>
-    <a class="bouton" href="https://github.com/bibeaukevin9-arch/vitalite-boheme/releases/download/v0.83/Vitalite-Boheme.apk">
-      <span data-fr>Télécharger l'application</span><span data-en>Download the app</span>
-    </a>
-    <p class="sous-bouton" data-fr>Version 0.83 · 58,4 Mo · Android 8 et versions ultérieures</p>
-    <p class="sous-bouton" data-en>Version 0.83 · 58.4 MB · Android 8 and later</p>
-
-    <div class="compteur">
-      <span class="nombre">—</span>
-      <span class="quoi" data-fr>téléchargements depuis le 9 septembre 2026</span>
-      <span class="quoi" data-en>downloads since September 9, 2026</span>
-    </div>
-  </section>
-
-  <p class="vb-maj" data-fr>Version 0.83 — mise en ligne le 25 novembre 2026.</p>
-  <p class="vb-maj" data-en>Version 0.83 — published November 25, 2026.</p>
+  <p class="vb-maj" data-fr>Version 0.83, mise en ligne le 25 novembre 2026.</p>
+  <p class="vb-maj" data-en>Version 0.83, published November 25, 2026.</p>
 
 </main>
 
@@ -291,7 +283,7 @@
       .catch(function () { /* silence : le bloc reste masqué */ });
   })();
 </script>
-<script src="vb.js?v=20261126d"></script>
+<script src="vb.js?v=20261126L"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "39820f3e66a545a7bb606088d3552fc6"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

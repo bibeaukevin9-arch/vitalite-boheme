@@ -17,9 +17,30 @@
   --vb-barre-h: 72px;
 }
 
-/* ---------- La règle : structures carrées, boutons ronds (décision du 26 nov. 2026) ---------- */
+/* ---------- La règle : tout au carré, boutons compris ----------
+   Seuls restent ronds : le point et les collants du questionnaire, le petit point du curseur, les points
+   d'attente, le sceau de fin de réservation et le point qui bat du bouton flottant. Le tampon est un dessin. */
+body.vb *, body.vb *::before, body.vb *::after { border-radius: 0 !important; }
+body.vb .collant-douleur, body.vb .zone-interdit-sticker, body.vb .vb-curseur span:empty,
+body.vb .attente .pt, body.vb .fin .sceau, body.vb .cta-pulse, body.vb .vb-rond { border-radius: 50% !important; }
 body.vb ::selection { background: var(--vb-or-clair); color: var(--vb-pierre); }
 body.vb :focus-visible { outline: 2px solid var(--vb-or); outline-offset: 3px; }
+
+/* ---------- Black Friday d'ATP Lab (jusqu'au 30 nov. 2026) : le code VB15 ne s'ajoute pas à leur rabais, donc aucun tampon ---------- */
+.vb-bf .vb-tampon, .vb-bf .gros-tampon, .vb-bf .tampon { display: none !important; }
+
+/* ---------- Plus de mot en italique doré dans les titres (le tic des sites faits par IA) ---------- */
+body.vb h1 em, body.vb h1 i, body.vb h2 em, body.vb h2 i, body.vb h3 em, body.vb h3 i { font-style: normal; color: inherit; }
+
+/* ---------- L'or de lingot doux ----------
+   Trois lingots différents (poli, rayé, fonte), pour que l'or ne soit jamais pareil d'un bouton à l'autre ;
+   vb.js tire en plus un coin différent du métal à chaque visite.
+   Le lingot ne va que sur les grandes surfaces dorées ; les traits fins et les petits textes gardent l'or uni. */
+.vb-resa, .vb-b-or, .vb-lingot { background-color: var(--vb-or); background-image: url(images/or-lingot-poli.jpg); background-size: 320px; background-position: 30% 40%;
+  color: #1a1206; box-shadow: inset 0 1px 0 rgba(255,244,200,.45), inset 0 -2px 0 rgba(40,28,6,.28); }
+.vb-b-or, .vb-lingot-raye { background-image: url(images/or-lingot-raye.jpg); }
+.vb-lingot-fonte { background-image: url(images/or-lingot-fonte.jpg); }
+.vb-resa:hover, .vb-b-or:hover, .vb-lingot:hover { background-color: var(--vb-or); filter: brightness(1.07); }
 
 /* ---------- La barre du haut ---------- */
 .vb-barre { position: sticky; top: 0; z-index: 900; height: var(--vb-barre-h); background: var(--vb-pierre); color: var(--vb-creme);
@@ -40,9 +61,8 @@ body.vb :focus-visible { outline: 2px solid var(--vb-or); outline-offset: 3px; }
 .vb-lang .lbl { padding: 0; font-family: var(--vb-sans); font-size: 11.5px; letter-spacing: .14em; color: #8f806d; }
 .vb-lang .lbl.actif { color: var(--vb-or-clair); font-weight: 600; }
 .vb-lang .sep { color: #4a3d31; }
-.vb-resa { height: 100%; display: flex; align-items: center; gap: 10px; margin-left: 10px; padding: 0 28px; background: var(--vb-or); color: var(--vb-pierre);
-  font-family: var(--vb-serif); font-size: 20px; font-weight: 600; text-decoration: none; white-space: nowrap; transition: background .3s; }
-.vb-resa:hover { background: var(--vb-or-clair); }
+.vb-resa { height: 100%; display: flex; align-items: center; gap: 10px; margin-left: 10px; padding: 0 28px;
+  font-family: var(--vb-serif); font-size: 20px; font-weight: 600; text-decoration: none; white-space: nowrap; transition: filter .5s; }
 .vb-resa .vb-fleche { transition: transform .4s var(--vb-sortie); }
 .vb-resa:hover .vb-fleche { transform: translateX(4px); }
 .vb-burger { display: none; background: none; border: 0; cursor: pointer; width: 46px; height: 100%; padding: 0; flex-direction: column; justify-content: center; align-items: center; gap: 5px; }
@@ -74,16 +94,22 @@ body.vb :focus-visible { outline: 2px solid var(--vb-or); outline-offset: 3px; }
 }
 @media (max-width: 380px) { .vb-marque { font-size: 19px; } .vb-tampon { width: 38px; height: 38px; margin: 0 2px; } .vb-burger { width: 40px; } .vb-resa { padding: 0 13px; } }
 
-/* ---------- Les boutons, ronds ---------- */
-.vb-b-or, .vb-b-pierre, .vb-b-creux { display: inline-flex; align-items: center; gap: 10px; padding: 15px 28px; border-radius: 40px; font-family: var(--vb-sans); font-size: 15px;
-  letter-spacing: .03em; text-decoration: none; cursor: pointer; border: 0; transition: background .25s, color .25s, transform .25s var(--vb-sortie); }
-.vb-b-or { background: var(--vb-or); color: var(--vb-pierre); font-weight: 500; }
-.vb-b-or:hover { background: var(--vb-or-clair); }
+/* ---------- Les boutons, carrés : le texte en petites capitales espacées, le seul endroit où on les met ---------- */
+.vb-b-or, .vb-b-pierre, .vb-b-creux { display: inline-flex; align-items: center; gap: 10px; padding: 16px 26px; font-family: var(--vb-sans); font-size: 12.5px;
+  letter-spacing: .18em; text-transform: uppercase; text-decoration: none; cursor: pointer; border: 0; transition: background .5s, color .5s, filter .5s; }
+.vb-b-or { font-weight: 500; }
 .vb-b-pierre { background: var(--vb-pierre); color: var(--vb-creme); }
-.vb-b-pierre:hover { background: #2c231b; transform: translateY(-1px); }
+.vb-b-pierre:hover { background: #2c231b; }
 .vb-b-pierre .vb-fleche { color: var(--vb-or-clair); }
-.vb-b-creux { background: transparent; color: var(--vb-encre); border: 1px solid var(--vb-encre); padding: 14px 26px; }
+.vb-b-creux { background: transparent; color: var(--vb-encre); border: 1px solid var(--vb-encre); padding: 15px 24px; }
 .vb-b-creux:hover { background: var(--vb-encre); color: var(--vb-creme); }
+/* Les grands boutons propres à chaque page suivent la même règle */
+body.vb .caisse, body.vb .btn-ajout, body.vb .btn-sombre, body.vb .cta, body.vb .btn-submit, body.vb .envoyer, body.vb .cta-flottant, body.vb .btn,
+body.vb #btn-dl-pdf { text-transform: uppercase; letter-spacing: .16em; font-size: 12.5px; }
+body.vb .caisse, body.vb #btn-dl-pdf, body.vb .cta-flottant { background-color: var(--vb-or); background-image: url(images/or-lingot-raye.jpg); background-size: 320px; color: #1a1206;
+  box-shadow: inset 0 1px 0 rgba(255,244,200,.45), inset 0 -2px 0 rgba(40,28,6,.28); }
+
+body.vb .cta-flottant { box-shadow: 0 10px 30px rgba(20,16,13,.28), inset 0 1px 0 rgba(255,244,200,.45); }
 
 /* ---------- Le pied de page commun ---------- */
 .vb-pied { background: var(--vb-pierre); color: var(--vb-sur-pierre); font-family: var(--vb-sans); font-size: 13.5px; }
@@ -101,7 +127,10 @@ body.vb :focus-visible { outline: 2px solid var(--vb-or); outline-offset: 3px; }
   background: var(--vb-pierre); box-shadow: 0 0 0 1.5px var(--vb-creme); display: grid; place-items: center; color: transparent; white-space: nowrap;
   font-family: var(--vb-serif); font-style: italic; font-size: 17px; transition: width .35s var(--vb-sortie), height .35s var(--vb-sortie), background .25s, color .2s, opacity .2s; }
 .vb-curseur.lien span { width: 16px; height: 16px; background: var(--vb-or); }
-.vb-curseur.voir span { width: 66px; height: 66px; background: var(--vb-pierre); box-shadow: none; color: var(--vb-or-clair); }
+/* Sur une photo : le point s'efface et le mot « Voir » monte doucement à sa place, sans pastille ni filet */
+.vb-curseur.voir span { width: auto; height: auto; background: transparent; box-shadow: none; color: var(--vb-creme); font-size: 22px;
+  text-shadow: 0 1px 12px rgba(20,16,13,.55); animation: vb-voir .8s var(--vb-sortie) both; }
+@keyframes vb-voir { from { opacity: 0; transform: translate(-50%, -30%); } to { opacity: 1; transform: translate(-50%, -50%); } }
 .vb-curseur.cache span { opacity: 0; }
 
 @media (prefers-reduced-motion: reduce) { .vb-barre *, .vb-b-or, .vb-b-pierre, .vb-b-creux, .vb-curseur span { transition: none !important; } }
