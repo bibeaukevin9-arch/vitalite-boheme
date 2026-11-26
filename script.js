@@ -1,19 +1,3 @@
-// ─── CURSEUR OR ─────────────────────────────────────────────────────────────
-(function() {
-  var dot  = document.getElementById('curseur-or');
-  var ring = document.getElementById('curseur-anneau');
-  if (!dot || !ring) return;
-  var mx = -200, my = -200, ax = -200, ay = -200;
-  document.addEventListener('mousemove', function(e) { mx = e.clientX; my = e.clientY; });
-  function tick() {
-    dot.style.left = mx + 'px'; dot.style.top = my + 'px';
-    ax += (mx - ax) * 0.18; ay += (my - ay) * 0.18;
-    ring.style.left = ax + 'px'; ring.style.top = ay + 'px';
-    requestAnimationFrame(tick);
-  }
-  tick();
-}());
-
 // ─── CTA FLOTTANT ───────────────────────────────────────────────────────────
 (function() {
   var cta  = document.getElementById('cta-flottant');

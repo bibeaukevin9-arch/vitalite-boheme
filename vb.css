@@ -93,4 +93,15 @@ body.vb :focus-visible { outline: 2px solid var(--vb-or); outline-offset: 3px; }
 .vb-pied a { color: var(--vb-sur-pierre); text-decoration: none; }
 .vb-pied a:hover { color: var(--vb-or-clair); }
 
-@media (prefers-reduced-motion: reduce) { .vb-barre *, .vb-b-or, .vb-b-pierre, .vb-b-creux { transition: none !important; } }
+/* ---------- Le curseur : un petit point, qui s'ouvre en pastille « Voir » sur les photos ----------
+   Posé par vb.js à l'ordinateur seulement. Les champs et les zones de dessin gardent le curseur de l'ordinateur. */
+.vb-curseur-actif body, .vb-curseur-actif body *:not(input):not(textarea):not(select):not(canvas):not(iframe) { cursor: none !important; }
+.vb-curseur { position: fixed; left: 0; top: 0; z-index: 4000; pointer-events: none; }
+.vb-curseur span { position: absolute; left: 0; top: 0; transform: translate(-50%, -50%); width: 10px; height: 10px; border-radius: 50%;
+  background: var(--vb-pierre); box-shadow: 0 0 0 1.5px var(--vb-creme); display: grid; place-items: center; color: transparent; white-space: nowrap;
+  font-family: var(--vb-serif); font-style: italic; font-size: 17px; transition: width .35s var(--vb-sortie), height .35s var(--vb-sortie), background .25s, color .2s, opacity .2s; }
+.vb-curseur.lien span { width: 16px; height: 16px; background: var(--vb-or); }
+.vb-curseur.voir span { width: 66px; height: 66px; background: var(--vb-pierre); box-shadow: none; color: var(--vb-or-clair); }
+.vb-curseur.cache span { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) { .vb-barre *, .vb-b-or, .vb-b-pierre, .vb-b-creux, .vb-curseur span { transition: none !important; } }

@@ -507,7 +507,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="vb.css?v=20261126b">
+  <link rel="stylesheet" href="vb.css?v=20261126c">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; scroll-padding-top: var(--vb-barre-h); }
@@ -657,11 +657,6 @@
     .cta-pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--vb-pierre); animation: pouls 1.8s infinite; }
     @keyframes pouls { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.6); opacity: .5; } }
 
-    /* ---------- Le curseur doré (ordinateur seulement) ---------- */
-    .curseur-or { position: fixed; width: 7px; height: 7px; background: var(--vb-or); border-radius: 50%; pointer-events: none; z-index: 3000; transform: translate(-50%, -50%); }
-    .curseur-or-anneau { position: fixed; width: 30px; height: 30px; border: 1px solid rgba(201,162,39,.55); border-radius: 50%; pointer-events: none; z-index: 2999; transform: translate(-50%, -50%); }
-    @media (hover: none) { .curseur-or, .curseur-or-anneau { display: none; } }
-
     /* ---------- La fiche d'un service ---------- */
     #modal-service { display: none; position: fixed; inset: 0; z-index: 2000; background: rgba(20,16,13,.78); align-items: center; justify-content: center; padding: 20px; }
     #modal-service.ouvert { display: flex; }
@@ -723,8 +718,6 @@
   </style>
 </head>
 <body class="vb">
-<div class="curseur-or" id="curseur-or"></div>
-<div class="curseur-or-anneau" id="curseur-anneau"></div>
 
 <a href="reserver.html" class="cta-flottant" id="cta-flottant">
   <span class="cta-pulse"></span>
@@ -827,7 +820,7 @@
     </div>
     <div class="svc">
       <article class="carte anim-entree">
-        <button type="button" class="carte-photo" onclick="ouvrirService('relaxation')">
+        <button type="button" class="carte-photo" data-voir onclick="ouvrirService('relaxation')">
           <img src="images/svc-foret.jpg" alt="" loading="lazy">
           <span class="carte-plus"><span data-fr>Détails +</span><span data-en>Details +</span></span>
           <span class="carte-nom"><span data-fr>Relaxation suédoise</span><span data-en>Swedish relaxation</span></span>
@@ -835,7 +828,7 @@
         <ul class="prix"><li>60 min <b>100 $<small>+ tx</small></b></li><li>90 min <b>145 $<small>+ tx</small></b></li><li>2 h <b>185 $<small>+ tx</small></b></li></ul>
       </article>
       <article class="carte anim-entree delai-1">
-        <button type="button" class="carte-photo" onclick="ouvrirService('therapeutique')">
+        <button type="button" class="carte-photo" data-voir onclick="ouvrirService('therapeutique')">
           <img src="images/svc-therapeutique.jpg" alt="" loading="lazy">
           <span class="carte-plus"><span data-fr>Détails +</span><span data-en>Details +</span></span>
           <span class="carte-nom"><span data-fr>Massage thérapeutique</span><span data-en>Therapeutic massage</span></span>
@@ -843,7 +836,7 @@
         <ul class="prix"><li>60 min <b>100 $<small>+ tx</small></b></li><li>90 min <b>145 $<small>+ tx</small></b></li><li>2 h <b>185 $<small>+ tx</small></b></li></ul>
       </article>
       <article class="carte anim-entree delai-2">
-        <button type="button" class="carte-photo" onclick="ouvrirService('signature')">
+        <button type="button" class="carte-photo" data-voir onclick="ouvrirService('signature')">
           <img src="images/svc-vagues.jpg" alt="" loading="lazy">
           <span class="carte-plus"><span data-fr>Détails +</span><span data-en>Details +</span></span>
           <span class="carte-nom"><span data-fr>Inspiration Lomi Lomi</span><span data-en>Lomi Lomi inspired</span></span>
@@ -851,7 +844,7 @@
         <ul class="prix"><li>60 min <b>100 $<small>+ tx</small></b></li><li class="mot"><span data-fr>✦ Inspiration Lomi Lomi disponible en 1 h seulement</span><span data-en>✦ Lomi Lomi Inspired available in 1 h only</span></li></ul>
       </article>
       <article class="carte anim-entree delai-3">
-        <button type="button" class="carte-photo" onclick="ouvrirService('couple')">
+        <button type="button" class="carte-photo" data-voir onclick="ouvrirService('couple')">
           <img src="images/cp6.jpg" alt="" loading="lazy">
           <span class="carte-plus"><span data-fr>Détails +</span><span data-en>Details +</span></span>
           <span class="carte-nom"><span data-fr>Cours de couple</span><span data-en>Couples massage course</span></span>
@@ -1001,8 +994,8 @@
 </div>
 
 <script>document.body.style.overflow='';document.body.classList.remove('modal-ouvert');</script>
-<script src="script.js?v=20261126c"></script>
-<script src="vb.js?v=20261126b"></script>
+<script src="script.js?v=20261126d"></script>
+<script src="vb.js?v=20261126c"></script>
 <script>
 /* Les avis : flèches, compteur et glisser à la souris. */
 (function () {

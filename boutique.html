@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="vb.css?v=20261126b">
+<link rel="stylesheet" href="vb.css?v=20261126c">
 <style>
   :root {
     --pierre: #14100d; --pierre-2: #1e1915; --trait-sombre: #3a2f26;
@@ -552,7 +552,7 @@
   function socle(h, w, voir, choix) {
     var p = catalogue[h], b = document.createElement(voir ? 'button' : 'div');
     b.className = 'socle';
-    if (voir) { b.type = 'button'; b.setAttribute('aria-label', 'Voir la fiche de ' + nom(h)); b.addEventListener('click', function () { ouvrirFiche(h); }); }
+    if (voir) { b.type = 'button'; b.setAttribute('data-voir', ''); b.setAttribute('aria-label', 'Voir la fiche de ' + nom(h)); b.addEventListener('click', function () { ouvrirFiche(h); }); }
     b.innerHTML = (choix ? '<span class="badge"><svg><use href="#i-etoile"/></svg>Choix VB</span>' : '') + '<img loading="lazy" src="' + image(p, w) + '" alt="' + nom(h) + '">' +
       (voir ? '<span class="voir"><svg class="ic"><use href="#i-oeil"/></svg>Voir la fiche</span>' : '');
     if (!p.variants.some(function (v) { return v.available; })) b.insertAdjacentHTML('beforeend', '<span class="epuise">Épuisé chez ATP</span>');
@@ -829,7 +829,7 @@
     });
 })();
 </script>
-<script src="vb.js?v=20261126b"></script>
+<script src="vb.js?v=20261126c"></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "39820f3e66a545a7bb606088d3552fc6"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
